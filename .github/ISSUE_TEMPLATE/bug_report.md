@@ -24,6 +24,6 @@ Add screenshots to help explain your problem. You can also record your screen to
 
 **Your environment**
 
-* AltTab version: 
+* Ztabby version: 
 * macOS version: 
 * Other relevant info: e.g. using external keyboard, multiple monitors, etc

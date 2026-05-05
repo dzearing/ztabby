@@ -19,7 +19,7 @@ class TilesPanel: NSPanel {
         TilesView.initialize()
         GroupedColumnsView.initialize()
         contentView! = TilesView.contentView
-        // triggering AltTab before or during Space transition animation brings the window on the Space post-transition
+        // triggering Ztabby before or during Space transition animation brings the window on the Space post-transition
         collectionBehavior = .canJoinAllSpaces
         // 2nd highest level possible; this allows the app to go on top of context menus
         // highest level is .screenSaver but makes drag and drop on top the main window impossible
@@ -146,7 +146,7 @@ class TilesPanel: NSPanel {
 
 extension TilesPanel: NSWindowDelegate {
     func windowDidResignKey(_ notification: Notification) {
-        // other windows can steal key focus from alt-tab; we make sure that if it's active, if keeps key focus
+        // other windows can steal key focus from ztabby; we make sure that if it's active, if keeps key focus
         // dispatching to the main queue is necessary to introduce a delay in scheduling the makeKey; otherwise it is ignored
         DispatchQueue.main.async {
             if App.appIsBeingUsed {
@@ -158,7 +158,7 @@ extension TilesPanel: NSWindowDelegate {
 
     func windowDidBecomeKey(_ notification: Notification) {
         // we toggle the mainMenu off when showing the main window
-        // this avoids command+q from quitting AltTab itself, or command+p from printing
+        // this avoids command+q from quitting Ztabby itself, or command+p from printing
         DispatchQueue.main.async {
             MainMenu.toggle(false)
             if TilesView.isSearchEditing {

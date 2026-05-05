@@ -278,7 +278,7 @@ class PreferencesMigrations {
         migratePreferenceValue("alignThumbnails", ["Left": "0", "Center": "1"])
         migratePreferenceValue("appsToShow", ["All apps": "0", "Active app": "1"])
         migratePreferenceValue("spacesToShow", ["All spaces": "0", "Active space": "1"])
-        migratePreferenceValue("screensToShow", ["All screens": "0", "Screen showing AltTab": "1"])
+        migratePreferenceValue("screensToShow", ["All screens": "0", "Screen showing Ztabby": "1"])
     }
 
     private static func migrateMenubarIconFromCheckboxToDropdown() {

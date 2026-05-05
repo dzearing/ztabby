@@ -2,7 +2,7 @@
 
 ## Overview
 
-Add an opt-in feature that groups windows whose titles match the pattern "Name: value" into columns by their prefix. When enabled, the alt-tab UI switches from the default tile grid to a columnar grouped list layout.
+Add an opt-in feature that groups windows whose titles match the pattern "Name: value" into columns by their prefix. When enabled, the ztabby UI switches from the default tile grid to a columnar grouped list layout.
 
 ## Data Model: WindowGrouper
 

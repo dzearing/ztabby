@@ -5,7 +5,7 @@ sitemap: true
 
 There are many ways to contribute:
 
-* [Suggest an enhancement or discuss an issue on github](https://github.com/lwouis/alt-tab-macos/issues), or use the feedback form in the app.
+* [Suggest an enhancement or discuss an issue on github](https://github.com/lwouis/ztabby/issues), or use the feedback form in the app.
 * [Localize the app in your language](https://poeditor.com/join/project/8AOEZ0eAZE)
 
 ## Technical overview
@@ -17,11 +17,11 @@ This document gives a technical overview of the project, for newcomers who want 
 This project has minimal dependency on Xcode-only features (e.g. InterfaceBuilder, Playgrounds). You can build it by doing:
 
 * `scripts/codesign/setup_local.sh` to generate a local self-signed certificate, to avoid having to re-check the `System Preferences > Security & Privacy` permissions on every build
-* Either open `alt-tab-macos.xcworkspace` with XCode, or use the cli: `xcodebuild -workspace alt-tab-macos.xcworkspace -scheme Debug` to build the .app with the `Debug` build configuration
+* Either open `ztabby.xcworkspace` with XCode, or use the cli: `xcodebuild -workspace ztabby.xcworkspace -scheme Debug` to build the .app with the `Debug` build configuration
 
 ## Mac development
 
-Mac development ecosystem is pretty terrible in general. They keep piling on the tech stacks on top of each other, so you have C APIs, ObjC APIs, Swift APIs, Interface builder, Playgrounds, Swift UI, Mac Catalyst. All these are bridging with each other with a bunch of macros, SDKs glue, compiler flags, compatibility mode, XCode legacy build system, etc. For alt-tab, we are on Swift 5.0. Note that swift just recently started being stable, but overall any change of version breaks a lot of stuff. Swift itself is the mainstream language with the worst governance I’ve seen in modern times.
+Mac development ecosystem is pretty terrible in general. They keep piling on the tech stacks on top of each other, so you have C APIs, ObjC APIs, Swift APIs, Interface builder, Playgrounds, Swift UI, Mac Catalyst. All these are bridging with each other with a bunch of macros, SDKs glue, compiler flags, compatibility mode, XCode legacy build system, etc. For ztabby, we are on Swift 5.0. Note that swift just recently started being stable, but overall any change of version breaks a lot of stuff. Swift itself is the mainstream language with the worst governance I’ve seen in modern times.
 
 Regarding SDKs, it’s very different from other (better) ecosystems like Java. Here the SDK is bundled with XCode, and XCode is bundled with the OS. This means that from a machine running let’s say macOS 10.10, you have access to only a specific range of XCode versions (you can’t run the latest for instance), and these give you access to a specific range of SDKs (i.e. Swift + objc + c + bridges + compiler + toolchain + etc)
 
@@ -29,7 +29,7 @@ Documentation is abysmal. Very simple things are not documented at all, and good
 
 Dependencies were historically never handled by Apple. The community came up with [Cocoapods](https://cocoapods.org/) which is the de-facto dependency manager for Apple ecosystem projects these days, even though Apple is now trying to push their own.
 
-OS APIs are quite limited for the kind of low-level, system-wide app AltTab is. This means often we just don’t have an API to do something. For instance, there is no API to ask the OS “how many Spaces does the user have?” or “Can you focus the window on Space 2?”. There are however, retro-engineered private APIs which you can call. These are not documented at all, not guaranteed to be there in future macOS releases, and prevent us from releasing AltTab on the Mac AppStore. We have tried our best to [document the ones we are using](https://github.com/lwouis/alt-tab-macos/blob/master/src/api-wrappers/private-apis/README.md), as well as [the ones we investigated](https://github.com/lwouis/alt-tab-macos/blob/master/src/experimentations/PrivateApis.swift) in the past.
+OS APIs are quite limited for the kind of low-level, system-wide app Ztabby is. This means often we just don’t have an API to do something. For instance, there is no API to ask the OS “how many Spaces does the user have?” or “Can you focus the window on Space 2?”. There are however, retro-engineered private APIs which you can call. These are not documented at all, not guaranteed to be there in future macOS releases, and prevent us from releasing Ztabby on the Mac AppStore. We have tried our best to [document the ones we are using](https://github.com/lwouis/ztabby/blob/master/src/api-wrappers/private-apis/README.md), as well as [the ones we investigated](https://github.com/lwouis/ztabby/blob/master/src/experimentations/PrivateApis.swift) in the past.
 
 ## Project architecture
 
@@ -38,8 +38,8 @@ To mitigate the issues listed above, we took some measures.
 We minimize reliance on XCode, InterfaceBuilder, Playground, and other GUI tools. You can’t cut the dependency completely though as only XCode can build macOS apps. Currently, the project has these files:
 
 * 1 xib (InterfaceBuilder UI file, describing the menubar items like “Edit” or “Format”)
-* `alt-tab-macos.xcodeproj` file describing AltTab itself. It contains some settings for the app
-* `alt-tab-macos.xcworkspace` file describing an xcode workspace containing AltTab + cocoapods dependencies. You open that file to open the project in XCode or AppCode
+* `ztabby.xcodeproj` file describing Ztabby itself. It contains some settings for the app
+* `ztabby.xcworkspace` file describing an xcode workspace containing Ztabby + cocoapods dependencies. You open that file to open the project in XCode or AppCode
 * `Alt-tab-macos.entitlements` and Info.plist which are static files describing some app config for XCode
 * `PodFile` and `PodFile.lock` describe dependencies on open-source libraries (e.g. [Sparkle](https://github.com/sparkle-project/Sparkle))
 * Some `.xcconfig` files in `config/` which contain XCode settings that people typically change using XCode UI, but that I want to be version controlled
@@ -61,7 +61,7 @@ Other folders/files are either tooling or auto-generated (e.g. `Pods/` and `Fram
 
 ## QA
 
-**alt-tab-macos** is deeply integrated with the OS and other apps. Thus doing end-to-end automated QA would be a nightmare. For the time being QA is done manually.
+**ztabby** is deeply integrated with the OS and other apps. Thus doing end-to-end automated QA would be a nightmare. For the time being QA is done manually.
 
 In an attempt to not have too many regressions, this documents will list OS interactions. This should be useful as some of them are very exotic and not many people know about them.
 
@@ -97,9 +97,9 @@ In an attempt to not have too many regressions, this documents will list OS inte
 * Long titles should be truncated
 * Many windows are opened
 * There is no open window
-* AltTab should appear on top of all windows, dialogs, pop-overs, the Dock, etc
+* Ztabby should appear on top of all windows, dialogs, pop-overs, the Dock, etc
 
-### OS events to handle while AltTab’s UI is shown
+### OS events to handle while Ztabby’s UI is shown
 
 * An app is launching/quitting
 * A new window opens
@@ -114,9 +114,9 @@ In an attempt to not have too many regressions, this documents will list OS inte
 
 * General > Appearance > "Dark": switches to Dark Mode
 * General > Accent color > "Graphite": traffic lights on thumbnails should be gray
-* Accessibility > Display > Reduce transparency: AltTab background should be a solid color
+* Accessibility > Display > Reduce transparency: Ztabby background should be a solid color
 * General > Show scroll bars > "Always": regenerates all scrollbars
-* Display > Resolution > Scaled: changes DPI and rescale AltTab
+* Display > Resolution > Scaled: changes DPI and rescale Ztabby
 * Mission Control > "Displays have separate Spaces": changes Spaces behavior on multi-displays setups
 
 ### Spaces
@@ -134,14 +134,14 @@ In an attempt to not have too many regressions, this documents will list OS inte
 * The "select next window" shortcut can be modifiers, modifiers+key, or just key; it can also contain the same modifiers as the hold "key"
 * All shortcuts, except the hold key, can be disabled by the user
 * Shortcuts can include the `escape` and `delete` key; these should not stop recording shortcuts
-* [Secure Input](https://github.com/lwouis/alt-tab-macos/issues/157#issuecomment-659170293) can prevent AltTab from listening to the keyboard
-* Some shortcuts should only work when AltTab is open
+* [Secure Input](https://github.com/lwouis/ztabby/issues/157#issuecomment-659170293) can prevent Ztabby from listening to the keyboard
+* Some shortcuts should only work when Ztabby is open
   * These shortcuts should active whether the hold shortcut is held or not
 * Shortcuts should work with capslock active or inactive
 * Shortcuts should repeat if kept pressed
   * Repeat rate and initial delay should match the values set in `System Preference` > `Keyboard`
   * when navigating left/right/up/down, the repeating behavior should stop when hitting the last window in the list. The user can then manually do the shortcut once more to cycle to the other side; it then repeats again
-* The shortcut sets 1 and 2 should not interact with each other (e.g. opening AltTab with one, then using the other to navigate)
+* The shortcut sets 1 and 2 should not interact with each other (e.g. opening Ztabby with one, then using the other to navigate)
 * Shortcuts can focus the window on release, or be pressing a key or using the mouse
 * Keyboards from other countries have different layout which impact shortcuts
   * e.g. the default ``` ⌥` ``` shortcut should become `⌥<` on a Spanish ISO keyboard
@@ -155,6 +155,6 @@ In an attempt to not have too many regressions, this documents will list OS inte
 
 ### Misc
 
-* AltTab is launched after some apps/windows are already opened
-* Displays/mouses/trackpads/keyboards get connected/disconnected while AltTab is used
+* Ztabby is launched after some apps/windows are already opened
+* Displays/mouses/trackpads/keyboards get connected/disconnected while Ztabby is used
 * Sudden Termination

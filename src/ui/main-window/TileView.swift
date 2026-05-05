@@ -200,7 +200,7 @@ class TileView: FlippedView {
             isMinimized: element.isMinimized && !Preferences.hideStatusIcons,
             showSpace: !(element.isWindowlessApp || Spaces.isSingleSpace() || Preferences.hideSpaceNumberLabels || (
                 Preferences.spacesToShow[App.shortcutIndex] == .visible && (
-                    NSScreen.screens.count < 2 || Preferences.screensToShow[App.shortcutIndex] == .showingAltTab
+                    NSScreen.screens.count < 2 || Preferences.screensToShow[App.shortcutIndex] == .showingZtabby
                 )
             ))
         )

@@ -13,8 +13,8 @@ class App: AppCenterApplication {
     static let name = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String
     static let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
     static let licence = Bundle.main.object(forInfoDictionaryKey: "NSHumanReadableCopyright") as! String
-    static let repository = "https://github.com/lwouis/alt-tab-macos"
-    static let website = "https://alt-tab.app"
+    static let repository = "https://github.com/lwouis/ztabby"
+    static let website = "https://ztabby.app"
     static let appIcon = CGImage.named("app.icns")
     override class var shared: App { super.shared as! App }
     static var supportProjectAction: Selector { #selector(App.supportProject) }
@@ -60,7 +60,7 @@ class App: AppCenterApplication {
 
     static func restart() {
         // we use -n to open a new instance, to avoid calling applicationShouldHandleReopen
-        // we use Bundle.main.bundlePath in case of multiple AltTab versions on the machine
+        // we use Bundle.main.bundlePath in case of multiple Ztabby versions on the machine
         printStackTrace()
         Process.launchedProcess(launchPath: "/usr/bin/open", arguments: ["-n", Bundle.main.bundlePath])
         App.shared.terminate(nil)
@@ -429,7 +429,7 @@ class App: AppCenterApplication {
 //            App.showSettingsWindow()
         #endif
         UsageStats.prune()
-        Logger.info { "Finished launching AltTab" }
+        Logger.info { "Finished launching Ztabby" }
     }
 }
 
@@ -438,7 +438,7 @@ extension App: NSApplicationDelegate {
         App.appCenterDelegate = AppCenterCrash()
         App.shared.disableRelaunchOnLogin()
         Logger.initialize()
-        Logger.info { "Launching AltTab \(App.version)" }
+        Logger.info { "Launching Ztabby \(App.version)" }
         #if DEBUG
         UserDefaults.standard.set(true, forKey: "NSConstraintBasedLayoutVisualizeMutuallyExclusiveConstraints")
         #endif

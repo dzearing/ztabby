@@ -43,7 +43,7 @@ table.addRow(leftText: NSLocalizedString("Group windows by title prefix", commen
 
 Run:
 ```bash
-xcodebuild -workspace alt-tab-macos.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/alt-tab-macos/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
+xcodebuild -workspace ztabby.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/ztabby/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
 ```
 Expected: BUILD SUCCEEDED
 
@@ -61,7 +61,7 @@ git commit -m "feat: add windowGroupingEnabled preference and settings toggle"
 **Files:**
 - Create: `src/logic/WindowGrouper.swift`
 - Modify: `src/logic/Windows.swift`
-- Modify: `alt-tab-macos.xcodeproj/project.pbxproj` (add new file to Xcode project)
+- Modify: `ztabby.xcodeproj/project.pbxproj` (add new file to Xcode project)
 
 - [ ] **Step 1: Create WindowGrouper.swift**
 
@@ -137,8 +137,8 @@ Run the following to add the file to the project. Find the logic group PBXGroup 
 # Use ruby script to add file to xcodeproj
 ruby -e '
 require "xcodeproj"
-proj = Xcodeproj::Project.open("alt-tab-macos.xcodeproj")
-target = proj.targets.find { |t| t.name == "alt-tab-macos" }
+proj = Xcodeproj::Project.open("ztabby.xcodeproj")
+target = proj.targets.find { |t| t.name == "ztabby" }
 group = proj.main_group.find_subpath("src/logic", true)
 ref = group.new_file("WindowGrouper.swift")
 target.source_build_phase.add_file_reference(ref)
@@ -146,20 +146,20 @@ proj.save
 ' 2>&1 || echo "If xcodeproj gem not available, add file manually in Xcode"
 ```
 
-If the ruby gem isn't available, open the project in Xcode and drag `src/logic/WindowGrouper.swift` into the `src/logic` group, ensuring "Add to target: alt-tab-macos" is checked.
+If the ruby gem isn't available, open the project in Xcode and drag `src/logic/WindowGrouper.swift` into the `src/logic` group, ensuring "Add to target: ztabby" is checked.
 
 - [ ] **Step 4: Build and verify**
 
 Run:
 ```bash
-xcodebuild -workspace alt-tab-macos.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/alt-tab-macos/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
+xcodebuild -workspace ztabby.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/ztabby/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
 ```
 Expected: BUILD SUCCEEDED
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add src/logic/WindowGrouper.swift src/logic/Windows.swift alt-tab-macos.xcodeproj/project.pbxproj
+git add src/logic/WindowGrouper.swift src/logic/Windows.swift ztabby.xcodeproj/project.pbxproj
 git commit -m "feat: add WindowGrouper to split windows by title prefix"
 ```
 
@@ -169,7 +169,7 @@ git commit -m "feat: add WindowGrouper to split windows by title prefix"
 
 **Files:**
 - Create: `src/ui/main-window/GroupedColumnsView.swift`
-- Modify: `alt-tab-macos.xcodeproj/project.pbxproj` (add new file)
+- Modify: `ztabby.xcodeproj/project.pbxproj` (add new file)
 
 - [ ] **Step 1: Create GroupedColumnsView.swift**
 
@@ -331,14 +331,14 @@ Same approach as Task 2 Step 3, but for `src/ui/main-window/GroupedColumnsView.s
 
 Run:
 ```bash
-xcodebuild -workspace alt-tab-macos.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/alt-tab-macos/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
+xcodebuild -workspace ztabby.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/ztabby/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
 ```
 Expected: BUILD SUCCEEDED
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add src/ui/main-window/GroupedColumnsView.swift alt-tab-macos.xcodeproj/project.pbxproj
+git add src/ui/main-window/GroupedColumnsView.swift ztabby.xcodeproj/project.pbxproj
 git commit -m "feat: add GroupedColumnsView for columnar window grouping layout"
 ```
 
@@ -412,7 +412,7 @@ GroupedColumnsView.resetSelection()
 
 Run:
 ```bash
-xcodebuild -workspace alt-tab-macos.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/alt-tab-macos/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
+xcodebuild -workspace ztabby.xcworkspace -scheme Debug -configuration Debug -derivedDataPath ~/git/ztabby/DerivedData build 2>&1 | grep -E "BUILD|error:" | head -5
 ```
 Expected: BUILD SUCCEEDED
 
@@ -430,15 +430,15 @@ git commit -m "feat: integrate GroupedColumnsView into TilesPanel with keyboard 
 - [ ] **Step 1: Launch and enable grouping**
 
 ```bash
-kill $(pgrep -f AltTab-Debug) 2>/dev/null
-open ~/git/alt-tab-macos/DerivedData/Build/Products/Debug/AltTab-Debug.app
+kill $(pgrep -f Ztabby-Debug) 2>/dev/null
+open ~/git/ztabby/DerivedData/Build/Products/Debug/Ztabby-Debug.app
 ```
 
-Open AltTab-Debug settings, go to Appearance tab, enable "Group windows by title prefix".
+Open Ztabby-Debug settings, go to Appearance tab, enable "Group windows by title prefix".
 
 - [ ] **Step 2: Test with windows that have colons in titles**
 
-Open several windows with "Name: value" titles (e.g. multiple VS Code or terminal windows). Press the alt-tab shortcut. Verify:
+Open several windows with "Name: value" titles (e.g. multiple VS Code or terminal windows). Press the ztabby shortcut. Verify:
 - Groups appear as columns
 - Left/right switches groups
 - Up/down moves within a group

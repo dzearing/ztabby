@@ -1,4 +1,4 @@
-project: alt-tab-macos.xcworkspace
+project: ztabby.xcworkspace
 schemes:
 - Release
 index_exclude:

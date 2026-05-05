@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/Users/lwouis/git/alt-tab-macos/DerivedData/Build/Products/Debug/AltTab.app/Contents/MacOS/AltTab --logs=debug --benchmark showUi 3
+/Users/lwouis/git/ztabby/DerivedData/Build/Products/Debug/Ztabby.app/Contents/MacOS/Ztabby --logs=debug --benchmark showUi 3

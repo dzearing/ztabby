@@ -22,7 +22,7 @@ class PreviewPanel: NSPanel {
         contentView = Self.previewView
         Self.borderView.autoresizingMask = [.width, .height]
         Self.previewView.addSubview(Self.borderView)
-        // triggering AltTab before or during Space transition animation brings the window on the Space post-transition
+        // triggering Ztabby before or during Space transition animation brings the window on the Space post-transition
         collectionBehavior = .canJoinAllSpaces
         // helps filter out this window from the thumbnails
         setAccessibilitySubrole(.unknown)

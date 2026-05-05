@@ -1,7 +1,7 @@
 #!/bin/bash
 
 xcodebuild \
-  -workspace alt-tab-macos.xcworkspace \
+  -workspace ztabby.xcworkspace \
   -scheme Debug \
   -configuration Debug \
-  -derivedDataPath ~/git/alt-tab-macos/DerivedData
+  -derivedDataPath ~/git/ztabby/DerivedData

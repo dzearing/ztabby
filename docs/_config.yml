@@ -1,7 +1,7 @@
-repository: lwouis/alt-tab-macos
+repository: lwouis/ztabby
 theme: null # bug in github-pages generates a css file; we prevent it
-title: "AltTab"
-url: "https://alt-tab.app"
+title: "Ztabby"
+url: "https://ztabby.app"
 baseurl: "/"
 plugins:
   - jekyll-sitemap

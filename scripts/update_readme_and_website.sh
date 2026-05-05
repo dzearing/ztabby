@@ -11,7 +11,7 @@ github_api_request() {
   curl -s \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token $GITHUB_TOKEN" \
-    "https://api.github.com/repos/lwouis/alt-tab-macos$url"
+    "https://api.github.com/repos/lwouis/ztabby$url"
 }
 
 poeditor_api_request() {
@@ -49,7 +49,7 @@ poeditor_contributors() {
 generate_contributors() {
   echo "# Contributors"
   echo
-  echo "## [Developed the app](https://github.com/lwouis/alt-tab-macos/graphs/contributors)"
+  echo "## [Developed the app](https://github.com/lwouis/ztabby/graphs/contributors)"
   echo
   github_contributors
   echo
@@ -96,7 +96,7 @@ downloads=$(format_number "$(get_total_downloads)")
 stars=$(format_number "$(get_stars)")
 contributors=$(generate_contributors)
 
-sed -i "" -E "s|(v)[^/]+(/AltTab-)[^/]+(\.zip)|\1${version}\2${version}\3|g" "README.md"
+sed -i "" -E "s|(v)[^/]+(/Ztabby-)[^/]+(\.zip)|\1${version}\2${version}\3|g" "README.md"
 sed -i "" -E "s|(<sub>)[^ ]+( stars</sub>)|\1${stars}\2|g" "README.md"
 sed -i "" -E "s|(<sub>)[^ ]+( downloads</sub>)|\1${downloads}\2|g" "README.md"
 sed -i "" -E "s|(>)[^ ]+( downloads<)|\1${downloads}\2|g" "docs/_layouts/default.html"

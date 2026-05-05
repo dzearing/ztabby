@@ -306,7 +306,7 @@ class CachedUserDefaults {
     }
 
     /// retrieve strings in the globalDomain (e.g. defaults read -g KeyRepeat)
-    /// these may be nil since we they don't have default values from AltTab
+    /// these may be nil since we they don't have default values from Ztabby
     static func globalString(_ key: String) -> String? {
         if let cached = cache.withLock({ $0[key] }) {
             return cached as? String

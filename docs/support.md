@@ -19,7 +19,7 @@ sitemap: true
         <img src="public/support/mascot-dog.png" class="mascot dog" alt="">
     </div>
     <div class="support-button-wrapper">
-        <a href="https://www.patreon.com/alt_tab_macos" target="_blank" class="support-button">
+        <a href="https://www.patreon.com/ztabby" target="_blank" class="support-button">
             <img src="public/support/logo-patreon.svg" class="patreon" alt="Patreon">
         </a>
         <img src="public/support/mascot-squirrel.png" class="mascot squirrel" alt="">

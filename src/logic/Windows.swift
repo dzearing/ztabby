@@ -6,7 +6,7 @@ class Windows {
     static var selectedWindowIndex = Int(0)
     static var selectedWindowTarget: String?
     static var hoveredWindowIndex: Int?
-    // we use this to track if the focused window changed while alt-tab was open
+    // we use this to track if the focused window changed while ztabby was open
     private static var lastFocusedWindowTarget: String?
     private static var lastWindowActivityType = WindowActivityType.none
     static var searchQuery = ""
@@ -122,7 +122,7 @@ class Windows {
         }
         guard (!eligibleWindows.isEmpty || windowRemoved) else { return }
         if #available(macOS 14.0, *),
-           // mitigate macOS 15 bugs with ScreenCapture Kit (see https://github.com/lwouis/alt-tab-macos/issues/5190)
+           // mitigate macOS 15 bugs with ScreenCapture Kit (see https://github.com/lwouis/ztabby/issues/5190)
            ProcessInfo.processInfo.operatingSystemVersion.majorVersion != 15 {
             WindowCaptureScreenshots.oneTimeScreenshots(eligibleWindows, source)
         } else {
@@ -178,7 +178,7 @@ class Windows {
                 !(!(Preferences.showMinimizedWindows[App.shortcutIndex] != .hide) && window.isMinimized) &&
                 !(Preferences.spacesToShow[App.shortcutIndex] == .visible && !Spaces.visibleSpaces.contains { visibleSpace in window.spaceIds.contains { $0 == visibleSpace } }) &&
                 !(Preferences.spacesToShow[App.shortcutIndex] == .nonVisible && Spaces.visibleSpaces.contains { visibleSpace in window.spaceIds.contains { $0 == visibleSpace } }) &&
-                !(Preferences.screensToShow[App.shortcutIndex] == .showingAltTab && !window.isOnScreen(NSScreen.preferred)) &&
+                !(Preferences.screensToShow[App.shortcutIndex] == .showingZtabby && !window.isOnScreen(NSScreen.preferred)) &&
                 (Preferences.showTabsAsWindows || !window.isTabbed))
     }
 

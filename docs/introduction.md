@@ -3,7 +3,7 @@ permalink: /
 sitemap: true
 ---
 
-[<img src="public/demo/frontpage.jpg" alt="Screenshot showing AltTab" width="1920" height="1080" style="width:100%; height:auto;" class="can-extend" />](public/demo/frontpage.jpg)
+[<img src="public/demo/frontpage.jpg" alt="Screenshot showing Ztabby" width="1920" height="1080" style="width:100%; height:auto;" class="can-extend" />](public/demo/frontpage.jpg)
 
 Alternative Styles
 
@@ -19,22 +19,22 @@ Alternative Styles
 ## Installation
 
 * [**Download the latest release**]({{ site.github.latest_release.assets[0].browser_download_url }})
-* Alternatively, you can use [homebrew](https://brew.sh/): `brew install --cask alt-tab`
+* Alternatively, you can use [homebrew](https://brew.sh/): `brew install --cask ztabby`
 
 ## Features
 
 * Switch focus to any window
 * Minimize, close, fullscreen any window; Hide, quit any app
-* Customize AltTab appearance (pick one of 3 styles, then customize further)
+* Customize Ztabby appearance (pick one of 3 styles, then customize further)
 * Custom trigger shortcuts with almost any keys
-* Blacklist apps you don’t want to list or trigger AltTab from
+* Blacklist apps you don’t want to list or trigger Ztabby from
 * Light and Dark Appearance
 * Drag-and-drop things on top of window thumbnails
 * Accessibility: VoiceOver, sticky keys, reduced transparency, etc
 
 ## FAQ
 
-Find [Frequently Asked Questions on GitHub](https://github.com/lwouis/alt-tab-macos/discussions/categories/frequently-asked-questions?discussions_q=category%3A%22Frequently+Asked+Questions%22+).
+Find [Frequently Asked Questions on GitHub](https://github.com/lwouis/ztabby/discussions/categories/frequently-asked-questions?discussions_q=category%3A%22Frequently+Asked+Questions%22+).
 
 ## Configuration
 
@@ -52,31 +52,31 @@ Change the shortcut keys, switch to a Windows theme and more, using the Settings
 ## Compatibility
 
 * __macOS version:__ from 10.12 to latest
-* __Apple Silicon:__ yes, AltTab is [universal](https://developer.apple.com/documentation/apple-silicon/porting-your-macos-apps-to-apple-silicon)
+* __Apple Silicon:__ yes, Ztabby is [universal](https://developer.apple.com/documentation/apple-silicon/porting-your-macos-apps-to-apple-silicon)
 
 ## Localization
 
-AltTab is available in many languages: Bahasa Indonesia, Basa Jawa, Català, Čeština, Dansk, Deutsch, Eesti keel, English, Español, Français, Gaeilge, Galego, Hrvatski, Íslenska, Italiano, Kurdî, Lietuvių, Lëtzebuergesch, Magyar, Nederlands, Norsk Bokmål, Norsk Nynorsk, Oʻzbekcha, Polski, Português, Português (Brasil), Română, Shqip, Slovenčina, Slovenščina, Suomi, Svenska, Tiếng Việt, Türkçe, Беларуская мова, Български, Русский, Српски, Українська, Қазақ тілі, Ελληνικά, עִבְרִית ,اردو ,العربية ,فارسی, मराठी, हिन्दी, বাংলা, ગુજરાતી, தமிழ், ಕನ್ನಡ, മലയാളം, ภาษาไทย, မြန်မာဘာသာ, 日本語, 简体中文, 繁體中文, 繁體中文 (香港), 한국어
+Ztabby is available in many languages: Bahasa Indonesia, Basa Jawa, Català, Čeština, Dansk, Deutsch, Eesti keel, English, Español, Français, Gaeilge, Galego, Hrvatski, Íslenska, Italiano, Kurdî, Lietuvių, Lëtzebuergesch, Magyar, Nederlands, Norsk Bokmål, Norsk Nynorsk, Oʻzbekcha, Polski, Português, Português (Brasil), Română, Shqip, Slovenčina, Slovenščina, Suomi, Svenska, Tiếng Việt, Türkçe, Беларуская мова, Български, Русский, Српски, Українська, Қазақ тілі, Ελληνικά, עִבְרִית ,اردو ,العربية ,فارسی, मराठी, हिन्दी, বাংলা, ગુજરાતી, தமிழ், ಕನ್ನಡ, മലയാളം, ภาษาไทย, မြန်မာဘာသာ, 日本語, 简体中文, 繁體中文, 繁體中文 (香港), 한국어
 
 [Contribute your own language easily!](https://poeditor.com/join/project/8AOEZ0eAZE)
 
 ## Privacy
 
-AltTab doesn’t communicate to any server for so-called telemetry. AltTab will only use the network if it's absolutely required (e.g. checking for updates).
+Ztabby doesn’t communicate to any server for so-called telemetry. Ztabby will only use the network if it's absolutely required (e.g. checking for updates).
 
-AltTab has been designed to take as few resources as possible on the user computer. The app itself is kept as small as possible. CPU usage is kept to a minimum, especially while in the background. The goal is to respect the user and try to have no negative impact on their experience.
+Ztabby has been designed to take as few resources as possible on the user computer. The app itself is kept as small as possible. CPU usage is kept to a minimum, especially while in the background. The goal is to respect the user and try to have no negative impact on their experience.
 
 ## CLI usage
 
-You can run CLI commands directly on the executable inside the .app bundle (e.g. `/Applications/AltTab.app/Contents/MacOS/AltTab`)
+You can run CLI commands directly on the executable inside the .app bundle (e.g. `/Applications/Ztabby.app/Contents/MacOS/Ztabby`)
 
-* `AltTab --list` will return the list of windows (ID and title) in JSON
-* `AltTab --detailed-list` will return the list of windows (lots of info) in JSON
-* `AltTab --show=shortcut_index` will show AltTab UI, as if the corresponding shortcut was pressed
-* `AltTab --focus=window_id` will focus the window with the specified ID (get it from --list)
-* `AltTab --focusUsingLastFocusOrder=focus_order` will focus the window with the specified focus-order (get it from --detailed-list)
+* `Ztabby --list` will return the list of windows (ID and title) in JSON
+* `Ztabby --detailed-list` will return the list of windows (lots of info) in JSON
+* `Ztabby --show=shortcut_index` will show Ztabby UI, as if the corresponding shortcut was pressed
+* `Ztabby --focus=window_id` will focus the window with the specified ID (get it from --list)
+* `Ztabby --focusUsingLastFocusOrder=focus_order` will focus the window with the specified focus-order (get it from --detailed-list)
 
-For this to work, you need AltTab.app to be running, to keep track of the state of windows, and execute the commands
+For this to work, you need Ztabby.app to be running, to keep track of the state of windows, and execute the commands
 
 ## Alternatives
 

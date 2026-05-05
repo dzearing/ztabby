@@ -90,7 +90,7 @@
 		5FBB24D32F389A0400BF7E14 /* Benchmark.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBB24D22F389A0400BF7E14 /* Benchmark.swift */; };
 		5FEFDF2F2F181E120065BAA3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5FEFDF2D2F181E120065BAA3 /* Localizable.strings */; };
 		5FEFDF322F181E250065BAA3 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5FEFDF312F181E250065BAA3 /* InfoPlist.strings */; };
-		76D02BB22BFE7C9E0056008D /* Pods_alt_tab_macos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0712B3BEA2B3780398C0999 /* Pods_alt_tab_macos.framework */; };
+		76D02BB22BFE7C9E0056008D /* Pods_ztabby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0712B3BEA2B3780398C0999 /* Pods_ztabby.framework */; };
 		AA0C8A100000000000000001 /* AXCallScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0C8A000000000000000001 /* AXCallScheduler.swift */; };
 		AA0C8B000000000000000001 /* UsageStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0C8B000000000000000002 /* UsageStats.swift */; };
 		AA974BA929B7D84C0099A29E /* PreviewPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA974BA829B7D84C0099A29E /* PreviewPanel.swift */; };
@@ -378,9 +378,9 @@
 		1C961F68C77AAE38E5A2E046 /* app_icons_show_running_applications_light@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "app_icons_show_running_applications_light@2x.jpg"; sourceTree = "<group>"; };
 		1C961FB3DCF4906FEEF4A23D /* TableGroupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableGroupView.swift; sourceTree = "<group>"; };
 		4807A6C523A9CD190052A53E /* SkyLight.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SkyLight.framework; path = ../../../../System/Library/PrivateFrameworks/SkyLight.framework; sourceTree = "<group>"; };
-		481FE54624D2D387001032F1 /* alt-tab-macos-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "alt-tab-macos-Bridging-Header.h"; sourceTree = "<group>"; };
+		481FE54624D2D387001032F1 /* ztabby-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ztabby-Bridging-Header.h"; sourceTree = "<group>"; };
 		5883F0A729A5182C0071DB65 /* TrackpadEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackpadEvents.swift; sourceTree = "<group>"; };
-		59DD4BE63D42EEFF1182BA7F /* Pods-alt-tab-macos.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-alt-tab-macos.release.xcconfig"; path = "Target Support Files/Pods-alt-tab-macos/Pods-alt-tab-macos.release.xcconfig"; sourceTree = "<group>"; };
+		59DD4BE63D42EEFF1182BA7F /* Pods-ztabby.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ztabby.release.xcconfig"; path = "Target Support Files/Pods-ztabby/Pods-ztabby.release.xcconfig"; sourceTree = "<group>"; };
 		5F04852D2F09AC9700235D4A /* WindowCaptureEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowCaptureEvents.swift; sourceTree = "<group>"; };
 		5F05D0E62F31441A004A95F9 /* AGENTS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = AGENTS.md; sourceTree = "<group>"; };
 		5F05D0E72F31441A004A95F9 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
@@ -428,7 +428,7 @@
 		5FE2AF752EAE849F004A4AC5 /* xcbeautify */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = xcbeautify; sourceTree = "<group>"; };
 		5FEFDF2C2F181E120065BAA3 /* be */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = be; path = Localizable.strings; sourceTree = "<group>"; };
 		5FEFDF302F181E250065BAA3 /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
-		672F94799CC7C90282AEB3EA /* Pods-alt-tab-macos.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-alt-tab-macos.debug.xcconfig"; path = "Target Support Files/Pods-alt-tab-macos/Pods-alt-tab-macos.debug.xcconfig"; sourceTree = "<group>"; };
+		672F94799CC7C90282AEB3EA /* Pods-ztabby.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ztabby.debug.xcconfig"; path = "Target Support Files/Pods-ztabby/Pods-ztabby.debug.xcconfig"; sourceTree = "<group>"; };
 		7451B8433E47C444A6F489FF /* Pods-unit-tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unit-tests.debug.xcconfig"; path = "Target Support Files/Pods-unit-tests/Pods-unit-tests.debug.xcconfig"; sourceTree = "<group>"; };
 		AA0C8A000000000000000001 /* AXCallScheduler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AXCallScheduler.swift; sourceTree = "<group>"; };
 		AA0C8B000000000000000002 /* UsageStats.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UsageStats.swift; sourceTree = "<group>"; };
@@ -606,7 +606,7 @@
 		BF0C8FC083A2443F3EAF5DB7 /* preferences-blacklist.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "preferences-blacklist.jpg"; sourceTree = "<group>"; };
 		BF0C8FEE46E9A73F617EF679 /* gu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = gu; path = Localizable.strings; sourceTree = "<group>"; };
 		BF0CAAAA0000000000000001 /* SearchAcronymTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAcronymTests.swift; sourceTree = "<group>"; };
-		C0712B3BEA2B3780398C0999 /* Pods_alt_tab_macos.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_alt_tab_macos.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0712B3BEA2B3780398C0999 /* Pods_ztabby.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ztabby.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E6F409CA442F83B7BE71AD /* Pods_unit_tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_unit_tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D04BA015A45DE7AFDC9794FE /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
 		D04BA03200F5A8FC0CD03607 /* CGWindowID.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGWindowID.swift; sourceTree = "<group>"; };
@@ -699,7 +699,7 @@
 		D04BA7F8F1F44D5D9844BFF5 /* ar */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = ar; path = InfoPlist.strings; sourceTree = "<group>"; };
 		D04BA812B8DCB915B8F4B915 /* contributors.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = contributors.md; sourceTree = "<group>"; };
 		D04BA8209A337A2960716E3B /* zh-CN */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = "zh-CN"; path = Localizable.strings; sourceTree = "<group>"; };
-		D04BA82F792DF53958D92572 /* AltTab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AltTab.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D04BA82F792DF53958D92572 /* Ztabby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ztabby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D04BA84F172AE89F210CA01D /* Pipfile.lock */ = {isa = PBXFileReference; lastKnownFileType = file.lock; path = Pipfile.lock; sourceTree = "<group>"; };
 		D04BA85F10205D5CDE8B34C4 /* _config.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = _config.yml; sourceTree = "<group>"; };
 		D04BA8AC77465E1B2BC947CF /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
@@ -769,7 +769,7 @@
 		D04BAF076A30A1BAFEDBEA66 /* 5 windows - 2 lines.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "5 windows - 2 lines.jpg"; sourceTree = "<group>"; };
 		D04BAF1058D2599E6E8ABBA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		D04BAF6E2AB002763931645A /* general@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "general@2x.png"; sourceTree = "<group>"; };
-		D04BAF6F617FCA44D1F75B60 /* alt_tab_macos.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = alt_tab_macos.entitlements; sourceTree = "<group>"; };
+		D04BAF6F617FCA44D1F75B60 /* ztabby.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = ztabby.entitlements; sourceTree = "<group>"; };
 		D04BAFA20F13FB588F6CCB81 /* bug_report.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = bug_report.md; sourceTree = "<group>"; };
 		D04BAFC0A1B2C3D4E5F60001 /* TileOverView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileOverView.swift; sourceTree = "<group>"; };
 		D04BAFC2A1B2C3D4E5F60003 /* TileUnderLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TileUnderLayer.swift; sourceTree = "<group>"; };
@@ -794,7 +794,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4807A6C623A9CD190052A53E /* SkyLight.framework in Frameworks */,
-				76D02BB22BFE7C9E0056008D /* Pods_alt_tab_macos.framework in Frameworks */,
+				76D02BB22BFE7C9E0056008D /* Pods_ztabby.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -868,7 +868,7 @@
 			isa = PBXGroup;
 			children = (
 				4807A6C523A9CD190052A53E /* SkyLight.framework */,
-				C0712B3BEA2B3780398C0999 /* Pods_alt_tab_macos.framework */,
+				C0712B3BEA2B3780398C0999 /* Pods_ztabby.framework */,
 				C7E6F409CA442F83B7BE71AD /* Pods_unit_tests.framework */,
 			);
 			name = Frameworks;
@@ -966,8 +966,8 @@
 		A638921971E99EC1D9EC383D /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				672F94799CC7C90282AEB3EA /* Pods-alt-tab-macos.debug.xcconfig */,
-				59DD4BE63D42EEFF1182BA7F /* Pods-alt-tab-macos.release.xcconfig */,
+				672F94799CC7C90282AEB3EA /* Pods-ztabby.debug.xcconfig */,
+				59DD4BE63D42EEFF1182BA7F /* Pods-ztabby.release.xcconfig */,
 				7451B8433E47C444A6F489FF /* Pods-unit-tests.debug.xcconfig */,
 				E20104DD2C3DE10E7CCC5B5A /* Pods-unit-tests.release.xcconfig */,
 			);
@@ -1483,7 +1483,7 @@
 				D04BAAF760E3A8A22BDA84D6 /* appcast.xml */,
 				D04BA6251F309645757C6000 /* src */,
 				D04BAF1058D2599E6E8ABBA6 /* Info.plist */,
-				D04BAF6F617FCA44D1F75B60 /* alt_tab_macos.entitlements */,
+				D04BAF6F617FCA44D1F75B60 /* ztabby.entitlements */,
 				D04BAA17F1B492591AAAA9A7 /* config */,
 				D04BA9CA03317B315B267E21 /* resources */,
 				D04BA075E359F36C27CD5BAE /* package-lock.json */,
@@ -1491,7 +1491,7 @@
 				D04BAB8A94DA69A6B5008AE5 /* Pipfile */,
 				D04BA84F172AE89F210CA01D /* Pipfile.lock */,
 				A638921971E99EC1D9EC383D /* Pods */,
-				481FE54624D2D387001032F1 /* alt-tab-macos-Bridging-Header.h */,
+				481FE54624D2D387001032F1 /* ztabby-Bridging-Header.h */,
 				1C9618573E422118423CEC48 /* .swiftformatignore */,
 				1C9616522F4E58860385E090 /* .swiftformat */,
 				BF0C87320241EAE01E38EF53 /* .periphery.yml */,
@@ -1522,7 +1522,7 @@
 		D04BA1A461BBB5A9BE15E015 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D04BA82F792DF53958D92572 /* AltTab.app */,
+				D04BA82F792DF53958D92572 /* Ztabby.app */,
 				BF0C832DEED422648209CCD2 /* unit-tests.xctest */,
 			);
 			name = Products;
@@ -2135,9 +2135,9 @@
 			productReference = BF0C832DEED422648209CCD2 /* unit-tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		D04BA5E73DAF232ADE11C97A /* alt-tab-macos */ = {
+		D04BA5E73DAF232ADE11C97A /* ztabby */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D04BA4D71CBB2FA4B9947B10 /* Build configuration list for PBXNativeTarget "alt-tab-macos" */;
+			buildConfigurationList = D04BA4D71CBB2FA4B9947B10 /* Build configuration list for PBXNativeTarget "ztabby" */;
 			buildPhases = (
 				5968B81A43F20B6ECD92C7F7 /* [CP] Check Pods Manifest.lock */,
 				D04BAD01F4BCEDF8B539AFD2 /* Sources */,
@@ -2150,9 +2150,9 @@
 			);
 			dependencies = (
 			);
-			name = "alt-tab-macos";
-			productName = "alt-tab-macos";
-			productReference = D04BA82F792DF53958D92572 /* AltTab.app */;
+			name = "ztabby";
+			productName = "ztabby";
+			productReference = D04BA82F792DF53958D92572 /* Ztabby.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -2164,7 +2164,7 @@
 				LastUpgradeCheck = 1620;
 				ORGANIZATIONNAME = lwouis;
 			};
-			buildConfigurationList = D04BA83C9495F252D87CDF0F /* Build configuration list for PBXProject "alt-tab-macos" */;
+			buildConfigurationList = D04BA83C9495F252D87CDF0F /* Build configuration list for PBXProject "ztabby" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -2234,7 +2234,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				D04BA5E73DAF232ADE11C97A /* alt-tab-macos */,
+				D04BA5E73DAF232ADE11C97A /* ztabby */,
 				BF0C873EC188A7EBBCF4310D /* unit-tests */,
 			);
 		};
@@ -2471,7 +2471,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-alt-tab-macos-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ztabby-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2484,7 +2484,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-alt-tab-macos/Pods-alt-tab-macos-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ztabby/Pods-ztabby-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/LetsMove/LetsMove.framework",
 				"${BUILT_PRODUCTS_DIR}/ShortcutRecorder/ShortcutRecorder.framework",
 				"${PODS_ROOT}/Sparkle/Sparkle.framework",
@@ -2499,7 +2499,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-alt-tab-macos/Pods-alt-tab-macos-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ztabby/Pods-ztabby-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		88258612CCB7F87294BEB475 /* [CP] Check Pods Manifest.lock */ = {
@@ -3687,7 +3687,7 @@
 				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.lwouis.alt-tab-macos.unit-tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lwouis.ztabby.unit-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -3752,7 +3752,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.lwouis.alt-tab-macos.unit-tests";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lwouis.ztabby.unit-tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -3896,7 +3896,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D04BA4D71CBB2FA4B9947B10 /* Build configuration list for PBXNativeTarget "alt-tab-macos" */ = {
+		D04BA4D71CBB2FA4B9947B10 /* Build configuration list for PBXNativeTarget "ztabby" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D04BA6FB4EC72C6A126E86D7 /* Debug */,
@@ -3905,7 +3905,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		D04BA83C9495F252D87CDF0F /* Build configuration list for PBXProject "alt-tab-macos" */ = {
+		D04BA83C9495F252D87CDF0F /* Build configuration list for PBXProject "ztabby" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				D04BA801581D700C583B53FB /* Debug */,

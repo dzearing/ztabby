@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "D04BA5E73DAF232ADE11C97A"
-               BuildableName = "AltTab.app"
-               BlueprintName = "alt-tab-macos"
-               ReferencedContainer = "container:alt-tab-macos.xcodeproj">
+               BuildableName = "Ztabby.app"
+               BlueprintName = "ztabby"
+               ReferencedContainer = "container:ztabby.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -46,9 +46,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D04BA5E73DAF232ADE11C97A"
-            BuildableName = "AltTab.app"
-            BlueprintName = "alt-tab-macos"
-            ReferencedContainer = "container:alt-tab-macos.xcodeproj">
+            BuildableName = "Ztabby.app"
+            BlueprintName = "ztabby"
+            ReferencedContainer = "container:ztabby.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <CommandLineArguments>
@@ -73,9 +73,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "D04BA5E73DAF232ADE11C97A"
-            BuildableName = "AltTab.app"
-            BlueprintName = "alt-tab-macos"
-            ReferencedContainer = "container:alt-tab-macos.xcodeproj">
+            BuildableName = "Ztabby.app"
+            BlueprintName = "ztabby"
+            ReferencedContainer = "container:ztabby.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

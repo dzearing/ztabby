@@ -18,7 +18,7 @@ deployment_target = deployment_target_from_xcconfig()
 
 platform :osx, deployment_target
 
-target 'alt-tab-macos' do
+target 'ztabby' do
   use_frameworks!
   pod 'LetsMove', :git => 'https://github.com/lwouis/LetsMove.git', :commit => '7abf4daed1a25218f2b52f2dfd190aee5a50071c'
   pod 'Sparkle', :podspec => 'https://raw.githubusercontent.com/lwouis/Sparkle/fix-iframe-popup-1.24/Sparkle.podspec'

@@ -56,7 +56,7 @@ class SystemPermissions {
 
     private static func checkPermissionsPostStartup() {
         if AccessibilityPermission.status == .notGranted {
-            Logger.error { "Accessibility permission revoked while AltTab was running; restarting" }
+            Logger.error { "Accessibility permission revoked while Ztabby was running; restarting" }
             DispatchQueue.main.async { App.restart() }
         }
     }
@@ -149,7 +149,7 @@ class ScreenRecordingPermission {
     private static func checkWithCGDisplayStream(_ id: CGDirectDisplayID) -> Bool {
         return runWithTimeout { completion in
             // this initializer can actually block for a while
-            // it's undocumented but has been proven by spindumps shared by AltTab users
+            // it's undocumented but has been proven by spindumps shared by Ztabby users
             let displayStream = CGDisplayStream(
                 dispatchQueueDisplay: id,
                 outputWidth: 1,
