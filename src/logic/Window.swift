@@ -138,8 +138,8 @@ class Window {
             NSSound.beep()
             return
         }
-        if let altTabWindow = altTabWindow() {
-            altTabWindow.close()
+        if let ztabbyWindow = ztabbyWindow() {
+            ztabbyWindow.close()
             return
         }
         BackgroundWork.accessibilityCommandsQueue.addOperation { [weak self] in
@@ -170,8 +170,8 @@ class Window {
             NSSound.beep()
             return
         }
-        if let altTabWindow = altTabWindow() {
-            isMinimized ? altTabWindow.deminiaturize(nil) : altTabWindow.miniaturize(nil)
+        if let ztabbyWindow = ztabbyWindow() {
+            isMinimized ? ztabbyWindow.deminiaturize(nil) : ztabbyWindow.miniaturize(nil)
             return
         }
         BackgroundWork.accessibilityCommandsQueue.addOperation { [weak self] in
@@ -194,8 +194,8 @@ class Window {
             NSSound.beep()
             return
         }
-        if let altTabWindow = altTabWindow() {
-            altTabWindow.toggleFullScreen(nil)
+        if let ztabbyWindow = ztabbyWindow() {
+            ztabbyWindow.toggleFullScreen(nil)
             return
         }
         BackgroundWork.accessibilityCommandsQueue.addOperation { [weak self] in
@@ -205,9 +205,9 @@ class Window {
     }
 
     func focus() {
-        if let altTabWindow = altTabWindow() {
+        if let ztabbyWindow = ztabbyWindow() {
             App.shared.activate(ignoringOtherApps: true)
-            altTabWindow.makeKeyAndOrderFront(nil)
+            ztabbyWindow.makeKeyAndOrderFront(nil)
             Windows.previewSelectedWindowIfNeeded()
         } else if isWindowlessApp || cgWindowId == nil || Preferences.onlyShowApplications() {
             if let bundleUrl = application.bundleURL, isWindowlessApp {
@@ -318,7 +318,7 @@ class Window {
         return (try? mainWindow.cgWindowId()) == cgWindowId
     }
 
-    private func altTabWindow() -> NSWindow? {
+    private func ztabbyWindow() -> NSWindow? {
         if application.bundleURL == App.bundleURL, let cgWindowId {
             return App.shared.window(withWindowNumber: Int(cgWindowId))
         }

@@ -26,11 +26,11 @@
 "Alphabetical" = "ABC Sorrendben";
 "Alphabetical Order" = "ABC sorrend";
 "Also select windows using:" = "Ablakok kiválasztása az következővel is:";
-"AltTab crashed last time you used it. Sending a crash report will help get the issue fixed" = "Az AltTab összeomlott amikor utoljára használta. A hibajelentés küldése segíthet a probléma javításában";
-"AltTab is currently set to show Applications. This setting is only available when AltTab is set to show Windows." = "Az AltTab jelenleg az alkalmazások megjelenítésére van beállítva.Ez a beállítás csak akkor érhető el, ha az AltTab az Ablakok megjelenítésére van beállítva.";
-"AltTab is running without Screen Recording permissions. Thumbnails won’t show." = "Az AltTab képernyőfelvételi engedélyek nélkül fut. A bélyegképek nem fognak megjelenni.";
-"AltTab needs some permissions" = "Az AltTab-nak néhány jogosultságra van szüksége";
-"AltTab will show if the window is currently minimized or fullscreen with a status icon." = "Az AltTab megmutatja hogy az Ablak minimalizálva van-e (mínusz jel) vagy se.";
+"Ztabby crashed last time you used it. Sending a crash report will help get the issue fixed" = "Az Ztabby összeomlott amikor utoljára használta. A hibajelentés küldése segíthet a probléma javításában";
+"Ztabby is currently set to show Applications. This setting is only available when Ztabby is set to show Windows." = "Az Ztabby jelenleg az alkalmazások megjelenítésére van beállítva.Ez a beállítás csak akkor érhető el, ha az Ztabby az Ablakok megjelenítésére van beállítva.";
+"Ztabby is running without Screen Recording permissions. Thumbnails won’t show." = "Az Ztabby képernyőfelvételi engedélyek nélkül fut. A bélyegképek nem fognak megjelenni.";
+"Ztabby needs some permissions" = "Az Ztabby-nak néhány jogosultságra van szüksége";
+"Ztabby will show if the window is currently minimized or fullscreen with a status icon." = "Az Ztabby megmutatja hogy az Ablak minimalizálva van-e (mínusz jel) vagy se.";
 "Always" = "Mindig";
 "Always send crash reports" = "Mindig küldjön Hibajelentést";
 "and press" = "és nyomja meg";
@@ -185,7 +185,7 @@
 "Screen including menu bar" = "Képernyő a Menüsorral";
 "Screen including mouse" = "A képernyő ahol az egér van";
 "Screen Recording" = "Képernyő felvétel";
-"Screen showing AltTab" = "Az AltTab képernyője";
+"Screen showing Ztabby" = "Az Ztabby képernyője";
 "Search" = "Keresés";
 "Select next window" = "Következő ablak kiválasztása";
 "Select previous window" = "Előző ablak kiválasztása";
@@ -231,7 +231,7 @@
 "Size" = "Méret";
 "Skipped" = "Kihagyva";
 "Small" = "Kicsi";
-"Some apps like Finder or Preview use standard tabs which act like independent windows. Some other apps like web browsers use custom tabs which act in unique ways and are not actual windows. AltTab can't list those separately." = "Egyes alkalmazások, mint például a Finder vagy az előnézet, olyan füleket használnak, amelyek független ablakokként működnek. Néhány más alkalmazás, például a webböngészők egyedi füleket használnak, amelyek egyedi módon működnek, és nem tényleges ablakok. Az Altab nem tudja ezeket külön felsorolni.";
+"Some apps like Finder or Preview use standard tabs which act like independent windows. Some other apps like web browsers use custom tabs which act in unique ways and are not actual windows. Ztabby can't list those separately." = "Egyes alkalmazások, mint például a Finder vagy az előnézet, olyan füleket használnak, amelyek független ablakokként működnek. Néhány más alkalmazás, például a webböngészők egyedi füleket használnak, amelyek egyedi módon működnek, és nem tényleges ablakok. Az Altab nem tudja ezeket külön felsorolni.";
 "Source code repository" = "Forrás kód tárhelye";
 "Space" = "Íróasztal";
 "Space Order" = "Íróasztal Sorrendje";

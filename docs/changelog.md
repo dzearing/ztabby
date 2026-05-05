@@ -18,7 +18,7 @@
 
 ### Bug Fixes
 
-* about-alttab window would crash when opened (closes [#5491](https://github.com/lwouis/ztabby/issues/5491)) ([d5152fb](https://github.com/lwouis/ztabby/commit/d5152fb))
+* about-ztabby window would crash when opened (closes [#5491](https://github.com/lwouis/ztabby/issues/5491)) ([d5152fb](https://github.com/lwouis/ztabby/commit/d5152fb))
 * rare crash sometimes when opening the app twice quickly ([47e6cbd](https://github.com/lwouis/ztabby/commit/47e6cbd))
 * rare crash when scrolling some settings window views ([317d2ff](https://github.com/lwouis/ztabby/commit/317d2ff))
 
@@ -135,7 +135,7 @@
 ### Features
 
 * add kazakh and improve all localizations ([0ad389a](https://github.com/lwouis/ztabby/commit/0ad389a))
-* improve drag-and-drop over alttab (closes [#5350](https://github.com/lwouis/ztabby/issues/5350)) ([a809ffa](https://github.com/lwouis/ztabby/commit/a809ffa))
+* improve drag-and-drop over ztabby (closes [#5350](https://github.com/lwouis/ztabby/issues/5350)) ([a809ffa](https://github.com/lwouis/ztabby/commit/a809ffa))
 
 # [10.3.0](https://github.com/lwouis/ztabby/compare/v10.2.0...v10.3.0) (2026-02-24)
 
@@ -1000,7 +1000,7 @@ Preferences are now much simpler, full of visual illustrations, and should provi
 
 ### Bug Fixes
 
-* closing alttab windows gives focus to previous app (closes [#3577](https://github.com/lwouis/ztabby/issues/3577)) ([0e6f200](https://github.com/lwouis/ztabby/commit/0e6f200))
+* closing ztabby windows gives focus to previous app (closes [#3577](https://github.com/lwouis/ztabby/issues/3577)) ([0e6f200](https://github.com/lwouis/ztabby/commit/0e6f200))
 * detect passwords app (closes [#3545](https://github.com/lwouis/ztabby/issues/3545)) ([d0cd206](https://github.com/lwouis/ztabby/commit/d0cd206))
 * dragging files onto windowless apps was inconsistent ([0a9fe9b](https://github.com/lwouis/ztabby/commit/0a9fe9b))
 * finder would sometimes not be listed (closes [#3350](https://github.com/lwouis/ztabby/issues/3350)) ([eba5e42](https://github.com/lwouis/ztabby/commit/eba5e42))
@@ -1099,7 +1099,7 @@ Preferences are now much simpler, full of visual illustrations, and should provi
 
 ### Bug Fixes
 
-* alttab would crash after menubar icon was actioned with voiceover ([f7fdf3f](https://github.com/lwouis/ztabby/commit/f7fdf3f)), closes [#3211](https://github.com/lwouis/ztabby/issues/3211)
+* ztabby would crash after menubar icon was actioned with voiceover ([f7fdf3f](https://github.com/lwouis/ztabby/commit/f7fdf3f)), closes [#3211](https://github.com/lwouis/ztabby/issues/3211)
 
 
 ### Features
@@ -1314,7 +1314,7 @@ Preferences are now much simpler, full of visual illustrations, and should provi
 * avoid accidental press of the "reset preferences" button ([#2093](https://github.com/lwouis/ztabby/issues/2093)) ([f6fcac5](https://github.com/lwouis/ztabby/commit/f6fcac5))
 * avoid confusion with native app-switcher (closes [#2080](https://github.com/lwouis/ztabby/issues/2080)) ([f906c0e](https://github.com/lwouis/ztabby/commit/f906c0e))
 * improve localizations ([2123af3](https://github.com/lwouis/ztabby/commit/2123af3))
-* show alttab on display with active menubar when needed ([#2107](https://github.com/lwouis/ztabby/issues/2107)) ([917e661](https://github.com/lwouis/ztabby/commit/917e661))
+* show ztabby on display with active menubar when needed ([#2107](https://github.com/lwouis/ztabby/issues/2107)) ([917e661](https://github.com/lwouis/ztabby/commit/917e661))
 
 # [6.49.0](https://github.com/lwouis/ztabby/compare/v6.48.0...v6.49.0) (2022-11-02)
 
@@ -1502,7 +1502,7 @@ Preferences are now much simpler, full of visual illustrations, and should provi
 
 ### Bug Fixes
 
-* hovering thumbnails would make alttab laggy ([#1567](https://github.com/lwouis/ztabby/issues/1567)) ([7e66009](https://github.com/lwouis/ztabby/commit/7e66009))
+* hovering thumbnails would make ztabby laggy ([#1567](https://github.com/lwouis/ztabby/issues/1567)) ([7e66009](https://github.com/lwouis/ztabby/commit/7e66009))
 
 # [6.37.0](https://github.com/lwouis/ztabby/compare/v6.36.2...v6.37.0) (2022-05-12)
 

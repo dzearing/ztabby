@@ -26,11 +26,11 @@
 "Alphabetical" = "Abėcėlės tvarka";
 "Alphabetical Order" = "Abėcėlės tvarka";
 "Also select windows using:" = "Taip pat pasirinkite langus naudodami:";
-"AltTab crashed last time you used it. Sending a crash report will help get the issue fixed" = "„AltTab“ sugriuvo paskutinį kartą, kai ją naudojote. Gedimų ataskaitos išsiuntimas padės ištaisyti problemą";
-"AltTab is currently set to show Applications. This setting is only available when AltTab is set to show Windows." = "„AltTab“ šiuo metu nustatyta rodyti programas. Šis nustatymas pasiekiamas tik tada, kai „AltTab“ nustatyta rodyti langus.";
-"AltTab is running without Screen Recording permissions. Thumbnails won’t show." = "„AltTab“ veikia be ekrano įrašymo leidimų. Miniatiūros nebus rodomos.";
-"AltTab needs some permissions" = "„AltTab“ reikalingi kai kurie leidimai";
-"AltTab will show if the window is currently minimized or fullscreen with a status icon." = "„AltTab“ rodys, ar langas šiuo metu yra sumažintas arba viso ekrano režimu, naudodamas būsenos piktogramą.";
+"Ztabby crashed last time you used it. Sending a crash report will help get the issue fixed" = "„Ztabby“ sugriuvo paskutinį kartą, kai ją naudojote. Gedimų ataskaitos išsiuntimas padės ištaisyti problemą";
+"Ztabby is currently set to show Applications. This setting is only available when Ztabby is set to show Windows." = "„Ztabby“ šiuo metu nustatyta rodyti programas. Šis nustatymas pasiekiamas tik tada, kai „Ztabby“ nustatyta rodyti langus.";
+"Ztabby is running without Screen Recording permissions. Thumbnails won’t show." = "„Ztabby“ veikia be ekrano įrašymo leidimų. Miniatiūros nebus rodomos.";
+"Ztabby needs some permissions" = "„Ztabby“ reikalingi kai kurie leidimai";
+"Ztabby will show if the window is currently minimized or fullscreen with a status icon." = "„Ztabby“ rodys, ar langas šiuo metu yra sumažintas arba viso ekrano režimu, naudodamas būsenos piktogramą.";
 "Always" = "Visada";
 "Always send crash reports" = "Visada siųsti gedimų ataskaitas";
 "and press" = "ir paspauskite";
@@ -185,7 +185,7 @@
 "Screen including menu bar" = "Ekranas, kuriame yra meniu juosta";
 "Screen including mouse" = "Ekranas, kuriame yra pelė";
 "Screen Recording" = "Ekrano įrašymas";
-"Screen showing AltTab" = "Ekranas, kuriame rodomas „AltTab“";
+"Screen showing Ztabby" = "Ekranas, kuriame rodomas „Ztabby“";
 "Search" = "Paieška";
 "Select next window" = "Pasirinkti kitą langą";
 "Select previous window" = "Pasirinkti ankstesnį langą";
@@ -231,7 +231,7 @@
 "Size" = "Dydis";
 "Skipped" = "Praleista";
 "Small" = "Mažas";
-"Some apps like Finder or Preview use standard tabs which act like independent windows. Some other apps like web browsers use custom tabs which act in unique ways and are not actual windows. AltTab can't list those separately." = "Kai kurios programos, pvz., „Finder“ ar „Preview“, naudoja standartines korteles, kurios veikia kaip nepriklausomi langai. Kitos programos, pvz., interneto naršyklės, naudoja pasirinktines korteles, kurios veikia unikaliai ir nėra tikri langai. „AltTab“ negali jų išvardyti atskirai.";
+"Some apps like Finder or Preview use standard tabs which act like independent windows. Some other apps like web browsers use custom tabs which act in unique ways and are not actual windows. Ztabby can't list those separately." = "Kai kurios programos, pvz., „Finder“ ar „Preview“, naudoja standartines korteles, kurios veikia kaip nepriklausomi langai. Kitos programos, pvz., interneto naršyklės, naudoja pasirinktines korteles, kurios veikia unikaliai ir nėra tikri langai. „Ztabby“ negali jų išvardyti atskirai.";
 "Source code repository" = "Šaltinio kodo saugykla";
 "Space" = "Erdvė";
 "Space Order" = "Erdvės tvarka";
