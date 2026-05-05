@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+      - name: Install CocoaPods
+        run: gem install cocoapods
+
+      - name: Install Pods
+        run: pod install
+
+      - name: Build release app
+        run: |
+          xcodebuild -workspace ztabby.xcworkspace \
+            -scheme Release \
+            -configuration Release \
+            -derivedDataPath DerivedData \
+            build
+
+      - name: Package app
+        run: |
+          APP_PATH="DerivedData/Build/Products/Release/Ztabby.app"
+          cd "$(dirname "$APP_PATH")"
+          zip -r -y "Ztabby-${{ env.VERSION }}.zip" "Ztabby.app"
+          echo "ZIP_PATH=$(dirname "$APP_PATH")/Ztabby-${{ env.VERSION }}.zip" >> $GITHUB_ENV
+
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: DerivedData/Build/Products/Release/Ztabby-${{ env.VERSION }}.zip
+          tag_name: v${{ env.VERSION }}
+          name: "Ztabby v${{ env.VERSION }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-homepage:
+    needs: build-macos
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Extract version from tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      - name: Update homepage download link and version
+        run: |
+          sed -i 's|releases/download/v[0-9.]*/Ztabby-[0-9.]*\.zip|releases/download/v${{ env.VERSION }}/Ztabby-${{ env.VERSION }}.zip|' docs/index.html
+          sed -i 's|v[0-9.]*[0-9] \&middot; macOS|v${{ env.VERSION }} \&middot; macOS|' docs/index.html
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/index.html
+          git diff --cached --quiet || git commit -m "Update homepage to v${{ env.VERSION }}"
+          git push
