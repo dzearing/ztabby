@@ -87,12 +87,17 @@ class AccessibilityPermission {
     }
 
     private static func detect() -> PermissionStatus {
+        #if DEBUG
+        return .granted
+        #else
         return AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeRetainedValue(): false] as CFDictionary) ? .granted : .notGranted
+        #endif
     }
 }
 
 class ScreenRecordingPermission {
     static var status = PermissionStatus.notGranted
+    private static var hasRequestedOnce = false
 
     @discardableResult
     static func update() -> PermissionStatus {
@@ -101,35 +106,29 @@ class ScreenRecordingPermission {
     }
 
     private static func detect() -> PermissionStatus {
+        #if DEBUG
+        return .granted
+        #else
         if #available(macOS 10.15, *) {
             return isGrantedOnSomeDisplay() ? .granted :
                 (Preferences.screenRecordingPermissionSkipped ? .skipped : .notGranted)
         }
         return .granted
+        #endif
     }
 
-    // workaround: public API CGPreflightScreenCaptureAccess and private API SLSRequestScreenCaptureAccess exist, but
-    // their return value is not updated during the app lifetime
-    // note: shows the system prompt if there's no permission
     private static func isGrantedOnSomeDisplay() -> Bool {
-        if #available(macOS 12.3, *) {
-            return checkWithSCShareableContent()
-        } else {
-            let mainDisplayID = CGMainDisplayID()
-            if checkWithCGDisplayStream(mainDisplayID) {
+        if #available(macOS 10.15, *) {
+            if CGPreflightScreenCaptureAccess() {
                 return true
             }
-            // maybe the main screen can't produce a CGDisplayStream, but another screen can
-            // a positive on any screen must mean that the permission is granted; we try on the other screens
-            for screen in NSScreen.screens {
-                if let id = screen.number(), id != mainDisplayID {
-                    if checkWithCGDisplayStream(id) {
-                        return true
-                    }
-                }
+            if !hasRequestedOnce {
+                hasRequestedOnce = true
+                CGRequestScreenCaptureAccess()
             }
             return false
         }
+        return false
     }
 
     @available(macOS 12.3, *)

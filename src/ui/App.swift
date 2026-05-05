@@ -22,6 +22,19 @@ class App: AppCenterApplication {
     static var appIsBeingUsed = false
     static var shortcutIndex = 0
     static var forceDoNothingOnRelease = false
+    static var groupedUiOpenTime: UInt64 = 0
+    static var groupedStickyMode = false
+
+    static func checkAndLatchGroupedStickyMode(latch: Bool) -> Bool {
+        if groupedStickyMode { return true }
+        guard Preferences.windowGroupingEnabled else { return false }
+        let elapsed = DispatchTime.now().uptimeNanoseconds - groupedUiOpenTime
+        if elapsed < 200_000_000 {
+            if latch { groupedStickyMode = true }
+            return true
+        }
+        return false
+    }
     private static var isFirstSummon = true
     private static var isVeryFirstSummon = true
     private static var pendingShowSettingsWindow = false
@@ -59,6 +72,7 @@ class App: AppCenterApplication {
         appIsBeingUsed = false
         isFirstSummon = true
         forceDoNothingOnRelease = false
+        groupedStickyMode = false
         UsageStats.resetSession()
         TilesView.endSearchSession()
         ContextMenuEvents.toggle(false)
@@ -135,8 +149,10 @@ class App: AppCenterApplication {
     }
 
     static func focusTarget() {
-        guard appIsBeingUsed else { return } // already hidden
-        let selectedWindow = Windows.selectedWindow()
+        guard appIsBeingUsed else { return }
+        let selectedWindow = (Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty)
+            ? GroupedColumnsView.selectedWindow()
+            : Windows.selectedWindow()
         Logger.info { selectedWindow?.debugId }
         focusSelectedWindow(selectedWindow)
     }
@@ -239,6 +255,16 @@ class App: AppCenterApplication {
     static func cycleSelection(_ direction: Direction, allowWrap: Bool = true) {
         (TilesView.scrollView?.documentView as? TilesDocumentView)?.cancelDraggingTimer()
         CursorEvents.resetDeadzone()
+        if Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty {
+            switch direction {
+            case .up: GroupedColumnsView.navigateUp()
+            case .down: GroupedColumnsView.navigateDown()
+            case .left, .trailing: GroupedColumnsView.navigateLeft()
+            case .right, .leading: GroupedColumnsView.navigateRight()
+            }
+            TilesPanel.shared.updateContents(nil)
+            return
+        }
         if direction == .up || direction == .down {
             TilesView.navigateUpOrDown(direction, allowWrap: allowWrap)
         } else {
@@ -307,6 +333,9 @@ class App: AppCenterApplication {
                 isVeryFirstSummon = false
             }
             isFirstSummon = false
+            if Preferences.windowGroupingEnabled {
+                groupedUiOpenTime = DispatchTime.now().uptimeNanoseconds
+            }
             App.shortcutIndex = shortcutIndex
             let shouldStartInSearchMode = Preferences.shortcutStyle == .searchOnRelease
             TilesView.startSearchSession(shouldStartInSearchMode)
@@ -314,6 +343,7 @@ class App: AppCenterApplication {
                 forceDoNothingOnRelease = true
             }
             if !Windows.updatesBeforeShowing() { hideUi(); return }
+            GroupedColumnsView.resetSelection()
             Windows.setInitialSelectedAndHoveredWindowIndex()
             if Preferences.windowDisplayDelay == DispatchTimeInterval.milliseconds(0) {
                 buildUiAndShowPanel()
@@ -339,6 +369,9 @@ class App: AppCenterApplication {
         refreshUi()
         guard appIsBeingUsed else { return }
         TilesPanel.shared.show()
+        if Preferences.windowGroupingEnabled {
+            groupedUiOpenTime = DispatchTime.now().uptimeNanoseconds
+        }
         Windows.previewSelectedWindowIfNeeded()
         if TilesView.isSearchEditing {
             TilesView.enableSearchEditing()

@@ -2,6 +2,7 @@ import Cocoa
 
 class Windows {
     static var list = [Window]()
+    static var groupedList = [WindowGroup]()
     static var selectedWindowIndex = Int(0)
     static var selectedWindowTarget: String?
     static var hoveredWindowIndex: Int?
@@ -101,6 +102,9 @@ class Windows {
         }
         refreshWhichWindowsToShowTheUser()
         sort()
+        if Preferences.windowGroupingEnabled {
+            groupedList = WindowGrouper.group(list.filter { shouldDisplay($0) })
+        }
         return true
     }
 

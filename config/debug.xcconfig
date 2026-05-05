@@ -3,7 +3,11 @@
 #include "Pods/Target Support Files/Pods-alt-tab-macos/Pods-alt-tab-macos.debug.xcconfig"
 #include "base.xcconfig"
 
-CODE_SIGN_IDENTITY = Local Self-Signed
+CODE_SIGN_IDENTITY = Developer ID Application: DAVID BENJAMIN ZEARING (VMGW2V57S7)
+DEVELOPMENT_TEAM = VMGW2V57S7
+PRODUCT_BUNDLE_IDENTIFIER = com.dzearing.alt-tab-macos.debug
+PRODUCT_NAME = AltTab-Debug
+CODE_SIGNING_ALLOWED = YES
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG // for macro `#if DEBUG`
 OTHER_SWIFT_FLAGS = -driver-time-compilation -Xfrontend -warn-long-function-bodies=250 -Xfrontend -warn-long-expression-type-checking=250 // find slow compilation areas
 OTHER_CODE_SIGN_FLAGS = --timestamp=none

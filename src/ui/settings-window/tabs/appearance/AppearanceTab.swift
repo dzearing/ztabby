@@ -424,6 +424,8 @@ class AppearanceTab: NSObject {
             rightViews: [LabelAndControl.makeSegmentedControl("appearanceTheme", AppearanceThemePreference.allCases, segmentWidth: 100)])
         addAfterKeysReleasedRow(table)
         addPreviewSelectedWindowRow(table)
+        table.addRow(leftText: NSLocalizedString("Group windows by title prefix", comment: ""),
+            rightViews: [LabelAndControl.makeSwitch("windowGroupingEnabled")])
         table.addRow(rightViews: customizeStyleButton)
         return table
     }

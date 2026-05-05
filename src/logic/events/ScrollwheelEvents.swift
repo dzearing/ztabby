@@ -36,7 +36,9 @@ class ScrollwheelEvents {
             let runLoopSource = CFMachPortCreateRunLoopSource(nil, eventTap, 0)
             CFRunLoopAddSource(BackgroundWork.keyboardAndMouseAndTrackpadEventsThread.runLoop, runLoopSource, .commonModes)
         } else {
+            #if !DEBUG
             App.restart()
+            #endif
         }
     }
 

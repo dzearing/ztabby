@@ -17,6 +17,7 @@ class TilesPanel: NSPanel {
         titleVisibility = .hidden
         backgroundColor = .clear
         TilesView.initialize()
+        GroupedColumnsView.initialize()
         contentView! = TilesView.contentView
         // triggering AltTab before or during Space transition animation brings the window on the Space post-transition
         collectionBehavior = .canJoinAllSpaces
@@ -38,13 +39,22 @@ class TilesPanel: NSPanel {
 
     func updateContents(_ preservedScrollOrigin: CGPoint?) {
         caTransaction {
-            TilesView.updateItemsAndLayout(preservedScrollOrigin)
-            guard App.appIsBeingUsed else { return }
-            setContentSize(TilesView.contentView.frame.size)
-            guard App.appIsBeingUsed else { return }
-            repositionOrFreeze()
+            if Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty {
+                GroupedColumnsView.updateItemsAndLayout()
+                guard App.appIsBeingUsed else { return }
+                let size = GroupedColumnsView.contentView.frame.size
+                contentView! = GroupedColumnsView.contentView
+                setContentSize(size)
+                NSScreen.preferred.repositionPanel(self)
+                resetFrozenPosition()
+            } else {
+                TilesView.updateItemsAndLayout(preservedScrollOrigin)
+                guard App.appIsBeingUsed else { return }
+                contentView! = TilesView.contentView
+                setContentSize(TilesView.contentView.frame.size)
+                repositionOrFreeze()
+            }
         }
-        // prevent further AppKit work
         TilesView.clearNeedsLayout()
     }
 
