@@ -12,7 +12,7 @@ const observer = new IntersectionObserver(
 );
 
 document.querySelectorAll(
-  ".feature-card, .grouping-demo, .mode-card, .download-card, .section-header"
+  ".feature-card, .mode-card, .download-card, .section-header"
 ).forEach((el) => {
   el.style.opacity = "0";
   el.style.transform = "translateY(20px)";

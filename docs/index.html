@@ -17,7 +17,7 @@
       </a>
       <div class="nav-links">
         <a href="#features">Features</a>
-        <a href="#grouping">Grouping</a>
+        <a href="#how-it-works">How It Works</a>
         <a href="https://github.com/dzearing/ztabby" target="_blank" rel="noopener">GitHub</a>
         <a href="#download" class="nav-cta">Download</a>
       </div>
@@ -29,10 +29,10 @@
     <div class="hero-glow"></div>
     <div class="hero-content">
       <div class="badge">Open Source &middot; macOS &middot; Lightning Fast</div>
-      <h1>Window switching,<br /><span class="gradient-text">reimagined.</span></h1>
+      <h1>Your windows,<br /><span class="gradient-text">grouped &amp; ready.</span></h1>
       <p class="hero-sub">
-        Ztabby replaces macOS Cmd+Tab with a visual window switcher.
-        See every window, group them by app, and navigate with your keyboard.
+        Ztabby groups your windows by app into navigable columns.
+        Hit your shortcut, arrow to the right window, and switch instantly.
       </p>
       <div class="hero-actions">
         <a href="#download" class="btn btn-primary">
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <!-- Window switcher mockup -->
+    <!-- Grouped window mockup -->
     <div class="hero-mockup">
       <div class="mockup-window">
         <div class="mockup-titlebar">
@@ -58,22 +58,33 @@
           <span class="dot yellow"></span>
           <span class="dot green"></span>
         </div>
-        <div class="mockup-grid">
-          <div class="mockup-tile selected">
-            <div class="mockup-thumb"></div>
-            <div class="mockup-label">Main.swift</div>
+        <div class="mockup-grouped">
+          <div class="mock-group">
+            <div class="mock-group-header">Ghostty</div>
+            <div class="mock-group-item selected">api-server</div>
+            <div class="mock-group-item">build-logs</div>
+            <div class="mock-group-item">ssh — prod</div>
           </div>
-          <div class="mockup-tile">
-            <div class="mockup-thumb"></div>
-            <div class="mockup-label">Terminal</div>
+          <div class="mock-divider"></div>
+          <div class="mock-group">
+            <div class="mock-group-header">Chrome</div>
+            <div class="mock-group-item">GitHub — PRs</div>
+            <div class="mock-group-item">Figma — Dashboard</div>
+            <div class="mock-group-item">Linear — Sprint</div>
+            <div class="mock-group-item">Docs — API Spec</div>
           </div>
-          <div class="mockup-tile">
-            <div class="mockup-thumb"></div>
-            <div class="mockup-label">Safari</div>
+          <div class="mock-divider"></div>
+          <div class="mock-group">
+            <div class="mock-group-header">VS Code</div>
+            <div class="mock-group-item">App.swift</div>
+            <div class="mock-group-item">index.tsx</div>
           </div>
-          <div class="mockup-tile">
-            <div class="mockup-thumb"></div>
-            <div class="mockup-label">Slack</div>
+          <div class="mock-divider"></div>
+          <div class="mock-group">
+            <div class="mock-group-header">Other</div>
+            <div class="mock-group-item">Slack</div>
+            <div class="mock-group-item">Spotify</div>
+            <div class="mock-group-item">Finder</div>
           </div>
         </div>
       </div>
@@ -85,9 +96,18 @@
     <div class="section-inner">
       <div class="section-header">
         <h2>Everything you need<br /><span class="gradient-text">to switch fast.</span></h2>
-        <p>Visual thumbnails, keyboard navigation, and smart grouping.</p>
+        <p>Smart grouping, visual thumbnails, and keyboard navigation.</p>
       </div>
       <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon accent-purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M4 6h16M4 12h16M4 18h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Window Grouping</h3>
+          <p>Windows are grouped by app into columns. Navigate across groups with arrow keys, pick the exact window you need.</p>
+        </div>
         <div class="feature-card">
           <div class="feature-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -99,15 +119,6 @@
           </div>
           <h3>Visual Thumbnails</h3>
           <p>See live previews of every window. Instantly recognize what you're switching to — no guessing from app icons alone.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon accent-purple">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M4 6h16M4 12h16M4 18h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <h3>Window Grouping</h3>
-          <p>Windows with similar titles are grouped into columns. Navigate groups with arrow keys, pick the exact window you need.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon accent-green">
@@ -154,37 +165,17 @@
     </div>
   </section>
 
-  <!-- ── Grouping Feature ── -->
-  <section class="how-it-works" id="grouping">
+  <!-- ── How It Works ── -->
+  <section class="how-it-works" id="how-it-works">
     <div class="section-inner">
       <div class="section-header">
-        <h2>Window grouping<br /><span class="gradient-text">changes everything.</span></h2>
-        <p>When you have dozens of windows, visual thumbnails aren't enough. Grouping organizes them by title prefix into navigable columns.</p>
-      </div>
-      <div class="grouping-demo">
-        <div class="group-column">
-          <div class="group-header">VS Code</div>
-          <div class="group-row selected">Main.swift</div>
-          <div class="group-row">App.swift</div>
-          <div class="group-row">KeyboardEvents.swift</div>
-        </div>
-        <div class="group-divider"></div>
-        <div class="group-column">
-          <div class="group-header">Safari</div>
-          <div class="group-row">GitHub — ztabby</div>
-          <div class="group-row">Stack Overflow</div>
-        </div>
-        <div class="group-divider"></div>
-        <div class="group-column">
-          <div class="group-header">Terminal</div>
-          <div class="group-row">zsh — build</div>
-          <div class="group-row">zsh — logs</div>
-        </div>
+        <h2>Two ways<br /><span class="gradient-text">to navigate.</span></h2>
+        <p>Whether you hold or tap, grouping keeps your windows organized.</p>
       </div>
       <div class="grouping-modes">
         <div class="mode-card">
           <div class="mode-label">Hold Mode</div>
-          <p>Hold your shortcut, arrow through windows, release to switch. Classic feel, instant action.</p>
+          <p>Hold your shortcut, arrow through grouped windows, release to switch. Classic feel, instant action.</p>
         </div>
         <div class="mode-card">
           <div class="mode-label">Sticky Mode</div>
