@@ -3,6 +3,7 @@ import Cocoa
 class GroupedColumnsView {
     static var contentView: EffectView!
     private static var innerView = NSView()
+    private static var clipView = NSView()
     private static var selectedGroupIndex = 0
     private static var selectedWindowIndex = 0
 
@@ -13,12 +14,18 @@ class GroupedColumnsView {
     private static let padding: CGFloat = 16
     private static let dividerWidth: CGFloat = 1
 
+    private static var columnOffsets = [CGFloat]()
+    private static var columnWidths = [CGFloat]()
+
     static func initialize() {
         contentView = makeAppropriateEffectView()
-        contentView.addSubview(innerView)
+        clipView.wantsLayer = true
+        clipView.layer?.masksToBounds = true
+        clipView.addSubview(innerView)
+        contentView.addSubview(clipView)
     }
 
-    static func updateItemsAndLayout() {
+    static func updateItemsAndLayout(animated: Bool = false) {
         innerView.subviews.removeAll()
         let groups = Windows.groupedList
         guard !groups.isEmpty else { return }
@@ -27,20 +34,57 @@ class GroupedColumnsView {
         let columnWidth = max(columnMinWidth, estimateColumnWidth(groups))
         let maxRows = groups.map(\.windows.count).max() ?? 0
         let totalHeight = padding + headerHeight + CGFloat(maxRows) * rowHeight + padding
+
+        columnOffsets.removeAll()
+        columnWidths.removeAll()
+
         var x: CGFloat = padding
         for (groupIdx, group) in groups.enumerated() {
             if groupIdx > 0 {
                 addDivider(x: x, height: totalHeight)
                 x += dividerWidth
             }
+            columnOffsets.append(x)
+            columnWidths.append(columnWidth)
             addColumn(group, groupIdx: groupIdx, x: x, width: columnWidth, totalHeight: totalHeight)
             x += columnWidth
         }
         x += padding
-        let frameSize = NSSize(width: x, height: totalHeight)
-        innerView.frame = NSRect(origin: .zero, size: frameSize)
-        contentView.frame = NSRect(origin: .zero, size: frameSize)
+
+        let innerWidth = x
+        let innerSize = NSSize(width: innerWidth, height: totalHeight)
+        innerView.frame.size = innerSize
+
+        let screen = NSScreen.preferred
+        let maxViewWidth = screen.frame.width * Appearance.maxWidthOnScreen
+        let viewWidth = min(innerWidth, maxViewWidth)
+        let viewSize = NSSize(width: viewWidth, height: totalHeight)
+        clipView.frame = NSRect(origin: .zero, size: viewSize)
+        contentView.frame = NSRect(origin: .zero, size: viewSize)
         contentView.updateAppearance()
+
+        centerOnSelectedColumn(animated: animated)
+    }
+
+    private static func centerOnSelectedColumn(animated: Bool) {
+        guard selectedGroupIndex < columnOffsets.count else { return }
+        let colX = columnOffsets[selectedGroupIndex]
+        let colW = columnWidths[selectedGroupIndex]
+        let colCenter = colX + colW * 0.5
+        let viewWidth = clipView.frame.width
+        let innerWidth = innerView.frame.width
+        var targetX = colCenter - viewWidth * 0.5
+        targetX = max(0, min(targetX, innerWidth - viewWidth))
+        let newOrigin = NSPoint(x: -targetX, y: 0)
+        guard animated else {
+            innerView.frame.origin = newOrigin
+            return
+        }
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0.2
+            ctx.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            innerView.animator().frame.origin = newOrigin
+        }
     }
 
     private static func addDivider(x: CGFloat, height: CGFloat) {
@@ -134,7 +178,7 @@ class GroupedColumnsView {
         guard groups.count > 1 else { return }
         selectedGroupIndex = (selectedGroupIndex - 1 + groups.count) % groups.count
         selectedWindowIndex = min(selectedWindowIndex, groups[selectedGroupIndex].windows.count - 1)
-        updateItemsAndLayout()
+        updateItemsAndLayout(animated: true)
     }
 
     static func navigateRight() {
@@ -142,7 +186,7 @@ class GroupedColumnsView {
         guard groups.count > 1 else { return }
         selectedGroupIndex = (selectedGroupIndex + 1) % groups.count
         selectedWindowIndex = min(selectedWindowIndex, groups[selectedGroupIndex].windows.count - 1)
-        updateItemsAndLayout()
+        updateItemsAndLayout(animated: true)
     }
 
     static func resetSelection() {
