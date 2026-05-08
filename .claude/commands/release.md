@@ -75,11 +75,11 @@ gh release create vX.Y.Z --draft --title "Ztabby vX.Y.Z" --notes "$(cat <<'NOTES
 ---
 
 ### Installation
-Download the `.zip` file, extract, and drag Ztabby to Applications.
+Download the `.dmg` file, open it, and drag Ztabby to Applications.
 Grant Accessibility permission when prompted.
 
 ### Requirements
-- macOS 13+
+- macOS 13+ (Apple Silicon)
 NOTES
 )"
 ```
