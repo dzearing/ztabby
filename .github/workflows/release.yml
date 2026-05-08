@@ -16,6 +16,22 @@ jobs:
       - name: Extract version from tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
 
+      - name: Import signing certificate
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "$APPLE_CERTIFICATE" | base64 --decode > /tmp/certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+          security create-keychain -p "" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "" "$KEYCHAIN_PATH"
+          security import /tmp/certificate.p12 -P "$APPLE_CERTIFICATE_PASSWORD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -k "" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain-db
+          rm /tmp/certificate.p12
+
       - name: Install CocoaPods
         run: gem install cocoapods
 
@@ -30,17 +46,36 @@ jobs:
             -derivedDataPath DerivedData \
             build
 
-      - name: Package app
+      - name: Create DMG
         run: |
           APP_PATH="DerivedData/Build/Products/Release/Ztabby.app"
-          cd "$(dirname "$APP_PATH")"
-          zip -r -y "Ztabby-${{ env.VERSION }}.zip" "Ztabby.app"
-          echo "ZIP_PATH=$(dirname "$APP_PATH")/Ztabby-${{ env.VERSION }}.zip" >> $GITHUB_ENV
+          DMG_NAME="Ztabby_${{ env.VERSION }}_aarch64.dmg"
+          mkdir -p /tmp/dmg-contents
+          cp -R "$APP_PATH" /tmp/dmg-contents/
+          ln -s /Applications /tmp/dmg-contents/Applications
+          hdiutil create -volname "Ztabby" \
+            -srcfolder /tmp/dmg-contents \
+            -ov -format UDZO \
+            "DerivedData/Build/Products/Release/$DMG_NAME"
+
+      - name: Notarize DMG
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          DMG_PATH="DerivedData/Build/Products/Release/Ztabby_${{ env.VERSION }}_aarch64.dmg"
+          xcrun notarytool submit "$DMG_PATH" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait --timeout 15m
+          xcrun stapler staple "$DMG_PATH"
 
       - name: Upload to release
         uses: softprops/action-gh-release@v2
         with:
-          files: DerivedData/Build/Products/Release/Ztabby-${{ env.VERSION }}.zip
+          files: DerivedData/Build/Products/Release/Ztabby_${{ env.VERSION }}_aarch64.dmg
           tag_name: v${{ env.VERSION }}
           name: "Ztabby v${{ env.VERSION }}"
           draft: false
@@ -61,7 +96,7 @@ jobs:
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
       - name: Update homepage download link and version
         run: |
-          sed -i 's|releases/download/v[0-9.]*/Ztabby-[0-9.]*\.zip|releases/download/v${{ env.VERSION }}/Ztabby-${{ env.VERSION }}.zip|' docs/index.html
+          sed -i 's|releases/download/v[0-9.]*/Ztabby[_-][0-9.]*[^"]*|releases/download/v${{ env.VERSION }}/Ztabby_${{ env.VERSION }}_aarch64.dmg|' docs/index.html
           sed -i 's|v[0-9.]*[0-9] \&middot; macOS|v${{ env.VERSION }} \&middot; macOS|' docs/index.html
       - name: Commit and push
         run: |
