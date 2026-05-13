@@ -38,6 +38,10 @@ jobs:
       - name: Install Pods
         run: pod install
 
+      - name: Stamp version into Info.plist
+        run: |
+          sed -i '' "s/#VERSION#/${{ env.VERSION }}/g" Info.plist
+
       - name: Build release app
         run: |
           xcodebuild -workspace ztabby.xcworkspace \

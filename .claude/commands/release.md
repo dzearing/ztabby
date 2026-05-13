@@ -34,7 +34,11 @@ Present the notes and ask the user to approve or edit. Do NOT proceed until appr
 
 ### Step 3: Bump Version
 
-Update the version string in `package.json` — the `"version": "X.Y.Z"` field.
+Update the version in these files:
+- `package.json` — the `"version": "X.Y.Z"` field
+- `docs/index.html` — update the download link href to use the new version (`Ztabby_X.Y.Z_aarch64.dmg`) and the version note text (`vX.Y.Z`)
+
+Note: `Info.plist` uses `#VERSION#` placeholders that the release workflow stamps automatically at build time. Do NOT replace them locally.
 
 ### Step 4: Build & Test Locally
 
@@ -56,7 +60,7 @@ Ask the user to confirm it works before proceeding.
 ### Step 5: Commit, Tag, Push
 
 ```bash
-git add package.json
+git add package.json docs/index.html
 git commit -m "Bump version to X.Y.Z"
 git tag vX.Y.Z
 git push && git push --tags
