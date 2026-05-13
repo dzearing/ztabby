@@ -11,20 +11,6 @@ class KeyboardEventsTestable {
 
 @discardableResult
 func handleKeyboardEvent(_ globalId: Int?, _ shortcutState: ShortcutState?, _ keyCode: UInt32?, _ modifiers: NSEvent.ModifierFlags?, _ isARepeat: Bool, _ event: NSEvent? = nil) -> Bool {
-    if let event, event.type == .keyDown,
-       App.appIsBeingUsed, Preferences.windowGroupingEnabled, !Windows.groupedList.isEmpty, !App.groupedStickyMode {
-        if let holdShortcut = ControlsTab.shortcuts[Preferences.indexToName("holdShortcut", App.shortcutIndex)] {
-            let currentMods = cocoaToCarbonFlags(ModifierFlags.current).cleaned()
-            let holdMods = holdShortcut.shortcut.carbonModifierFlags.cleaned()
-            if currentMods != (currentMods | holdMods) {
-                App.groupedStickyMode = true
-            }
-        }
-    }
-    if let event, event.type == .keyDown, App.appIsBeingUsed, App.groupedStickyMode,
-       Preferences.windowGroupingEnabled, !Windows.groupedList.isEmpty {
-        if handleGroupedKeyDown(event) { return true }
-    }
     if let event, shouldAbsorbSearchEditingKeyDown(event) {
         switch TilesView.handleSearchEditingKeyDown(event) {
         case .handled: return true
@@ -53,22 +39,6 @@ private func logKeyboardEvent(_ globalId: Int?, _ shortcutState: ShortcutState?,
     }
 }
 
-private func handleGroupedKeyDown(_ event: NSEvent) -> Bool {
-    let keyCode = event.keyCode
-    if keyCode == UInt16(kVK_LeftArrow) { App.cycleSelection(.left); return true }
-    if keyCode == UInt16(kVK_RightArrow) { App.cycleSelection(.right); return true }
-    if keyCode == UInt16(kVK_UpArrow) { App.cycleSelection(.up); return true }
-    if keyCode == UInt16(kVK_DownArrow) { App.cycleSelection(.down); return true }
-    if keyCode == UInt16(kVK_Return) || keyCode == UInt16(kVK_ANSI_KeypadEnter) {
-        App.focusTarget()
-        return true
-    }
-    if keyCode == UInt16(kVK_Escape) {
-        App.hideUi()
-        return true
-    }
-    return false
-}
 
 private func shouldAbsorbSearchEditingKeyDown(_ event: NSEvent?) -> Bool {
     guard let event, event.type == .keyDown, App.appIsBeingUsed, TilesPanel.shared.isKeyWindow, TilesView.isSearchEditing else {

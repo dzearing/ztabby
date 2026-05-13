@@ -58,24 +58,7 @@ class KeyboardEvents {
 
     static func addEventHandlers() {
         addLocalMonitorForKeyDownAndKeyUp()
-        addGlobalMonitorForGroupedStickyMode()
         addCgEventTapForModifierFlags()
-    }
-
-    private static func addGlobalMonitorForGroupedStickyMode() {
-        NSEvent.addGlobalMonitorForEvents(matching: .keyDown) { event in
-            guard App.appIsBeingUsed, App.groupedStickyMode,
-                  Preferences.windowGroupingEnabled, !Windows.groupedList.isEmpty else { return }
-            let keyCode = event.keyCode
-            DispatchQueue.main.async {
-                if keyCode == UInt16(kVK_LeftArrow) { App.cycleSelection(.left) }
-                else if keyCode == UInt16(kVK_RightArrow) { App.cycleSelection(.right) }
-                else if keyCode == UInt16(kVK_UpArrow) { App.cycleSelection(.up) }
-                else if keyCode == UInt16(kVK_DownArrow) { App.cycleSelection(.down) }
-                else if keyCode == UInt16(kVK_Return) || keyCode == UInt16(kVK_ANSI_KeypadEnter) { App.focusTarget() }
-                else if keyCode == UInt16(kVK_Escape) { App.hideUi() }
-            }
-        }
     }
 
     private static func unregisterHotKeyIfNeeded(_ controlId: String, _ shortcut: Shortcut) {

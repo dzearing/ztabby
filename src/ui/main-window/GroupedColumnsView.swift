@@ -190,6 +190,19 @@ class GroupedColumnsView {
     }
 
     static func resetSelection() {
+        let groups = Windows.groupedList
+        guard let previousWindow = Windows.list.first(where: { $0.lastFocusOrder == 1 }) else {
+            selectedGroupIndex = 0
+            selectedWindowIndex = 0
+            return
+        }
+        for (gi, group) in groups.enumerated() {
+            if let wi = group.windows.firstIndex(where: { $0.id == previousWindow.id }) {
+                selectedGroupIndex = gi
+                selectedWindowIndex = wi
+                return
+            }
+        }
         selectedGroupIndex = 0
         selectedWindowIndex = 0
     }
