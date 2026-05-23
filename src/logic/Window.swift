@@ -26,6 +26,7 @@ class Window {
     var isFullscreen = false
     var isMinimized = false
     var isOnAllSpaces = false
+    var isBusy: Bool { title?.hasSuffix("(busy)") == true }
     var isWindowlessApp: Bool { get { cgWindowId == nil } }
     var position: CGPoint?
     var size: CGSize?

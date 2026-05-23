@@ -120,6 +120,17 @@ class GroupedColumnsView {
         iconView.image = iconForWindow(window)
         iconView.imageScaling = .scaleProportionallyUpOrDown
         row.addSubview(iconView)
+        if window.isBusy {
+            let busySize = iconSize + 4
+            let busyView = NSView(frame: NSRect(x: padding - 2, y: (rowHeight - busySize) / 2, width: busySize, height: busySize))
+            busyView.wantsLayer = true
+            busyView.layer?.masksToBounds = false
+            let busy = BusyIndicatorLayer()
+            busy.frame = CGRect(x: 0, y: 0, width: busySize, height: busySize)
+            busy.update(busy: true, size: busySize)
+            busyView.layer?.addSublayer(busy)
+            row.addSubview(busyView)
+        }
         let text = NSTextField(labelWithString: label)
         text.font = .systemFont(ofSize: 12)
         text.textColor = isSelected ? .white : .labelColor
