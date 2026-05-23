@@ -190,6 +190,7 @@ class TileView: FlippedView {
     private func updateAppIcon(_ element: Window, _ title: String) {
         let appIconSize = TileView.iconSize()
         appIcon.updateContents(.cgImage(element.icon), appIconSize)
+        appIcon.updateBusy(element.isBusy)
     }
 
     private func updateValues(_ element: Window, _ index: Int, _ newHeight: CGFloat) {
