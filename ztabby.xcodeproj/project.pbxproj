@@ -317,6 +317,14 @@
 		F00DCAFE0000000000001002 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000002 /* Search.swift */; };
 		F00DCAFE0000000000001003 /* SearchTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000003 /* SearchTestable.swift */; };
 		F00DCAFE0000000000001103 /* SearchTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000003 /* SearchTestable.swift */; };
+		LNCH100000000000000001 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000001 /* Launcher.swift */; };
+		LNCH100000000000000002 /* LauncherAppDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000002 /* LauncherAppDiscovery.swift */; };
+		LNCH100000000000000003 /* LauncherAppEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000003 /* LauncherAppEntry.swift */; };
+		LNCH100000000000000004 /* LauncherFrecency.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000004 /* LauncherFrecency.swift */; };
+		LNCH100000000000000005 /* LauncherSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000005 /* LauncherSearch.swift */; };
+		LNCH100000000000000006 /* LauncherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000006 /* LauncherView.swift */; };
+		LNCH100000000000000007 /* LauncherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000007 /* LauncherViewModel.swift */; };
+		LNCH100000000000000008 /* LauncherWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000008 /* LauncherWindow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -778,6 +786,14 @@
 		E20104DD2C3DE10E7CCC5B5A /* Pods-unit-tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-unit-tests.release.xcconfig"; path = "Target Support Files/Pods-unit-tests/Pods-unit-tests.release.xcconfig"; sourceTree = "<group>"; };
 		F00DCAFE0000000000000002 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		F00DCAFE0000000000000003 /* SearchTestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTestable.swift; sourceTree = "<group>"; };
+		LNCH000000000000000001 /* Launcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Launcher.swift; sourceTree = "<group>"; };
+		LNCH000000000000000002 /* LauncherAppDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherAppDiscovery.swift; sourceTree = "<group>"; };
+		LNCH000000000000000003 /* LauncherAppEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherAppEntry.swift; sourceTree = "<group>"; };
+		LNCH000000000000000004 /* LauncherFrecency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherFrecency.swift; sourceTree = "<group>"; };
+		LNCH000000000000000005 /* LauncherSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherSearch.swift; sourceTree = "<group>"; };
+		LNCH000000000000000006 /* LauncherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherView.swift; sourceTree = "<group>"; };
+		LNCH000000000000000007 /* LauncherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherViewModel.swift; sourceTree = "<group>"; };
+		LNCH000000000000000008 /* LauncherWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherWindow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1722,6 +1738,21 @@
 			path = fr.lproj;
 			sourceTree = "<group>";
 		};
+				LNCH000000000000000100 /* launcher */ = {
+			isa = PBXGroup;
+			children = (
+				LNCH000000000000000001 /* Launcher.swift */,
+				LNCH000000000000000002 /* LauncherAppDiscovery.swift */,
+				LNCH000000000000000003 /* LauncherAppEntry.swift */,
+				LNCH000000000000000004 /* LauncherFrecency.swift */,
+				LNCH000000000000000005 /* LauncherSearch.swift */,
+				LNCH000000000000000006 /* LauncherView.swift */,
+				LNCH000000000000000007 /* LauncherViewModel.swift */,
+				LNCH000000000000000008 /* LauncherWindow.swift */,
+			);
+			path = launcher;
+			sourceTree = "<group>";
+		};
 		D04BA6251F309645757C6000 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -1729,6 +1760,7 @@
 				D04BA70746DEEC3D30B43F81 /* main.swift */,
 				D04BA0D80B24E72B9B981A1D /* logic */,
 				D04BA229883E5D540D00232D /* ui */,
+				LNCH000000000000000100 /* launcher */,
 				BF0C827B752F58F79EDB6B6C /* experimentations */,
 			);
 			path = src;
@@ -2683,6 +2715,14 @@
 				BF0C8A5FA46C5E74A071FF4C /* ScrollwheelEvents.swift in Sources */,
 				BF0C82E9AB495AAAA182764A /* CursorEvents.swift in Sources */,
 				BF0C8F8F1B7A3C4D5E6F7082 /* ContextMenuEvents.swift in Sources */,
+				LNCH100000000000000001 /* Launcher.swift in Sources */,
+				LNCH100000000000000002 /* LauncherAppDiscovery.swift in Sources */,
+				LNCH100000000000000003 /* LauncherAppEntry.swift in Sources */,
+				LNCH100000000000000004 /* LauncherFrecency.swift in Sources */,
+				LNCH100000000000000005 /* LauncherSearch.swift in Sources */,
+				LNCH100000000000000006 /* LauncherView.swift in Sources */,
+				LNCH100000000000000007 /* LauncherViewModel.swift in Sources */,
+				LNCH100000000000000008 /* LauncherWindow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

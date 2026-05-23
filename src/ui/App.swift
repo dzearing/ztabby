@@ -360,6 +360,15 @@ class App: AppCenterApplication {
         Windows.refreshThumbnailsAsync(Windows.list, .refreshOnlyThumbnailsAfterShowUi)
     }
 
+    static func initializeLauncherIfNeeded() {
+        guard Preferences.launcherEnabled else { return }
+        if #available(macOS 26.0, *) {
+            let launcher = Launcher()
+            Launcher.shared = launcher
+            launcher.start()
+        }
+    }
+
     static func checkIfShortcutsShouldBeDisabled(_ activeWindow: Window?, _ activeApp: Application?) {
         let app = activeWindow?.application ?? activeApp!
         let shortcutsShouldBeDisabled = Preferences.exceptions.contains { exception in
@@ -409,6 +418,7 @@ class App: AppCenterApplication {
 //            App.showSettingsWindow()
         #endif
         UsageStats.prune()
+        initializeLauncherIfNeeded()
         Logger.info { "Finished launching Ztabby" }
     }
 }
