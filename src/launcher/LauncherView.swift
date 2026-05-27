@@ -7,7 +7,8 @@ struct LauncherView: View {
     var onDismiss: () -> Void
     var onLaunch: () -> Void
 
-    private let maxVisibleResults = 8
+    private let maxResults = 5
+    private let visibleRows = 3
 
     var body: some View {
         GlassEffectContainer {
@@ -20,13 +21,14 @@ struct LauncherView: View {
             }
         }
         .frame(width: 680)
+        .clipShape(RoundedRectangle(cornerRadius: 20))
         .glassEffect(.regular, in: .rect(cornerRadius: 20))
     }
 
     private var searchField: some View {
         SwiftUI.HStack(spacing: 12) {
             SwiftUI.Image(systemName: "magnifyingglass")
-                .font(.system(size: 22, weight: .light))
+                .font(.system(size: 20, weight: .medium))
                 .foregroundStyle(.secondary)
             ZStack(alignment: .leading) {
                 ghostTextOverlay
@@ -38,7 +40,7 @@ struct LauncherView: View {
                     onArrowDown: { viewModel.moveSelection(1) },
                     onTab: { viewModel.acceptCompletion() }
                 )
-                .font(.system(size: 28, weight: .light))
+                .font(.system(size: 24, weight: .regular))
             }
             if !viewModel.query.isEmpty {
                 SwiftUI.Button {
@@ -61,10 +63,10 @@ struct LauncherView: View {
         if let ghost = viewModel.ghostCompletion, !viewModel.query.isEmpty {
             SwiftUI.HStack(spacing: 0) {
                 SwiftUI.Text(viewModel.query)
-                    .font(.system(size: 28, weight: .light))
+                    .font(.system(size: 24, weight: .regular))
                     .foregroundStyle(.clear)
                 SwiftUI.Text(ghost)
-                    .font(.system(size: 28, weight: .light))
+                    .font(.system(size: 24, weight: .regular))
                     .foregroundStyle(.secondary.opacity(0.5))
                     .lineLimit(1)
             }
@@ -83,9 +85,9 @@ struct LauncherView: View {
     }
 
     private var resultsList: some View {
-        let visibleCount: Int = min(viewModel.results.count, maxVisibleResults)
+        let visibleCount: Int = min(viewModel.results.count, visibleRows)
         let listHeight: Double = Double(visibleCount) * 56.0 + 12.0
-        let entries: [LauncherAppEntry] = Array(viewModel.results.prefix(maxVisibleResults))
+        let entries: [LauncherAppEntry] = Array(viewModel.results.prefix(maxResults))
         let selected: Int = viewModel.selectedIndex
         return resultsScrollView(entries: entries, selected: selected, listHeight: listHeight)
     }
@@ -151,7 +153,11 @@ struct LauncherView: View {
         }
         .padding(.horizontal, 12)
         .frame(height: 56)
-        .glassEffect(isSelected ? .regular.tint(.accentColor) : .clear, in: .rect(cornerRadius: 10))
+        .background(
+            isSelected
+                ? RoundedRectangle(cornerRadius: 10).fill(.white.opacity(0.12))
+                : nil
+        )
     }
 }
 
@@ -170,7 +176,7 @@ struct LauncherTextField: NSViewRepresentable {
         field.isBordered = false
         field.drawsBackground = false
         field.focusRingType = .none
-        field.font = NSFont.systemFont(ofSize: 28, weight: .light)
+        field.font = NSFont.systemFont(ofSize: 24, weight: .regular)
         field.placeholderString = "Search apps\u{2026}"
         field.cell?.isScrollable = true
         field.cell?.wraps = false

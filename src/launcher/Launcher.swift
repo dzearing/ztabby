@@ -63,21 +63,28 @@ class Launcher {
         }
     }
 
+    private static let hotkeySignature: UInt32 = "zlch".utf16.reduce(0) { ($0 << 8) + UInt32($1) }
+    private static let hotkeyId: UInt32 = 1
+
     private func registerHotKey() {
-        let signature: UInt32 = "zlch".utf16.reduce(0) { ($0 << 8) + UInt32($1) }
-        let hotkeyId = EventHotKeyID(signature: signature, id: 1)
+        let id = EventHotKeyID(signature: Self.hotkeySignature, id: Self.hotkeyId)
         let target = GetEventDispatcherTarget()
         var eventTypes = [EventTypeSpec(eventClass: UInt32(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))]
         InstallEventHandler(target, { (_, event, userData) -> OSStatus in
-            guard let userData else { return noErr }
+            guard let event, let userData else { return OSStatus(eventNotHandledErr) }
+            var eventId = EventHotKeyID()
+            let status = GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &eventId)
+            guard status == noErr, eventId.signature == Launcher.hotkeySignature, eventId.id == Launcher.hotkeyId else {
+                return OSStatus(eventNotHandledErr)
+            }
             let launcher = Unmanaged<Launcher>.fromOpaque(userData).takeUnretainedValue()
             DispatchQueue.main.async { launcher.toggle() }
             return noErr
         }, eventTypes.count, &eventTypes, Unmanaged.passUnretained(self).toOpaque(), &pressedHandler)
         RegisterEventHotKey(
             UInt32(kVK_Space),
-            UInt32(cmdKey),
-            hotkeyId,
+            UInt32(controlKey),
+            id,
             target,
             0,
             &hotKeyRef

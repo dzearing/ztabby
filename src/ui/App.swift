@@ -361,11 +361,15 @@ class App: AppCenterApplication {
     }
 
     static func initializeLauncherIfNeeded() {
-        guard Preferences.launcherEnabled else { return }
+        let enabled = Preferences.launcherEnabled
+        try? "pref=\(enabled)\n".write(toFile: "/tmp/ztabby-launcher.log", atomically: true, encoding: .utf8)
+        guard enabled else { return }
         if #available(macOS 26.0, *) {
+            try? "creating\n".write(toFile: "/tmp/ztabby-launcher-init.log", atomically: true, encoding: .utf8)
             let launcher = Launcher()
             Launcher.shared = launcher
             launcher.start()
+            try? "started\n".write(toFile: "/tmp/ztabby-launcher-started.log", atomically: true, encoding: .utf8)
         }
     }
 
