@@ -12,6 +12,8 @@ jobs:
     runs-on: macos-26
     permissions:
       contents: write
+    outputs:
+      ed_signature: ${{ steps.sparkle_sign.outputs.ed_signature }}
     steps:
       - uses: actions/checkout@v5
 
@@ -84,6 +86,17 @@ jobs:
             --wait --timeout 15m
           xcrun stapler staple "$DMG_PATH"
 
+      # Sign AFTER stapling — stapling modifies the DMG, which would invalidate
+      # a signature computed earlier.
+      - name: Sign DMG for Sparkle
+        id: sparkle_sign
+        env:
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+        run: |
+          DMG_PATH="DerivedData/Build/Products/Release/Ztabby_${{ env.VERSION }}_aarch64.dmg"
+          SIGNATURE=$(Pods/Sparkle/bin/sign_update -s "$SPARKLE_ED_PRIVATE_KEY" "$DMG_PATH")
+          echo "ed_signature=$SIGNATURE" >> "$GITHUB_OUTPUT"
+
       # The release skill creates a draft release with hand-written notes before
       # pushing the tag. Upload the DMG to that draft and publish it. If no draft
       # exists (e.g. tag pushed manually), create one with auto-generated notes.
@@ -98,7 +111,7 @@ jobs:
           gh release upload "v${{ env.VERSION }}" "$DMG_PATH" --clobber
           gh release edit "v${{ env.VERSION }}" --draft=false --latest
 
-  update-homepage:
+  update-website:
     needs: build-macos
     runs-on: ubuntu-latest
     permissions:
@@ -113,10 +126,14 @@ jobs:
         run: |
           sed -i 's|releases/download/v[0-9.]*/Ztabby[_-][0-9.]*[^"]*|releases/download/v${{ env.VERSION }}/Ztabby_${{ env.VERSION }}_aarch64.dmg|' docs/index.html
           sed -i 's|v[0-9.]*[0-9] \&middot; macOS|v${{ env.VERSION }} \&middot; macOS|' docs/index.html
+      - name: Add release to Sparkle appcast
+        env:
+          ED_SIGNATURE_AND_LENGTH: ${{ needs.build-macos.outputs.ed_signature }}
+        run: scripts/update_appcast.sh
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html
-          git diff --cached --quiet || git commit -m "Update homepage to v${{ env.VERSION }}"
+          git add docs/index.html docs/appcast.xml
+          git diff --cached --quiet || git commit -m "Update website to v${{ env.VERSION }}"
           git push

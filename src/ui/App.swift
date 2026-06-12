@@ -13,7 +13,7 @@ class App: AppCenterApplication {
     static let name = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String
     static let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
     static let licence = Bundle.main.object(forInfoDictionaryKey: "NSHumanReadableCopyright") as! String
-    static let repository = "https://github.com/lwouis/ztabby"
+    static let repository = "https://github.com/dzearing/ztabby"
     static let website = "https://ztabby.app"
     static let appIcon = CGImage.named("app.icns")
     override class var shared: App { super.shared as! App }

@@ -94,7 +94,9 @@ class PreferencesEvents {
             try FileManager.default.createDirectory(at: launchAgentsPath, withIntermediateDirectories: false)
             Logger.debug { launchAgentsPath.absoluteString + " created" }
         }
-        launchAgentsPath.appendPathComponent("com.lwouis.ztabby.plist", isDirectory: false)
+        let legacyAgentPath = launchAgentsPath.appendingPathComponent("com.lwouis.ztabby.plist", isDirectory: false)
+        try? FileManager.default.removeItem(at: legacyAgentPath)
+        launchAgentsPath.appendPathComponent("com.dzearing.ztabby.plist", isDirectory: false)
         if enabled {
             let data = try PropertyListSerialization.data(fromPropertyList: launchAgentPlist, format: .xml, options: 0)
             try data.write(to: launchAgentsPath, options: [.atomic])
