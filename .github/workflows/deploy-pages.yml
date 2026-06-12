@@ -1,15 +1,14 @@
 name: Deploy to GitHub Pages
 
+# The Release workflow's update-homepage job commits to docs/ on main,
+# which triggers this deploy — no workflow_run trigger needed (it would
+# also fire on failed releases).
 on:
   push:
     branches:
       - main
     paths:
       - 'docs/**'
-  workflow_run:
-    workflows: ["Release"]
-    types:
-      - completed
 
 permissions:
   contents: read

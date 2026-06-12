@@ -2,9 +2,17 @@
 
 Follow these steps exactly to release a new version of Ztabby.
 
+How the pipeline works: you bump the version, create a DRAFT GitHub release containing the release notes, then push the tag. The tag push triggers `.github/workflows/release.yml`, which builds a signed Release app on a macos-26 runner, notarizes a DMG, uploads it to your draft, publishes the release, and updates `docs/index.html` (homepage version + download link) on main — which in turn triggers the GitHub Pages deploy. Do NOT edit `docs/index.html` manually; the workflow owns it.
+
 ### Step 1: Analyze Changes
 
-Run `git log $(git describe --tags --abbrev=0)..HEAD --oneline` to see all commits since the last release. If no tags exist, use `git log --oneline -20`.
+The current released version is in `package.json`. List commits since its tag:
+
+```bash
+git log "v$(node -p "require('./package.json').version")"..HEAD --oneline
+```
+
+(Do not use `git describe` — this repo carries hundreds of inherited upstream AltTab tags like `v6.x`/`v10.x` that don't belong to Ztabby's versioning.)
 
 Categorize changes into: new features, improvements, bug fixes.
 
@@ -34,15 +42,13 @@ Present the notes and ask the user to approve or edit. Do NOT proceed until appr
 
 ### Step 3: Bump Version
 
-Update the version in these files:
-- `package.json` — the `"version": "X.Y.Z"` field
-- `docs/index.html` — update the download link href to use the new version (`Ztabby_X.Y.Z_aarch64.dmg`) and the version note text (`vX.Y.Z`)
-
-Note: `Info.plist` uses `#VERSION#` placeholders that the release workflow stamps automatically at build time. Do NOT replace them locally.
+Update the `"version": "X.Y.Z"` field in `package.json`. That is the ONLY file to touch:
+- `Info.plist` uses `#VERSION#` placeholders that the release workflow stamps at build time. Do NOT replace them locally.
+- `docs/index.html` is updated by the workflow's `update-homepage` job after the release is published. Do NOT edit it here — editing it before the DMG exists publishes a dead download link.
 
 ### Step 4: Build & Test Locally
 
-Build the debug configuration to validate:
+Build the debug configuration to validate. If `xcode-select -p` points at CommandLineTools, prefix the command with `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`.
 
 ```bash
 xcodebuild -workspace ztabby.xcworkspace -scheme Debug -configuration Debug -derivedDataPath DerivedData build 2>&1 | grep -E "BUILD|error:" | head -10
@@ -57,18 +63,20 @@ pkill -f Ztabby; sleep 1 && open DerivedData/Build/Products/Debug/Ztabby-Debug.a
 
 Ask the user to confirm it works before proceeding.
 
-### Step 5: Commit, Tag, Push
+### Step 5: Commit and Push the Version Bump
 
 ```bash
-git add package.json docs/index.html
+git add package.json
 git commit -m "Bump version to X.Y.Z"
 git tag vX.Y.Z
-git push && git push --tags
+git push
 ```
 
-### Step 6: Create GitHub Release
+Do NOT push the tag yet — the draft release with notes must exist first, so the workflow can attach the DMG to it instead of creating a notes-less release.
 
-Create a draft GitHub release with the friendly notes and installation instructions:
+### Step 6: Create Draft Release, Then Push the Tag
+
+Create the draft with the approved notes:
 
 ```bash
 gh release create vX.Y.Z --draft --title "Ztabby vX.Y.Z" --notes "$(cat <<'NOTES'
@@ -88,10 +96,17 @@ NOTES
 )"
 ```
 
-### Step 7: Report
+Then trigger the release build:
 
-Show a summary:
-- Version released
-- Release notes
-- Link to the GitHub Actions run (find it via `gh run list --workflow=release.yml --limit=1`)
-- Link to the draft release
+```bash
+git push --tags
+```
+
+### Step 7: Watch the Workflow and Report
+
+Find the run with `gh run list --workflow=release.yml --limit=1` and watch it with `gh run watch <run-id>` (it builds, signs, notarizes — expect ~10-15 minutes). If it fails, fetch the error with `gh run view <run-id> --log-failed` and report it.
+
+On success, verify and report:
+- `gh release view vX.Y.Z` shows the release is published (not draft) with the DMG attached
+- `git pull` shows the `update-homepage` commit, and `docs/index.html` references vX.Y.Z
+- Show the version, the release notes, the release URL, and the Actions run URL
