@@ -79,7 +79,7 @@ Do NOT push the tag yet — the draft release with notes must exist first, so th
 Create the draft with the approved notes:
 
 ```bash
-gh release create vX.Y.Z --draft --title "Ztabby vX.Y.Z" --notes "$(cat <<'NOTES'
+gh release create vX.Y.Z --draft --target main --title "Ztabby vX.Y.Z" --notes "$(cat <<'NOTES'
 ## What's new in Ztabby vX.Y.Z
 
 {the approved release notes from step 2}
