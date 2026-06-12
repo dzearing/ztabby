@@ -5,5 +5,17 @@
     <link>https://dzearing.github.io/ztabby/appcast.xml</link>
     <description>Ztabby updates</description>
     <language>en</language>
+    <item>
+      <title>Version 0.3.1</title>
+      <pubDate>Fri, 12 Jun 2026 18:29:16 +0000</pubDate>
+      <sparkle:minimumSystemVersion>10.12</sparkle:minimumSystemVersion>
+      <sparkle:releaseNotesLink>https://github.com/dzearing/ztabby/releases/tag/v0.3.1</sparkle:releaseNotesLink>
+      <enclosure
+        url="https://github.com/dzearing/ztabby/releases/download/v0.3.1/Ztabby_0.3.1_aarch64.dmg"
+        sparkle:version="0.3.1"
+        sparkle:shortVersionString="0.3.1"
+        sparkle:edSignature="m+KvbLrxVP948JWeF4DHqvAcpAVUJlUA04KjvcCas16i/3Xnn2IE6E2W5tPMaHe71F6KiG/0rz3slvzEmIfUBw==" length="14293731"
+        type="application/octet-stream"/>
+    </item>
   </channel>
 </rss>
