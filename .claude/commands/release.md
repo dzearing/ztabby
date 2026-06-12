@@ -2,7 +2,7 @@
 
 Follow these steps exactly to release a new version of Ztabby.
 
-How the pipeline works: you bump the version, create a DRAFT GitHub release containing the release notes, then push the tag. The tag push triggers `.github/workflows/release.yml`, which builds a signed Release app on a macos-26 runner, notarizes a DMG, uploads it to your draft, publishes the release, and updates `docs/index.html` (homepage version + download link) on main — which in turn triggers the GitHub Pages deploy. Do NOT edit `docs/index.html` manually; the workflow owns it.
+How the pipeline works: you bump the version, create a DRAFT GitHub release containing the release notes, then push the tag. The tag push triggers `.github/workflows/release.yml`, which builds a signed Release app on a macos-26 runner, notarizes a DMG, Sparkle-signs it (SPARKLE_ED_PRIVATE_KEY secret; keypair also in the login Keychain as "Private key for signing Sparkle updates"), uploads it to your draft, publishes the release, and updates `docs/index.html` (homepage version + download link) and `docs/appcast.xml` (Sparkle auto-update feed) on main — which triggers the GitHub Pages deploy. Do NOT edit `docs/index.html` or `docs/appcast.xml` manually; the workflow owns them.
 
 ### Step 1: Analyze Changes
 
