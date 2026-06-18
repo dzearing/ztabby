@@ -24,6 +24,8 @@ class Launcher {
         }
         registerHotKey()
         frecency.prune()
+        let registered = hotKeyRef != nil
+        Logger.info { "Launcher started; ⌥Space hotkey registered:\(registered)" }
     }
 
     func toggle() {
@@ -83,7 +85,7 @@ class Launcher {
         }, eventTypes.count, &eventTypes, Unmanaged.passUnretained(self).toOpaque(), &pressedHandler)
         RegisterEventHotKey(
             UInt32(kVK_Space),
-            UInt32(controlKey),
+            UInt32(optionKey),
             id,
             target,
             0,

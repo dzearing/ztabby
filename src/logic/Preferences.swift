@@ -52,7 +52,7 @@ class Preferences {
             "trackpadHapticFeedbackEnabled": "true",
             "settingsWindowShownOnFirstLaunch": "false",
             "windowGroupingEnabled": "false",
-            "launcherEnabled": "false",
+            "launcherEnabled": "true",
         ]
         (0..<maxShortcutCount).forEach { index in
             values[indexToName("holdShortcut", index)] = defaultShortcut("⌥")
