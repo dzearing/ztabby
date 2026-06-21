@@ -6,6 +6,18 @@
     <description>Ztabby updates</description>
     <language>en</language>
     <item>
+      <title>Version 0.3.2</title>
+      <pubDate>Sun, 21 Jun 2026 14:41:54 +0000</pubDate>
+      <sparkle:minimumSystemVersion>10.12</sparkle:minimumSystemVersion>
+      <sparkle:releaseNotesLink>https://github.com/dzearing/ztabby/releases/tag/v0.3.2</sparkle:releaseNotesLink>
+      <enclosure
+        url="https://github.com/dzearing/ztabby/releases/download/v0.3.2/Ztabby_0.3.2_aarch64.dmg"
+        sparkle:version="0.3.2"
+        sparkle:shortVersionString="0.3.2"
+        sparkle:edSignature="1su+Ovt1Hgzs+K4I479dzxORcC+LrPeDOrUQhoZNLpvU8TYFWbvhrIba31IvjwFYcwRxoRMHXVKKxRsLUFXHBw==" length="14292983"
+        type="application/octet-stream"/>
+    </item>
+    <item>
       <title>Version 0.3.1</title>
       <pubDate>Fri, 12 Jun 2026 18:29:16 +0000</pubDate>
       <sparkle:minimumSystemVersion>10.12</sparkle:minimumSystemVersion>
