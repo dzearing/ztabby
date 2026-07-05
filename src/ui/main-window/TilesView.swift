@@ -113,7 +113,7 @@ class TilesView {
     static func handleSearchEditingKeyDown(_ event: NSEvent) -> SearchKeyResult {
         if hasMarkedText() || ContextMenuEvents.isMenuOpen { return .passToField }
         let keyCode = event.keyCode
-        if Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty {
+        if Windows.usesGroupedView {
             if keyCode == UInt16(kVK_LeftArrow) { GroupedColumnsView.navigateLeft(); return .handled }
             if keyCode == UInt16(kVK_RightArrow) { GroupedColumnsView.navigateRight(); return .handled }
             if keyCode == UInt16(kVK_UpArrow) { GroupedColumnsView.navigateUp(); return .handled }

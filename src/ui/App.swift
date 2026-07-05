@@ -136,7 +136,7 @@ class App: AppCenterApplication {
 
     static func focusTarget() {
         guard appIsBeingUsed else { return }
-        let selectedWindow = (Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty)
+        let selectedWindow = Windows.usesGroupedView
             ? GroupedColumnsView.selectedWindow()
             : Windows.selectedWindow()
         Logger.info { selectedWindow?.debugId }
@@ -241,7 +241,7 @@ class App: AppCenterApplication {
     static func cycleSelection(_ direction: Direction, allowWrap: Bool = true) {
         (TilesView.scrollView?.documentView as? TilesDocumentView)?.cancelDraggingTimer()
         CursorEvents.resetDeadzone()
-        if Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty {
+        if Windows.usesGroupedView {
             switch direction {
             case .up: GroupedColumnsView.navigateUp()
             case .down: GroupedColumnsView.navigateDown()

@@ -6,6 +6,12 @@ struct WindowGroup {
     let displayLabels: [String]
 }
 
+/// One card per machine; `columns` is the existing title-prefix grouping applied within that machine.
+struct MachineCard {
+    let name: String
+    let columns: [WindowGroup]
+}
+
 class WindowGrouper {
     static func group(_ windows: [Window]) -> [WindowGroup] {
         var grouped = [(name: String, entries: [(window: Window, label: String)])]()
@@ -40,4 +46,28 @@ class WindowGrouper {
     private static func bestFocus(_ entries: [(window: Window, label: String)]) -> Int {
         entries.map(\.window.lastFocusOrder).min() ?? Int.max
     }
+
+    private static func bestFocus(_ windows: [Window]) -> Int {
+        windows.map(\.lastFocusOrder).min() ?? Int.max
+    }
+
+    /// Groups windows into one card per machine, keyed on the Ghoztty `AXGhosttyMachine` attribute.
+    /// Non-Ghoztty windows are treated as running on the local machine ("Local"). Within each machine
+    /// card we reuse the existing title-prefix grouping, so headers are preserved per machine.
+    /// Returns nil unless the Ghoztty windows span at least two distinct machines, so this only
+    /// activates when there is genuinely more than one machine to disambiguate.
+    static func machineGroups(_ windows: [Window]) -> [MachineCard]? {
+        guard Set(windows.compactMap(\.ghosttyMachine)).count >= 2 else { return nil }
+        var order = [String]()
+        var byMachine = [String: [Window]]()
+        for window in windows {
+            let machine = window.ghosttyMachine ?? localMachineName
+            if byMachine[machine] == nil { order.append(machine) }
+            byMachine[machine, default: []].append(window)
+        }
+        let sorted = order.sorted { bestFocus(byMachine[$0]!) < bestFocus(byMachine[$1]!) }
+        return sorted.map { MachineCard(name: $0, columns: group(byMachine[$0]!)) }
+    }
+
+    static let localMachineName = "Local"
 }

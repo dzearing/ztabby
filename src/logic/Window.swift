@@ -21,6 +21,8 @@ class Window {
     var shouldShowTheUser = true
     var isTabbed: Bool = false
     var tabbedSiblingWids: [CGWindowID]?
+    /// for Ghoztty terminal windows: the machine the terminal runs on ("Local", or a remote display name); nil otherwise
+    var ghosttyMachine: String?
     var isHidden: Bool { get { application.isHidden } }
     var dockLabel: String? { get { application.dockLabel } }
     var isFullscreen = false

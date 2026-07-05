@@ -88,7 +88,7 @@ class AccessibilityEvents {
         let level = wid.level()
         // if we query .children on ourselves, AppKit calls layout directly from our thread instead of IPC; we avoid this
         let isSelf = pid == ProcessInfo.processInfo.processIdentifier
-        let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute] + (isSelf ? [] : [kAXChildrenAttribute])
+        let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute] + (isSelf ? [] : [kAXChildrenAttribute, kAXGhosttyMachineAttribute])
         let a = try element.attributes(keys)
         let tabSiblingTitles = isSelf ? nil : TabGroup.extractTabTitles(a.children)
         DispatchQueue.main.async {
@@ -104,6 +104,7 @@ class AccessibilityEvents {
                     return
                 }
                 Logger.debug { "\(type) win:\(window.debugId)" }
+                window.ghosttyMachine = a.ghosttyMachine
                 var tabStateChanged = false
                 if tabSiblingTitles != nil || window.tabbedSiblingWids != nil {
                     tabStateChanged = TabGroup.updateState(window, tabSiblingTitles)
