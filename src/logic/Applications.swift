@@ -51,7 +51,7 @@ class Applications {
                 // so we retry until timeout, in those rare cases (e.g. Bear.app)
                 // we only do this for regular, active app, to avoid wasting CPU, with the trade-off of maybe missing some windows
                 if app.runningApplication.isActive && app.runningApplication.activationPolicy == .regular {
-                    throw AxError.runtimeError
+                    throw AxError.deliberateRetry
                 }
                 return
             }

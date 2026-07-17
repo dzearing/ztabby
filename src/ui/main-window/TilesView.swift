@@ -532,11 +532,31 @@ class TilesView {
         let isEmpty = maxX == 0
         noWindowLabel.isHidden = !isEmpty
         if isEmpty {
+            noWindowLabel.stringValue = emptyStateMessage()
             noWindowLabel.sizeToFit()
             let labelX = originX + (TilesView.thumbnailsWidth - noWindowLabel.frame.width) * 0.5
             let labelY = scrollView.frame.origin.y + (scrollView.frame.height - noWindowLabel.frame.height) * 0.5
             noWindowLabel.frame.origin = CGPoint(x: labelX, y: labelY)
         }
+    }
+
+    /// explain why the switcher is empty: in active-app mode, distinguish "the app has no windows"
+    /// from "the app is not answering accessibility calls, so we can't see its windows"
+    private static func emptyStateMessage() -> String {
+        if !isSearchModeOn,
+           Preferences.appsToShow[App.shortcutIndex] == .active,
+           let pid = Applications.frontmostPid,
+           let appName = (Applications.list.first { $0.pid == pid })?.localizedName {
+            let message: String
+            if AXCallScheduler.shared.isUnresponsive(pid) {
+                message = String(format: NSLocalizedString("%@ is not responding", comment: ""), appName)
+            } else {
+                message = String(format: NSLocalizedString("No windows for %@", comment: ""), appName)
+            }
+            Logger.debug { "empty switcher: \(message) (pid:\(pid))" }
+            return message
+        }
+        return NSLocalizedString("No Window", comment: "")
     }
 
     private static func searchBarHeight() -> CGFloat {

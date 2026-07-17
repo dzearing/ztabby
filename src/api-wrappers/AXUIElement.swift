@@ -223,6 +223,9 @@ typealias AXUIElementID = UInt64
 
 enum AxError: Error {
     case runtimeError
+    /// thrown to make AXCallScheduler retry a call even though the target app responded;
+    /// the app is not blamed as unresponsive (e.g. polling an active app until its first window appears)
+    case deliberateRetry
 }
 
 struct AXAttributes {
