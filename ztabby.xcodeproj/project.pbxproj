@@ -326,6 +326,9 @@
 		LNCH100000000000000006 /* LauncherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000006 /* LauncherView.swift */; };
 		LNCH100000000000000007 /* LauncherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000007 /* LauncherViewModel.swift */; };
 		LNCH100000000000000008 /* LauncherWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000008 /* LauncherWindow.swift */; };
+		LNCH100000000000000009 /* LauncherResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000009 /* LauncherResult.swift */; };
+		LNCH100000000000000010 /* LauncherPathSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000010 /* LauncherPathSearch.swift */; };
+		LNCH100000000000000011 /* LauncherURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000011 /* LauncherURL.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -796,6 +799,9 @@
 		LNCH000000000000000006 /* LauncherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherView.swift; sourceTree = "<group>"; };
 		LNCH000000000000000007 /* LauncherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherViewModel.swift; sourceTree = "<group>"; };
 		LNCH000000000000000008 /* LauncherWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherWindow.swift; sourceTree = "<group>"; };
+		LNCH000000000000000009 /* LauncherResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherResult.swift; sourceTree = "<group>"; };
+		LNCH000000000000000010 /* LauncherPathSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherPathSearch.swift; sourceTree = "<group>"; };
+		LNCH000000000000000011 /* LauncherURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherURL.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1752,6 +1758,9 @@
 				LNCH000000000000000006 /* LauncherView.swift */,
 				LNCH000000000000000007 /* LauncherViewModel.swift */,
 				LNCH000000000000000008 /* LauncherWindow.swift */,
+				LNCH000000000000000009 /* LauncherResult.swift */,
+				LNCH000000000000000010 /* LauncherPathSearch.swift */,
+				LNCH000000000000000011 /* LauncherURL.swift */,
 			);
 			path = launcher;
 			sourceTree = "<group>";
@@ -2727,6 +2736,9 @@
 				LNCH100000000000000006 /* LauncherView.swift in Sources */,
 				LNCH100000000000000007 /* LauncherViewModel.swift in Sources */,
 				LNCH100000000000000008 /* LauncherWindow.swift in Sources */,
+				LNCH100000000000000009 /* LauncherResult.swift in Sources */,
+				LNCH100000000000000010 /* LauncherPathSearch.swift in Sources */,
+				LNCH100000000000000011 /* LauncherURL.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

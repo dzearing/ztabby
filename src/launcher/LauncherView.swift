@@ -87,12 +87,12 @@ struct LauncherView: View {
     private var resultsList: some View {
         let visibleCount: Int = min(viewModel.results.count, visibleRows)
         let listHeight: Double = Double(visibleCount) * 56.0 + 12.0
-        let entries: [LauncherAppEntry] = Array(viewModel.results.prefix(maxResults))
+        let entries: [LauncherResult] = Array(viewModel.results.prefix(maxResults))
         let selected: Int = viewModel.selectedIndex
         return resultsScrollView(entries: entries, selected: selected, listHeight: listHeight)
     }
 
-    private func resultsScrollView(entries: [LauncherAppEntry], selected: Int, listHeight: Double) -> some View {
+    private func resultsScrollView(entries: [LauncherResult], selected: Int, listHeight: Double) -> some View {
         SwiftUI.ScrollViewReader { proxy in
             SwiftUI.ScrollView(.vertical) {
                 resultsVStack(entries: entries, selected: selected)
@@ -107,7 +107,7 @@ struct LauncherView: View {
         }
     }
 
-    private func resultsVStack(entries: [LauncherAppEntry], selected: Int) -> some View {
+    private func resultsVStack(entries: [LauncherResult], selected: Int) -> some View {
         LazyVStack(spacing: 2) {
             ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
                 resultRow(entry, isSelected: index == selected)
@@ -123,7 +123,7 @@ struct LauncherView: View {
     }
 
     @ViewBuilder
-    private func resultRow(_ entry: LauncherAppEntry, isSelected: Bool) -> some View {
+    private func resultRow(_ entry: LauncherResult, isSelected: Bool) -> some View {
         SwiftUI.HStack(spacing: 12) {
             if let icon = entry.icon {
                 SwiftUI.Image(nsImage: icon)
@@ -136,13 +136,14 @@ struct LauncherView: View {
                     .frame(width: 40, height: 40)
             }
             SwiftUI.VStack(alignment: .leading, spacing: 2) {
-                SwiftUI.Text(entry.name)
+                SwiftUI.Text(entry.title)
                     .font(.system(size: 15, weight: isSelected ? .medium : .regular))
                     .lineLimit(1)
-                SwiftUI.Text(entry.kind.rawValue)
+                SwiftUI.Text(entry.subtitle)
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .truncationMode(.middle)
             }
             SwiftUI.Spacer()
             if isSelected {
@@ -203,6 +204,15 @@ struct LauncherTextField: NSViewRepresentable {
             guard let field = obj.object as? NSTextField else { return }
             parent.text = field.stringValue
         }
+        // Tab is swallowed by the field editor's key-view loop and never reaches
+        // performKeyEquivalent, so intercept it (and Shift-Tab) here instead.
+        func control(_ control: NSControl, textView: NSTextView, doCommandBy selector: Selector) -> Bool {
+            switch selector {
+            case #selector(NSResponder.insertTab(_:)): parent.onTab(); return true
+            case #selector(NSResponder.insertBacktab(_:)): parent.onArrowUp(); return true
+            default: return false
+            }
+        }
     }
 }
 
@@ -220,7 +230,6 @@ class LauncherNSTextField: NSTextField {
         case 36, 76: onReturn?(); return true
         case 126: onArrowUp?(); return true
         case 125: onArrowDown?(); return true
-        case 48: onTab?(); return true
         default: return super.performKeyEquivalent(with: event)
         }
     }

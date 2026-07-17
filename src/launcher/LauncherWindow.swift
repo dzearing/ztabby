@@ -7,8 +7,14 @@ class LauncherWindow: NSPanel {
     override var canBecomeMain: Bool { false }
     private var onDismissCallback: (() -> Void)?
     private let cornerRadius: CGFloat = 20
+    private let width: CGFloat = 680
     private var showTime: Date = .distantPast
-    private var hasBeenDragged = false
+    private var isAdjustingFrame = false
+    private var userCenterOffset: CGSize?
+    // Pinned top edge: the field stays put here while results grow/shrink downward.
+    private var contentTopY: CGFloat?
+    private static let offsetXKey = "LauncherWindow.centerOffsetX"
+    private static let offsetYKey = "LauncherWindow.centerOffsetY"
 
     convenience init(viewModel: LauncherViewModel, onDismiss: @escaping () -> Void, onLaunch: @escaping () -> Void) {
         self.init(contentRect: .zero, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
@@ -32,21 +38,17 @@ class LauncherWindow: NSPanel {
         contentView?.layer?.cornerRadius = cornerRadius
         contentView?.layer?.masksToBounds = true
         contentView?.layer?.backgroundColor = .clear
-        setFrameAutosaveName("LauncherWindow")
         setAccessibilityLabel("App Launcher")
         setAccessibilitySubrole(.unknown)
+        loadUserOffset()
     }
 
     func showCentered() {
-        let width: CGFloat = 680
-        hasBeenDragged = setFrameUsingName(frameAutosaveName)
-        if !hasBeenDragged {
-            guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
-            let visible = screen.visibleFrame
-            let x = visible.midX - width / 2
-            let y = visible.midY + visible.height * 0.12
-            setFrame(NSRect(x: x, y: y, width: width, height: 80), display: false)
-        }
+        guard let screen = NSScreen.main ?? NSScreen.screens.first else { return }
+        let center = targetCenter(on: screen)
+        let height: CGFloat = 80
+        contentTopY = nil
+        setFrameInternally(NSRect(x: center.x - width / 2, y: center.y - height / 2, width: width, height: height), display: false)
         showTime = Date()
         makeKeyAndOrderFront(nil)
         DispatchQueue.main.async { self.updateSize() }
@@ -56,10 +58,39 @@ class LauncherWindow: NSPanel {
         guard let hostingView = contentView, isVisible else { return }
         let size = hostingView.fittingSize
         guard size.height > 0 else { return }
-        let topY = frame.maxY
-        let centerX = frame.midX
-        let x = centerX - size.width / 2
-        setFrame(NSRect(x: x, y: topY - size.height, width: size.width, height: size.height), display: true)
+        // First layout centers this height around the open center, then pins the top so
+        // the field stays put and later result changes only grow/shrink the bottom.
+        let top = contentTopY ?? (frame.midY + size.height / 2)
+        contentTopY = top
+        let rect = NSRect(x: frame.midX - size.width / 2, y: top - size.height, width: size.width, height: size.height)
+        guard rect != frame else { return }
+        setFrameInternally(rect, display: true)
+    }
+
+    // Center point the window opens at: screen center, plus any persisted user drag offset.
+    private func targetCenter(on screen: NSScreen) -> CGPoint {
+        let visible = screen.visibleFrame
+        let offset = userCenterOffset ?? .zero
+        return CGPoint(x: visible.midX + offset.width, y: visible.midY + offset.height)
+    }
+
+    // Frame changes we make ourselves must not be mistaken for user drags.
+    private func setFrameInternally(_ rect: NSRect, display: Bool) {
+        isAdjustingFrame = true
+        setFrame(rect, display: display)
+        isAdjustingFrame = false
+    }
+
+    private func loadUserOffset() {
+        let defaults = UserDefaults.standard
+        guard defaults.object(forKey: Self.offsetXKey) != nil else { return }
+        userCenterOffset = CGSize(width: defaults.double(forKey: Self.offsetXKey), height: defaults.double(forKey: Self.offsetYKey))
+    }
+
+    private func persistUserOffset(_ offset: CGSize) {
+        userCenterOffset = offset
+        UserDefaults.standard.set(offset.width, forKey: Self.offsetXKey)
+        UserDefaults.standard.set(offset.height, forKey: Self.offsetYKey)
     }
 }
 
@@ -71,7 +102,10 @@ extension LauncherWindow: NSWindowDelegate {
     }
 
     func windowDidMove(_ notification: Notification) {
-        hasBeenDragged = true
-        saveFrame(usingName: frameAutosaveName)
+        guard !isAdjustingFrame else { return }
+        contentTopY = frame.maxY
+        guard let screen = screen ?? NSScreen.main else { return }
+        let visible = screen.visibleFrame
+        persistUserOffset(CGSize(width: frame.midX - visible.midX, height: frame.midY - visible.midY))
     }
 }
