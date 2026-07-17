@@ -14,7 +14,10 @@ struct LauncherView: View {
         GlassEffectContainer {
             SwiftUI.VStack(spacing: 0) {
                 searchField
-                if !viewModel.results.isEmpty {
+                if let error = viewModel.errorMessage {
+                    SwiftUI.Divider().opacity(0.3)
+                    errorBanner(error)
+                } else if !viewModel.results.isEmpty {
                     SwiftUI.Divider().opacity(0.3)
                     resultsList
                 }
@@ -82,6 +85,22 @@ struct LauncherView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 36, height: 36)
         }
+    }
+
+    private func errorBanner(_ message: String) -> some View {
+        SwiftUI.HStack(spacing: 12) {
+            SwiftUI.Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 16))
+                .foregroundStyle(.orange)
+            SwiftUI.Text(message)
+                .font(.system(size: 14))
+                .foregroundStyle(.primary)
+                .lineLimit(2)
+                .truncationMode(.middle)
+            SwiftUI.Spacer()
+        }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 14)
     }
 
     private var resultsList: some View {

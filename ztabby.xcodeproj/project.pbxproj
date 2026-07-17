@@ -329,6 +329,7 @@
 		LNCH100000000000000009 /* LauncherResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000009 /* LauncherResult.swift */; };
 		LNCH100000000000000010 /* LauncherPathSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000010 /* LauncherPathSearch.swift */; };
 		LNCH100000000000000011 /* LauncherURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000011 /* LauncherURL.swift */; };
+		LNCH100000000000000012 /* LauncherRecents.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000012 /* LauncherRecents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -802,6 +803,7 @@
 		LNCH000000000000000009 /* LauncherResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherResult.swift; sourceTree = "<group>"; };
 		LNCH000000000000000010 /* LauncherPathSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherPathSearch.swift; sourceTree = "<group>"; };
 		LNCH000000000000000011 /* LauncherURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherURL.swift; sourceTree = "<group>"; };
+		LNCH000000000000000012 /* LauncherRecents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherRecents.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1761,6 +1763,7 @@
 				LNCH000000000000000009 /* LauncherResult.swift */,
 				LNCH000000000000000010 /* LauncherPathSearch.swift */,
 				LNCH000000000000000011 /* LauncherURL.swift */,
+				LNCH000000000000000012 /* LauncherRecents.swift */,
 			);
 			path = launcher;
 			sourceTree = "<group>";
@@ -2739,6 +2742,7 @@
 				LNCH100000000000000009 /* LauncherResult.swift in Sources */,
 				LNCH100000000000000010 /* LauncherPathSearch.swift in Sources */,
 				LNCH100000000000000011 /* LauncherURL.swift in Sources */,
+				LNCH100000000000000012 /* LauncherRecents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

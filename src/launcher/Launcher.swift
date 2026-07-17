@@ -7,6 +7,7 @@ class Launcher {
 
     private let discovery = LauncherAppDiscovery()
     private let frecency = LauncherFrecency()
+    private let recents = LauncherRecents()
     private var viewModel: LauncherViewModel!
     private var window: LauncherWindow?
     private var hotKeyRef: EventHotKeyRef?
@@ -14,7 +15,7 @@ class Launcher {
     private var sizeObservation: Any?
 
     func start() {
-        viewModel = LauncherViewModel(discovery: discovery, frecency: frecency)
+        viewModel = LauncherViewModel(discovery: discovery, frecency: frecency, recents: recents)
         discovery.scan { [weak self] in self?.viewModel.updateResults() }
         BackgroundWork.screenshotsQueue.addOperation { [weak self] in
             self?.discovery.loadAllIcons()
@@ -55,8 +56,8 @@ class Launcher {
     }
 
     private func launchAndHide() {
-        viewModel.launchSelected()
-        hide()
+        // Keep the window open (with its error banner) when the launch is rejected.
+        if viewModel.launchSelected() { hide() }
     }
 
     private func observeSize() {
