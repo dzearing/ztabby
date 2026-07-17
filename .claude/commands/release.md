@@ -4,6 +4,24 @@ Follow these steps exactly to release a new version of Ztabby.
 
 How the pipeline works: you bump the version, create a DRAFT GitHub release containing the release notes, then push the tag. The tag push triggers `.github/workflows/release.yml`, which builds a signed Release app on a macos-26 runner, notarizes a DMG, Sparkle-signs it (SPARKLE_ED_PRIVATE_KEY secret; keypair also in the login Keychain as "Private key for signing Sparkle updates"), uploads it to your draft, publishes the release, and updates `docs/index.html` (homepage version + download link) and `docs/appcast.xml` (Sparkle auto-update feed) on main — which triggers the GitHub Pages deploy. Do NOT edit `docs/index.html` or `docs/appcast.xml` manually; the workflow owns them.
 
+### Step 0: Sync to Latest (MANDATORY — never skip)
+
+ALWAYS release off the latest `main`. Building or cutting notes from a stale checkout ships a release that is missing merged work. Before anything else, confirm you are on `main` and fully up to date with the remote:
+
+```bash
+git rev-parse --abbrev-ref HEAD   # must be "main"; if not, stop and ask
+git fetch origin
+git log --oneline HEAD..origin/main   # MUST be empty before proceeding
+```
+
+If `HEAD..origin/main` is non-empty, you are behind — pull before doing anything else (stash any local edits like a version bump, fast-forward, then restore):
+
+```bash
+git pull --ff-only origin main
+```
+
+Do NOT analyze changes, write notes, or build until `git log --oneline HEAD..origin/main` is empty. If a fast-forward is not possible (local commits diverge), stop and ask the user how to proceed.
+
 ### Step 1: Analyze Changes
 
 The current released version is in `package.json`. List commits since its tag:
