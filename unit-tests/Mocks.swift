@@ -16,14 +16,29 @@ class TilesPanelMock {
     var isKeyWindow = false
 }
 
+enum Direction {
+    case right
+    case left
+    case leading
+    case trailing
+    case up
+    case down
+}
+
+class Windows {
+    static var groupedList = [Int]()
+}
+
 class App {
     class AppMock {
         var appIsBeingUsed = false
         var shortcutIndex = 0
         var forceDoNothingOnRelease = false
+        var groupedStickyMode = false
         var tilesPanel = TilesPanelMock()
     }
     static let app = AppMock()
+    static var groupedActionsTriggered: [String] = []
     static var appIsBeingUsed: Bool {
         get { app.appIsBeingUsed }
         set { app.appIsBeingUsed = newValue }
@@ -35,6 +50,28 @@ class App {
     static var forceDoNothingOnRelease: Bool {
         get { app.forceDoNothingOnRelease }
         set { app.forceDoNothingOnRelease = newValue }
+    }
+    static var groupedStickyMode: Bool {
+        get { app.groupedStickyMode }
+        set { app.groupedStickyMode = newValue }
+    }
+
+    static func checkAndLatchGroupedStickyMode(latch: Bool) -> Bool {
+        guard Preferences.windowGroupingEnabled else { return false }
+        if latch { groupedStickyMode = true }
+        return groupedStickyMode
+    }
+
+    static func cycleSelection(_ direction: Direction, allowWrap: Bool = true) {
+        groupedActionsTriggered.append("cycleSelection.\(direction)")
+    }
+
+    static func focusTarget() {
+        groupedActionsTriggered.append("focusTarget")
+    }
+
+    static func hideUi(_ keepPreview: Bool = false) {
+        groupedActionsTriggered.append("hideUi")
     }
 }
 
@@ -112,6 +149,7 @@ class Logger {
 
 class Preferences {
     static var shortcutStyle: ShortcutStylePreference = .focusOnRelease
+    static var windowGroupingEnabled = false
     static var holdShortcut = ["⌥", "⌥", "⌥"]
     static let minShortcutCount = 1
     static let maxShortcutCount = 9

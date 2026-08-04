@@ -5,7 +5,7 @@ import Cocoa
 class LightImageLayer: CALayer {
     private var outlineLayer: CAShapeLayer!
     private var handRaisedLayer: CALayer!
-    private var busyLayer: BusyIndicatorLayer!
+    private var activityLayer: ActivityIndicatorLayer!
     private let withTransparencyChecks: Bool
 
     init(withTransparencyChecks: Bool = false) {
@@ -19,7 +19,7 @@ class LightImageLayer: CALayer {
         delegate = NoAnimationDelegate.shared
         setupOutlineLayer()
         setupHandRaisedLayer()
-        setupBusyLayer()
+        setupActivityLayer()
     }
 
     required init?(coder: NSCoder) {
@@ -100,16 +100,16 @@ class LightImageLayer: CALayer {
         }
     }
 
-    private func setupBusyLayer() {
-        busyLayer = BusyIndicatorLayer()
-        addSublayer(busyLayer)
+    private func setupActivityLayer() {
+        activityLayer = ActivityIndicatorLayer()
+        addSublayer(activityLayer)
     }
 
-    func updateBusy(_ busy: Bool) {
+    func updateActivityIndicator(_ indicator: ActivityIndicator?) {
         let gap: CGFloat = 4
         let size = max(bounds.width, bounds.height) + gap
-        busyLayer.frame = CGRect(x: -gap / 2, y: -gap / 2, width: size, height: size)
-        busyLayer.update(busy: busy, size: size)
+        activityLayer.frame = CGRect(x: -gap / 2, y: -gap / 2, width: size, height: size)
+        activityLayer.update(indicator, size: size)
     }
 
     func releaseImage() {

@@ -86,6 +86,7 @@ extension AXUIElement {
             case kAXWindowsAttribute: result.windows = castSafely(value)
             case kAXPositionAttribute: result.position = castSafely(value)
             case kAXSizeAttribute: result.size = castSafely(value)
+            case kAXWindowActivityStateAttribute: result.activityState = castSafely(value)
             case kAXGhosttyMachineAttribute: result.ghosttyMachine = castSafely(value)
             default: Logger.error { "key:\(key) value:\(value)" }
             }
@@ -228,6 +229,10 @@ enum AxError: Error {
     case deliberateRetry
 }
 
+/// Non-standard attribute published by apps that report per-window activity.
+/// Value is one of "idle", "busy", "needs_input". Apps that don't publish it return nil.
+let kAXWindowActivityStateAttribute = "AXWindowActivityState"
+
 struct AXAttributes {
     var title: String?
     var role: String?
@@ -245,5 +250,6 @@ struct AXAttributes {
     var windows: [AXUIElement]?
     var position: CGPoint?
     var size: CGSize?
+    var activityState: String?
     var ghosttyMachine: String?
 }

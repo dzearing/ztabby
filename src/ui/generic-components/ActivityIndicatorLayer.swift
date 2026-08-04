@@ -1,10 +1,34 @@
 import Cocoa
 
-class BusyIndicatorLayer: CALayer {
-    private static let sweepKey = "busySweep"
-    private static let pulseKey = "busyPulse"
+/// A window's activity state, as published by the app in `kAXWindowActivityStateAttribute`.
+/// nil for idle, and for apps that publish nothing.
+enum ActivityIndicator: String {
+    case busy
+    case needsInput = "needs_input"
+
+    static func make(_ activityState: String?) -> ActivityIndicator? {
+        guard let activityState else { return nil }
+        return ActivityIndicator(rawValue: activityState)
+    }
+
+    var color: NSColor { self == .busy ? .systemGreen : .systemYellow }
+
+    /// Busy sweeps a dashed border to read as "in progress"; needing input holds a solid one.
+    var sweepsBorder: Bool { self == .busy }
+
+    /// Needing input pulses faster, so the two states stay tellable apart at a glance.
+    var pulseDuration: CFTimeInterval { self == .busy ? 1.0 : 0.4 }
+}
+
+/// Pulsing tint and sweeping border drawn over a window's app icon while that window reports
+/// activity: green while busy, orange while it waits on the user. Animations are wall-clock-synced
+/// so they don't restart when the switcher rebuilds its rows.
+class ActivityIndicatorLayer: CALayer {
+    private static let sweepKey = "activitySweep"
+    private static let pulseKey = "activityPulse"
     private let overlayLayer = CAShapeLayer()
     private let borderLayer = CAShapeLayer()
+    private var indicator: ActivityIndicator?
 
     override init() {
         super.init()
@@ -22,7 +46,6 @@ class BusyIndicatorLayer: CALayer {
     }
 
     private func setupOverlay() {
-        overlayLayer.fillColor = NSColor.systemGreen.cgColor
         overlayLayer.opacity = 0.1
         overlayLayer.strokeColor = nil
         addSublayer(overlayLayer)
@@ -30,30 +53,35 @@ class BusyIndicatorLayer: CALayer {
 
     private func setupBorder() {
         borderLayer.fillColor = nil
-        borderLayer.strokeColor = NSColor.systemGreen.cgColor
         borderLayer.lineWidth = 1.0
         borderLayer.lineCap = .round
         borderLayer.lineJoin = .round
-        borderLayer.shadowColor = NSColor.systemGreen.cgColor
         borderLayer.shadowRadius = 2
         borderLayer.shadowOpacity = 0.3
         borderLayer.shadowOffset = .zero
         addSublayer(borderLayer)
     }
 
-    func update(busy: Bool, size: CGFloat) {
-        guard busy != !isHidden else { return }
-        isHidden = !busy
-        guard busy else {
-            overlayLayer.removeAllAnimations()
-            borderLayer.removeAllAnimations()
-            return
-        }
+    func update(_ newIndicator: ActivityIndicator?, size: CGFloat) {
+        guard newIndicator != indicator || bounds.width != size else { return }
+        indicator = newIndicator
+        isHidden = newIndicator == nil
+        overlayLayer.removeAllAnimations()
+        borderLayer.removeAllAnimations()
+        guard let newIndicator else { return }
+        applyColor(newIndicator.color)
         bounds = CGRect(x: 0, y: 0, width: size, height: size)
         layoutOverlay(size: size)
-        let perimeter = layoutBorder(size: size)
-        addOverlayPulse()
+        let perimeter = layoutBorder(size: size, sweeping: newIndicator.sweepsBorder)
+        addOverlayPulse(newIndicator.pulseDuration)
+        guard newIndicator.sweepsBorder else { return }
         addSweepAnimation(perimeter: perimeter)
+    }
+
+    private func applyColor(_ color: NSColor) {
+        overlayLayer.fillColor = color.cgColor
+        borderLayer.strokeColor = color.cgColor
+        borderLayer.shadowColor = color.cgColor
     }
 
     private func layoutOverlay(size: CGFloat) {
@@ -64,7 +92,7 @@ class BusyIndicatorLayer: CALayer {
         overlayLayer.frame = CGRect(x: 0, y: 0, width: size, height: size)
     }
 
-    private func layoutBorder(size: CGFloat) -> CGFloat {
+    private func layoutBorder(size: CGFloat, sweeping: Bool) -> CGFloat {
         let inset = borderLayer.lineWidth / 2
         let cornerRadius = size * 0.2
         let rect = CGRect(x: 0, y: 0, width: size, height: size).insetBy(dx: inset, dy: inset)
@@ -72,19 +100,20 @@ class BusyIndicatorLayer: CALayer {
         borderLayer.frame = CGRect(x: 0, y: 0, width: size, height: size)
         let r = min(cornerRadius, min(rect.width, rect.height) / 2)
         let perimeter = 2 * (rect.width - 2 * r) + 2 * (rect.height - 2 * r) + 2 * .pi * r
-        borderLayer.lineDashPattern = [NSNumber(value: Double(perimeter * 0.35)), NSNumber(value: Double(perimeter * 0.65))]
+        borderLayer.lineDashPhase = 0
+        borderLayer.lineDashPattern = sweeping ? [NSNumber(value: Double(perimeter * 0.35)), NSNumber(value: Double(perimeter * 0.65))] : nil
         return perimeter
     }
 
-    private func addOverlayPulse() {
+    private func addOverlayPulse(_ duration: CFTimeInterval) {
         let pulse = CABasicAnimation(keyPath: "opacity")
         pulse.fromValue = 0.1
         pulse.toValue = 0.5
-        pulse.duration = 1.0
+        pulse.duration = duration
         pulse.autoreverses = true
         pulse.repeatCount = .infinity
         pulse.isRemovedOnCompletion = false
-        pulse.timeOffset = CACurrentMediaTime().truncatingRemainder(dividingBy: 2.0)
+        pulse.timeOffset = CACurrentMediaTime().truncatingRemainder(dividingBy: duration * 2)
         overlayLayer.add(pulse, forKey: Self.pulseKey)
     }
 

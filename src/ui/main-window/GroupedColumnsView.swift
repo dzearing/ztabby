@@ -321,17 +321,7 @@ class GroupedColumnsView {
         iconView.image = iconForWindow(window)
         iconView.imageScaling = .scaleProportionallyUpOrDown
         row.addSubview(iconView)
-        if window.isBusy {
-            let busySize = iconSize + 4
-            let busyView = NSView(frame: NSRect(x: padding - 2, y: (rowHeight - busySize) / 2, width: busySize, height: busySize))
-            busyView.wantsLayer = true
-            busyView.layer?.masksToBounds = false
-            let busy = BusyIndicatorLayer()
-            busy.frame = CGRect(x: 0, y: 0, width: busySize, height: busySize)
-            busy.update(busy: true, size: busySize)
-            busyView.layer?.addSublayer(busy)
-            row.addSubview(busyView)
-        }
+        addActivityIndicator(ActivityIndicator.make(window.activityState), to: row)
         let text = NSTextField(labelWithString: label)
         text.font = .systemFont(ofSize: 12)
         text.textColor = isSelected ? .white : .labelColor
@@ -339,6 +329,20 @@ class GroupedColumnsView {
         text.frame = NSRect(x: padding + iconSize + 4, y: 2, width: width - padding * 2 - iconSize - 4, height: rowHeight - 4)
         row.addSubview(text)
         parent.addSubview(row)
+    }
+
+    /// Overlays the row's app icon; a sibling view so it draws above the icon image.
+    private static func addActivityIndicator(_ indicator: ActivityIndicator?, to row: NSView) {
+        guard let indicator else { return }
+        let size = iconSize + 4
+        let view = NSView(frame: NSRect(x: padding - 2, y: (rowHeight - size) / 2, width: size, height: size))
+        view.wantsLayer = true
+        view.layer?.masksToBounds = false
+        let activityLayer = ActivityIndicatorLayer()
+        activityLayer.frame = CGRect(x: 0, y: 0, width: size, height: size)
+        activityLayer.update(indicator, size: size)
+        view.layer?.addSublayer(activityLayer)
+        row.addSubview(view)
     }
 
     private static func iconForWindow(_ window: Window) -> NSImage? {

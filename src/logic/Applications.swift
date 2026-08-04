@@ -69,13 +69,13 @@ class Applications {
             guard wid != 0 && wid != TilesPanel.shared.windowNumber else { return }
             let level = wid.level()
             let isSelf = app.pid == ProcessInfo.processInfo.processIdentifier
-            let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute] + (isSelf ? [] : [kAXChildrenAttribute, kAXGhosttyMachineAttribute])
+            let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute, kAXWindowActivityStateAttribute] + (isSelf ? [] : [kAXChildrenAttribute, kAXGhosttyMachineAttribute])
             let a = try axWindow.attributes(keys)
             let tabSiblingTitles = isSelf ? nil : TabGroup.extractTabTitles(a.children)
             DispatchQueue.main.async { [weak app] in
                 guard let app else { return }
                 windowListUpdateThrottler.throttleOrProceed(key: "\(wid)") {
-                    let findOrCreate = Windows.findOrCreate(axWindow, wid, app, level, a.title, a.subrole, a.role, a.size, a.position, a.isFullscreen, a.isMinimized)
+                    let findOrCreate = Windows.findOrCreate(axWindow, wid, app, level, a.title, a.subrole, a.role, a.size, a.position, a.isFullscreen, a.isMinimized, a.activityState)
                     guard let window = findOrCreate.0 else { return }
                     window.ghosttyMachine = a.ghosttyMachine
                     var tabStateChanged = false

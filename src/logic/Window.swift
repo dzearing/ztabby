@@ -9,6 +9,10 @@ class Window {
         kAXWindowResizedNotification,
         kAXWindowMovedNotification,
     ]
+    /// only observed on windows that publish an activity state: system-wide this notification fires
+    /// constantly (progress bars, text fields, scroll positions), and observing it on every window
+    /// floods the shared AX call queue, starving app-level subscriptions
+    private static let windowAttributesNotification = kAXValueChangedNotification
     private static var globalCreationCounter = Int.zero
 
     var id: String
@@ -27,8 +31,8 @@ class Window {
     var dockLabel: String? { get { application.dockLabel } }
     var isFullscreen = false
     var isMinimized = false
+    var activityState: String?
     var isOnAllSpaces = false
-    var isBusy: Bool { title?.hasSuffix("(busy)") == true }
     var isWindowlessApp: Bool { get { cgWindowId == nil } }
     var position: CGPoint?
     var size: CGSize?
@@ -45,13 +49,13 @@ class Window {
     var swTitleResults: [SWResult] = []
     var swBestSimilarity = 0.0
 
-    init(_ axUiElement: AXUIElement, _ application: Application, _ wid: CGWindowID, _ title: String?, _ isFullscreen: Bool?, _ isMinimized: Bool?, _ position: CGPoint?, _ size: CGSize?) {
+    init(_ axUiElement: AXUIElement, _ application: Application, _ wid: CGWindowID, _ title: String?, _ isFullscreen: Bool?, _ isMinimized: Bool?, _ position: CGPoint?, _ size: CGSize?, _ activityState: String?) {
         id = "wid-\(wid)"
         self.axUiElement = axUiElement
         self.application = application
         cgWindowId = wid
         self.updateSpacesAndScreen()
-        updateFromAxAttributes(title, size, position, isFullscreen, isMinimized)
+        updateFromAxAttributes(title, size, position, isFullscreen, isMinimized, activityState)
         debugId = "\(self.application.debugId) (wid:\(cgWindowId) title:\(self.title))"
         Window.globalCreationCounter += 1
         creationOrder = Window.globalCreationCounter
@@ -82,12 +86,13 @@ class Window {
         Logger.info { self.debugId }
     }
 
-    func updateFromAxAttributes(_ title: String?, _ size: CGSize?, _ position: CGPoint?, _ isFullscreen: Bool?, _ isMinimized: Bool?) {
+    func updateFromAxAttributes(_ title: String?, _ size: CGSize?, _ position: CGPoint?, _ isFullscreen: Bool?, _ isMinimized: Bool?, _ activityState: String?) {
         self.title = bestEffortTitle(title)
         self.size = size
         self.position = position
         self.isFullscreen = isFullscreen ?? false
         self.isMinimized = isMinimized ?? false
+        self.activityState = activityState
         lastSearchQuery = nil
     }
 
@@ -104,7 +109,7 @@ class Window {
             guard let self else { return }
             if try self.axUiElement!.subscribeToNotification(axObserver, Window.notifications.first!) {
                 Logger.debug { "Subscribed to window: \(self.debugId)" }
-                for notification in Window.notifications.dropFirst() {
+                for notification in self.notificationsAfterFirst() {
                     AXCallScheduler.shared.schedule(key: "sub-win-\(cgWindowId)-\(notification)", context: self.debugId, pid: self.application.pid) { [weak self] in
                         try self?.axUiElement!.subscribeToNotification(axObserver, notification)
                     }
@@ -112,6 +117,10 @@ class Window {
             }
         }
         CFRunLoopAddSource(BackgroundWork.accessibilityEventsThread.runLoop, AXObserverGetRunLoopSource(axObserver), .commonModes)
+    }
+
+    private func notificationsAfterFirst() -> [String] {
+        Array(Window.notifications.dropFirst()) + (activityState == nil ? [] : [Window.windowAttributesNotification])
     }
 
     func refreshThumbnail(_ screenshot: CALayerContents) {
