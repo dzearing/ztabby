@@ -482,14 +482,14 @@ class Windows {
         return windowsToRefresh
     }
 
-    static func findOrCreate(_ windowAxUiElement: AXUIElement, _ wid: CGWindowID, _ app: Application, _ level: CGWindowLevel, _ title: String?, _ subrole: String?, _ role: String?, _ size: CGSize?, _ position: CGPoint?, _ isFullscreen: Bool?, _ isMinimized: Bool?) -> (Window?, Bool) {
+    static func findOrCreate(_ windowAxUiElement: AXUIElement, _ wid: CGWindowID, _ app: Application, _ level: CGWindowLevel, _ title: String?, _ subrole: String?, _ role: String?, _ size: CGSize?, _ position: CGPoint?, _ isFullscreen: Bool?, _ isMinimized: Bool?, _ activityState: String?) -> (Window?, Bool) {
         if let window = (list.first { $0.isEqualRobust(windowAxUiElement, wid) }) {
             // on any window event, we take the opportunity to refresh all window attributes
-            window.updateFromAxAttributes(title, size, position, isFullscreen, isMinimized)
+            window.updateFromAxAttributes(title, size, position, isFullscreen, isMinimized, activityState)
             return (window, false)
         }
         guard WindowDiscriminator.isActualWindow(app, wid, level, title, subrole, role, size) else { return (nil, false) }
-        let window = Window(windowAxUiElement, app, wid, title, isFullscreen, isMinimized, position, size)
+        let window = Window(windowAxUiElement, app, wid, title, isFullscreen, isMinimized, position, size, activityState)
         appendWindow(window)
         return (window, true)
     }

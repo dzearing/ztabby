@@ -62,21 +62,6 @@
 "Alphabetical Order" = "Alphabetical Order";
 
 /* No comment provided by engineer. */
-"Ztabby crashed last time you used it. Sending a crash report will help get the issue fixed" = "Ztabby crashed last time you used it. Sending a crash report will help get the issue fixed";
-
-/* No comment provided by engineer. */
-"Ztabby is currently set to show Applications. This setting is only available when Ztabby is set to show Windows." = "Ztabby is currently set to show Applications. This setting is only available when Ztabby is set to show Windows.";
-
-/* Menubar callout */
-"Ztabby is running without Screen Recording permissions. Thumbnails won’t show." = "Ztabby is running without Screen Recording permissions. Thumbnails won’t show.";
-
-/* No comment provided by engineer. */
-"Ztabby needs some permissions" = "Ztabby needs some permissions";
-
-/* No comment provided by engineer. */
-"Ztabby will show if the window is currently minimized or fullscreen with a status icon." = "Ztabby will show if the window is currently minimized or fullscreen with a status icon.";
-
-/* No comment provided by engineer. */
 "Always" = "Always";
 
 /* No comment provided by engineer. */
@@ -227,6 +212,9 @@
 "Grant permission" = "Grant permission";
 
 /* No comment provided by engineer. */
+"Group windows by title prefix" = "Group windows by title prefix";
+
+/* No comment provided by engineer. */
 "Hide" = "Hide";
 
 /* No comment provided by engineer. */
@@ -342,6 +330,9 @@
 
 /* No comment provided by engineer. */
 "Order windows by" = "Order windows by";
+
+/* No comment provided by engineer. */
+"Other" = "Other";
 
 /* No comment provided by engineer. */
 "Please fill in the form" = "Please fill in the form";
@@ -622,3 +613,18 @@
 
 /* No comment provided by engineer. */
 "You may need to disable some conflicting system gestures" = "You may need to disable some conflicting system gestures";
+
+/* No comment provided by engineer. */
+"Ztabby crashed last time you used it. Sending a crash report will help get the issue fixed" = "Ztabby crashed last time you used it. Sending a crash report will help get the issue fixed";
+
+/* No comment provided by engineer. */
+"Ztabby is currently set to show Applications. This setting is only available when Ztabby is set to show Windows." = "Ztabby is currently set to show Applications. This setting is only available when Ztabby is set to show Windows.";
+
+/* Menubar callout */
+"Ztabby is running without Screen Recording permissions. Thumbnails won’t show." = "Ztabby is running without Screen Recording permissions. Thumbnails won’t show.";
+
+/* No comment provided by engineer. */
+"Ztabby needs some permissions" = "Ztabby needs some permissions";
+
+/* No comment provided by engineer. */
+"Ztabby will show if the window is currently minimized or fullscreen with a status icon." = "Ztabby will show if the window is currently minimized or fullscreen with a status icon.";

@@ -85,17 +85,21 @@ class AccessibilityEvents {
     }
 
     static func handleEventWindow(_ type: String, _ wid: CGWindowID, _ pid: pid_t, _ element: AXUIElement) throws {
+        if type == kAXValueChangedNotification {
+            try activityStateChanged(wid, element)
+            return
+        }
         let level = wid.level()
         // if we query .children on ourselves, AppKit calls layout directly from our thread instead of IPC; we avoid this
         let isSelf = pid == ProcessInfo.processInfo.processIdentifier
-        let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute] + (isSelf ? [] : [kAXChildrenAttribute])
+        let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute, kAXWindowActivityStateAttribute] + (isSelf ? [] : [kAXChildrenAttribute])
         let a = try element.attributes(keys)
         let tabSiblingTitles = isSelf ? nil : TabGroup.extractTabTitles(a.children)
         DispatchQueue.main.async {
             Applications.windowListUpdateThrottler.throttleOrProceed(key: "\(wid)") {
                 guard let app = Applications.findOrCreate(pid, false) else { return }
                 Logger.info { "\(type) wid:\(wid) app:\(app.debugId)" }
-                let findOrCreate = Windows.findOrCreate(element, wid, app, level, a.title, a.subrole, a.role, a.size, a.position, a.isFullscreen, a.isMinimized)
+                let findOrCreate = Windows.findOrCreate(element, wid, app, level, a.title, a.subrole, a.role, a.size, a.position, a.isFullscreen, a.isMinimized, a.activityState)
                 guard let window = findOrCreate.0 else {
                     // we don't know this window, but it got focused, so let's update app.focusedWindow with nil
                     if type == kAXFocusedWindowChangedNotification && a.role != kAXSheetRole {
@@ -119,6 +123,18 @@ class AccessibilityEvents {
                     App.refreshOpenUiAfterExternalEvent([window])
                 }
             }
+        }
+    }
+
+    /// activity state changes often, so we read that attribute alone, and only touch the UI when it moved
+    private static func activityStateChanged(_ wid: CGWindowID, _ element: AXUIElement) throws {
+        let activityState = try element.attributes([kAXWindowActivityStateAttribute]).activityState
+        DispatchQueue.main.async {
+            guard let window = (Windows.list.first { $0.isEqualRobust(element, wid) }),
+                  window.activityState != activityState else { return }
+            window.activityState = activityState
+            guard App.appIsBeingUsed else { return }
+            App.refreshOpenUiAfterExternalEvent([window])
         }
     }
 
