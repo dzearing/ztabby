@@ -3,8 +3,7 @@
 #include "Pods/Target Support Files/Pods-ztabby/Pods-ztabby.debug.xcconfig"
 #include "base.xcconfig"
 
-CODE_SIGN_IDENTITY = Developer ID Application: DAVID BENJAMIN ZEARING (VMGW2V57S7)
-DEVELOPMENT_TEAM = VMGW2V57S7
+CODE_SIGN_IDENTITY = Ztabby Debug Signing // self-signed local cert; stable identity keeps the TCC Accessibility grant across rebuilds
 PRODUCT_BUNDLE_IDENTIFIER = com.dzearing.ztabby.debug
 PRODUCT_NAME = Ztabby-Debug
 CODE_SIGNING_ALLOWED = YES

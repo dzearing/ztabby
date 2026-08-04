@@ -87,6 +87,7 @@ extension AXUIElement {
             case kAXPositionAttribute: result.position = castSafely(value)
             case kAXSizeAttribute: result.size = castSafely(value)
             case kAXWindowActivityStateAttribute: result.activityState = castSafely(value)
+            case kAXGhosttyMachineAttribute: result.ghosttyMachine = castSafely(value)
             default: Logger.error { "key:\(key) value:\(value)" }
             }
         }
@@ -214,10 +215,18 @@ extension AXUIElement {
 /// it starts at 0 for each app, and increments over time, for each new UI element
 /// this means that long-lived apps (e.g. Finder) may have high IDs
 /// we don't know how high it can go, and if it wraps around
+/// Custom accessibility attribute published by Ghoztty on each terminal window.
+/// Value is the remote machine's display name, or "Local" for a local window.
+/// This is a frozen cross-tool contract; the format must not change.
+let kAXGhosttyMachineAttribute = "AXGhosttyMachine"
+
 typealias AXUIElementID = UInt64
 
 enum AxError: Error {
     case runtimeError
+    /// thrown to make AXCallScheduler retry a call even though the target app responded;
+    /// the app is not blamed as unresponsive (e.g. polling an active app until its first window appears)
+    case deliberateRetry
 }
 
 /// Non-standard attribute published by apps that report per-window activity.
@@ -242,4 +251,5 @@ struct AXAttributes {
     var position: CGPoint?
     var size: CGSize?
     var activityState: String?
+    var ghosttyMachine: String?
 }

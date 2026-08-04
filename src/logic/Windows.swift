@@ -1,8 +1,16 @@
 import Cocoa
 
+enum GroupingMode {
+    case none, title, machine
+}
+
 class Windows {
     static var list = [Window]()
     static var groupedList = [WindowGroup]()
+    static var machineCards = [MachineCard]()
+    static var groupingMode = GroupingMode.none
+    /// true when the switcher should render the grouped (card) UI instead of the flat tiles UI
+    static var usesGroupedView: Bool { groupingMode != .none }
     static var selectedWindowIndex = Int(0)
     static var selectedWindowTarget: String?
     static var hoveredWindowIndex: Int?
@@ -102,8 +110,19 @@ class Windows {
         }
         refreshWhichWindowsToShowTheUser()
         sort()
-        if Preferences.windowGroupingEnabled {
-            groupedList = WindowGrouper.group(list.filter { shouldDisplay($0) })
+        let displayWindows = list.filter { shouldDisplay($0) }
+        if let cards = WindowGrouper.machineGroups(displayWindows) {
+            machineCards = cards
+            groupedList = []
+            groupingMode = .machine
+        } else if Preferences.windowGroupingEnabled {
+            groupedList = WindowGrouper.group(displayWindows)
+            machineCards = []
+            groupingMode = groupedList.isEmpty ? .none : .title
+        } else {
+            groupedList = []
+            machineCards = []
+            groupingMode = .none
         }
         return true
     }

@@ -1,5 +1,9 @@
 #!/bin/bash
+# Records a 20s Time Profiler trace of the Debug app and exports it to XML.
+set -euo pipefail
 
+repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+app="$repo/DerivedData/Build/Products/Debug/Ztabby-Debug.app"
 profileFile="/tmp/profile_$(date +%Y%m%d_%H%M%S)"
 
 xcrun xctrace record \
@@ -8,7 +12,7 @@ xcrun xctrace record \
   --no-prompt --quiet \
   --output "$profileFile".trace \
   --launch -- \
-    ~/git/ztabby/DerivedData/Build/Products/Debug/Ztabby.app --benchmark showUi 3
+    "$app" --benchmark showUi 3
 
 xcrun xctrace export \
   --input "$profileFile".trace \

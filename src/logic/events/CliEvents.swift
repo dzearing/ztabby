@@ -1,5 +1,5 @@
 class CliEvents {
-    static let portName = "com.lwouis.ztabby.cli"
+    static let portName = "com.dzearing.ztabby.cli"
 
     static func observe() {
         var context = CFMessagePortContext(version: 0, info: nil, retain: nil, release: nil, copyDescription: nil)

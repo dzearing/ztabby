@@ -7,11 +7,15 @@ on:
 
 jobs:
   build-macos:
-    runs-on: macos-latest
+    # macos-26 ships Xcode 26.x by default; the code uses macOS 26 SDK APIs
+    # (NSGlassEffectView, ControlSize.extraLarge) that older images can't compile.
+    runs-on: macos-26
     permissions:
       contents: write
+    outputs:
+      ed_signature: ${{ steps.sparkle_sign.outputs.ed_signature }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Extract version from tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
@@ -38,6 +42,10 @@ jobs:
       - name: Install Pods
         run: pod install
 
+      - name: Stamp version into Info.plist
+        run: |
+          sed -i '' "s/#VERSION#/${{ env.VERSION }}/g" Info.plist
+
       - name: Build release app
         run: |
           xcodebuild -workspace ztabby.xcworkspace \
@@ -45,6 +53,12 @@ jobs:
             -configuration Release \
             -derivedDataPath DerivedData \
             build
+
+      - name: Verify code signature
+        run: |
+          APP_PATH="DerivedData/Build/Products/Release/Ztabby.app"
+          codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+          codesign --display --verbose=2 "$APP_PATH" 2>&1 | grep -E "Authority|TeamIdentifier|flags"
 
       - name: Create DMG
         run: |
@@ -72,24 +86,38 @@ jobs:
             --wait --timeout 15m
           xcrun stapler staple "$DMG_PATH"
 
-      - name: Upload to release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: DerivedData/Build/Products/Release/Ztabby_${{ env.VERSION }}_aarch64.dmg
-          tag_name: v${{ env.VERSION }}
-          name: "Ztabby v${{ env.VERSION }}"
-          draft: false
-          prerelease: false
+      # Sign AFTER stapling — stapling modifies the DMG, which would invalidate
+      # a signature computed earlier.
+      - name: Sign DMG for Sparkle
+        id: sparkle_sign
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+        run: |
+          DMG_PATH="DerivedData/Build/Products/Release/Ztabby_${{ env.VERSION }}_aarch64.dmg"
+          SIGNATURE=$(Pods/Sparkle/bin/sign_update -s "$SPARKLE_ED_PRIVATE_KEY" "$DMG_PATH")
+          echo "ed_signature=$SIGNATURE" >> "$GITHUB_OUTPUT"
 
-  update-homepage:
+      # The release skill creates a draft release with hand-written notes before
+      # pushing the tag. Upload the DMG to that draft and publish it. If no draft
+      # exists (e.g. tag pushed manually), create one with auto-generated notes.
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          DMG_PATH="DerivedData/Build/Products/Release/Ztabby_${{ env.VERSION }}_aarch64.dmg"
+          if ! gh release view "v${{ env.VERSION }}" > /dev/null 2>&1; then
+            gh release create "v${{ env.VERSION }}" --draft --title "Ztabby v${{ env.VERSION }}" --generate-notes
+          fi
+          gh release upload "v${{ env.VERSION }}" "$DMG_PATH" --clobber
+          gh release edit "v${{ env.VERSION }}" --draft=false --latest
+
+  update-website:
     needs: build-macos
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: main
       - name: Extract version from tag
@@ -98,10 +126,14 @@ jobs:
         run: |
           sed -i 's|releases/download/v[0-9.]*/Ztabby[_-][0-9.]*[^"]*|releases/download/v${{ env.VERSION }}/Ztabby_${{ env.VERSION }}_aarch64.dmg|' docs/index.html
           sed -i 's|v[0-9.]*[0-9] \&middot; macOS|v${{ env.VERSION }} \&middot; macOS|' docs/index.html
+      - name: Add release to Sparkle appcast
+        env:
+          ED_SIGNATURE_AND_LENGTH: ${{ needs.build-macos.outputs.ed_signature }}
+        run: scripts/update_appcast.sh
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/index.html
-          git diff --cached --quiet || git commit -m "Update homepage to v${{ env.VERSION }}"
+          git add docs/index.html docs/appcast.xml
+          git diff --cached --quiet || git commit -m "Update website to v${{ env.VERSION }}"
           git push

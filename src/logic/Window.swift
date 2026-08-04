@@ -12,7 +12,7 @@ class Window {
     /// only observed on windows that publish an activity state: system-wide this notification fires
     /// constantly (progress bars, text fields, scroll positions), and observing it on every window
     /// floods the shared AX call queue, starving app-level subscriptions
-    private static let activityStateNotification = kAXValueChangedNotification
+    private static let windowAttributesNotification = kAXValueChangedNotification
     private static var globalCreationCounter = Int.zero
 
     var id: String
@@ -25,6 +25,8 @@ class Window {
     var shouldShowTheUser = true
     var isTabbed: Bool = false
     var tabbedSiblingWids: [CGWindowID]?
+    /// for Ghoztty terminal windows: the machine the terminal runs on ("Local", or a remote display name); nil otherwise
+    var ghosttyMachine: String?
     var isHidden: Bool { get { application.isHidden } }
     var dockLabel: String? { get { application.dockLabel } }
     var isFullscreen = false
@@ -118,7 +120,7 @@ class Window {
     }
 
     private func notificationsAfterFirst() -> [String] {
-        Array(Window.notifications.dropFirst()) + (activityState == nil ? [] : [Window.activityStateNotification])
+        Array(Window.notifications.dropFirst()) + (activityState == nil ? [] : [Window.windowAttributesNotification])
     }
 
     func refreshThumbnail(_ screenshot: CALayerContents) {

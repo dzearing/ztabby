@@ -30,6 +30,8 @@ class PermissionsWindow: NSWindow {
         App.shared.activate(ignoringOtherApps: true)
         Self.shared.makeKeyAndOrderFront(nil)
         SystemPermissions.setFrequentTimer()
+        // the permission UI is frontmost: the one moment we may queue a real system prompt
+        ScreenRecordingPermission.requestOnce()
     }
 
     private func setupWindow() {

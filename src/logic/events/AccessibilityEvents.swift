@@ -86,13 +86,13 @@ class AccessibilityEvents {
 
     static func handleEventWindow(_ type: String, _ wid: CGWindowID, _ pid: pid_t, _ element: AXUIElement) throws {
         if type == kAXValueChangedNotification {
-            try activityStateChanged(wid, element)
+            try windowAttributesChanged(wid, element)
             return
         }
         let level = wid.level()
         // if we query .children on ourselves, AppKit calls layout directly from our thread instead of IPC; we avoid this
         let isSelf = pid == ProcessInfo.processInfo.processIdentifier
-        let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute, kAXWindowActivityStateAttribute] + (isSelf ? [] : [kAXChildrenAttribute])
+        let keys = [kAXTitleAttribute, kAXSubroleAttribute, kAXRoleAttribute, kAXSizeAttribute, kAXPositionAttribute, kAXFullscreenAttribute, kAXMinimizedAttribute, kAXWindowActivityStateAttribute] + (isSelf ? [] : [kAXChildrenAttribute, kAXGhosttyMachineAttribute])
         let a = try element.attributes(keys)
         let tabSiblingTitles = isSelf ? nil : TabGroup.extractTabTitles(a.children)
         DispatchQueue.main.async {
@@ -108,6 +108,7 @@ class AccessibilityEvents {
                     return
                 }
                 Logger.debug { "\(type) win:\(window.debugId)" }
+                window.ghosttyMachine = a.ghosttyMachine
                 var tabStateChanged = false
                 if tabSiblingTitles != nil || window.tabbedSiblingWids != nil {
                     tabStateChanged = TabGroup.updateState(window, tabSiblingTitles)
@@ -126,13 +127,14 @@ class AccessibilityEvents {
         }
     }
 
-    /// activity state changes often, so we read that attribute alone, and only touch the UI when it moved
-    private static func activityStateChanged(_ wid: CGWindowID, _ element: AXUIElement) throws {
-        let activityState = try element.attributes([kAXWindowActivityStateAttribute]).activityState
+    /// these attributes change often, so we read just them, and only touch the UI when one moved
+    private static func windowAttributesChanged(_ wid: CGWindowID, _ element: AXUIElement) throws {
+        let a = try element.attributes([kAXWindowActivityStateAttribute, kAXGhosttyMachineAttribute])
         DispatchQueue.main.async {
             guard let window = (Windows.list.first { $0.isEqualRobust(element, wid) }),
-                  window.activityState != activityState else { return }
-            window.activityState = activityState
+                  window.activityState != a.activityState || window.ghosttyMachine != a.ghosttyMachine else { return }
+            window.activityState = a.activityState
+            window.ghosttyMachine = a.ghosttyMachine
             guard App.appIsBeingUsed else { return }
             App.refreshOpenUiAfterExternalEvent([window])
         }

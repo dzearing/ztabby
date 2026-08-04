@@ -13,7 +13,7 @@ class App: AppCenterApplication {
     static let name = Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as! String
     static let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
     static let licence = Bundle.main.object(forInfoDictionaryKey: "NSHumanReadableCopyright") as! String
-    static let repository = "https://github.com/lwouis/ztabby"
+    static let repository = "https://github.com/dzearing/ztabby"
     static let website = "https://ztabby.app"
     static let appIcon = CGImage.named("app.icns")
     override class var shared: App { super.shared as! App }
@@ -22,19 +22,6 @@ class App: AppCenterApplication {
     static var appIsBeingUsed = false
     static var shortcutIndex = 0
     static var forceDoNothingOnRelease = false
-    static var groupedUiOpenTime: UInt64 = 0
-    static var groupedStickyMode = false
-
-    static func checkAndLatchGroupedStickyMode(latch: Bool) -> Bool {
-        if groupedStickyMode { return true }
-        guard Preferences.windowGroupingEnabled else { return false }
-        let elapsed = DispatchTime.now().uptimeNanoseconds - groupedUiOpenTime
-        if elapsed < 200_000_000 {
-            if latch { groupedStickyMode = true }
-            return true
-        }
-        return false
-    }
     private static var isFirstSummon = true
     private static var isVeryFirstSummon = true
     private static var pendingShowSettingsWindow = false
@@ -72,7 +59,6 @@ class App: AppCenterApplication {
         appIsBeingUsed = false
         isFirstSummon = true
         forceDoNothingOnRelease = false
-        groupedStickyMode = false
         UsageStats.resetSession()
         TilesView.endSearchSession()
         ContextMenuEvents.toggle(false)
@@ -150,7 +136,7 @@ class App: AppCenterApplication {
 
     static func focusTarget() {
         guard appIsBeingUsed else { return }
-        let selectedWindow = (Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty)
+        let selectedWindow = Windows.usesGroupedView
             ? GroupedColumnsView.selectedWindow()
             : Windows.selectedWindow()
         Logger.info { selectedWindow?.debugId }
@@ -255,7 +241,7 @@ class App: AppCenterApplication {
     static func cycleSelection(_ direction: Direction, allowWrap: Bool = true) {
         (TilesView.scrollView?.documentView as? TilesDocumentView)?.cancelDraggingTimer()
         CursorEvents.resetDeadzone()
-        if Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty {
+        if Windows.usesGroupedView {
             switch direction {
             case .up: GroupedColumnsView.navigateUp()
             case .down: GroupedColumnsView.navigateDown()
@@ -333,9 +319,6 @@ class App: AppCenterApplication {
                 isVeryFirstSummon = false
             }
             isFirstSummon = false
-            if Preferences.windowGroupingEnabled {
-                groupedUiOpenTime = DispatchTime.now().uptimeNanoseconds
-            }
             App.shortcutIndex = shortcutIndex
             let shouldStartInSearchMode = Preferences.shortcutStyle == .searchOnRelease
             TilesView.startSearchSession(shouldStartInSearchMode)
@@ -369,15 +352,21 @@ class App: AppCenterApplication {
         refreshUi()
         guard appIsBeingUsed else { return }
         TilesPanel.shared.show()
-        if Preferences.windowGroupingEnabled {
-            groupedUiOpenTime = DispatchTime.now().uptimeNanoseconds
-        }
         Windows.previewSelectedWindowIfNeeded()
         if TilesView.isSearchEditing {
             TilesView.enableSearchEditing()
         }
         KeyRepeatTimer.startRepeatingKeyNextWindow()
         Windows.refreshThumbnailsAsync(Windows.list, .refreshOnlyThumbnailsAfterShowUi)
+    }
+
+    static func initializeLauncherIfNeeded() {
+        guard Preferences.launcherEnabled else { return }
+        if #available(macOS 26.0, *) {
+            let launcher = Launcher()
+            Launcher.shared = launcher
+            launcher.start()
+        }
     }
 
     static func checkIfShortcutsShouldBeDisabled(_ activeWindow: Window?, _ activeApp: Application?) {
@@ -429,6 +418,7 @@ class App: AppCenterApplication {
 //            App.showSettingsWindow()
         #endif
         UsageStats.prune()
+        initializeLauncherIfNeeded()
         Logger.info { "Finished launching Ztabby" }
     }
 }

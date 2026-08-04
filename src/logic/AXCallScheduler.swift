@@ -9,6 +9,9 @@ class AXCallScheduler {
     private let lock = NSLock()
     private var keyStates = [String: KeyState]()
     private var unresponsivePids = Set<pid_t>()
+    /// pids whose AX calls failed continuously until give-up; stays set until a later call for that pid succeeds,
+    /// so a long-frozen app remains detectable after retries have stopped
+    private var deadPids = Set<pid_t>()
 
     private static let throttleDelayNs: UInt64 = 200_000_000
     private static let giveUpAfterSeconds: Float = 60.0
@@ -26,6 +29,9 @@ class AXCallScheduler {
         var lastExecutionTime: UInt64 = 0
         var retryStartTime: UInt64 = 0
         var retryCount = 0
+        var pid: pid_t?
+        // whether the current retries are caused by the app failing to respond (vs a deliberateRetry)
+        var appIsToBlame = false
         var pendingBlock: (() throws -> Void)?
         var pendingPid: pid_t?
         var pendingContext: String?
@@ -40,6 +46,7 @@ class AXCallScheduler {
     func schedule(key: String, file: String = #file, function: String = #function, line: Int = #line, context: String = "", pid: pid_t? = nil, block: @escaping () throws -> Void) {
         lock.lock()
         var state = keyStates[key] ?? KeyState()
+        state.pid = pid
         switch state.phase {
         case .idle:
             let now = DispatchTime.now().uptimeNanoseconds
@@ -97,7 +104,18 @@ class AXCallScheduler {
     func removeUnresponsivePid(_ pid: pid_t) {
         lock.lock()
         unresponsivePids.remove(pid)
+        deadPids.remove(pid)
         lock.unlock()
+    }
+
+    /// whether we have evidence that this app is not answering AX calls:
+    /// either its calls failed until give-up (deadPids), or a call is currently on its 2nd+ retry.
+    /// deliberateRetry failures don't count (see AxError.deliberateRetry)
+    func isUnresponsive(_ pid: pid_t) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        if deadPids.contains(pid) { return true }
+        return keyStates.values.contains { $0.pid == pid && $0.phase == .retrying && $0.appIsToBlame && $0.retryCount >= 2 }
     }
 
     private func queueForPid(_ pid: pid_t?) -> LabeledOperationQueue {
@@ -141,19 +159,27 @@ class AXCallScheduler {
         }
         lock.unlock()
 
-        if (try? block()) != nil {
+        let appIsToBlame: Bool
+        do {
+            try block()
             // success
             if let pid {
                 lock.lock()
                 unresponsivePids.remove(pid)
+                deadPids.remove(pid)
                 lock.unlock()
             }
             onComplete(key: key, file: file, function: function, line: line)
             return
+        } catch AxError.deliberateRetry {
+            // the app responded; the caller wants a retry (e.g. polling for a first window)
+            appIsToBlame = false
+        } catch {
+            appIsToBlame = true
         }
 
         // failure
-        if let pid {
+        if appIsToBlame, let pid {
             lock.lock()
             unresponsivePids.insert(pid)
             lock.unlock()
@@ -165,6 +191,9 @@ class AXCallScheduler {
             if let pid {
                 lock.lock()
                 unresponsivePids.remove(pid)
+                if appIsToBlame {
+                    deadPids.insert(pid)
+                }
                 lock.unlock()
             }
             onComplete(key: key, file: file, function: function, line: line)
@@ -176,6 +205,8 @@ class AXCallScheduler {
         lock.lock()
         if var state = keyStates[key] {
             state.phase = .retrying
+            state.pid = pid
+            state.appIsToBlame = appIsToBlame
             let step = min(state.retryCount, Self.backoffStepsNs.count - 1)
             delayNs = Self.backoffStepsNs[step]
             state.retryCount += 1

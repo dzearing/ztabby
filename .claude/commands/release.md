@@ -2,9 +2,35 @@
 
 Follow these steps exactly to release a new version of Ztabby.
 
+How the pipeline works: you bump the version, create a DRAFT GitHub release containing the release notes, then push the tag. The tag push triggers `.github/workflows/release.yml`, which builds a signed Release app on a macos-26 runner, notarizes a DMG, Sparkle-signs it (SPARKLE_ED_PRIVATE_KEY secret; keypair also in the login Keychain as "Private key for signing Sparkle updates"), uploads it to your draft, publishes the release, and updates `docs/index.html` (homepage version + download link) and `docs/appcast.xml` (Sparkle auto-update feed) on main — which triggers the GitHub Pages deploy. Do NOT edit `docs/index.html` or `docs/appcast.xml` manually; the workflow owns them.
+
+### Step 0: Sync to Latest (MANDATORY — never skip)
+
+ALWAYS release off the latest `main`. Building or cutting notes from a stale checkout ships a release that is missing merged work. Before anything else, confirm you are on `main` and fully up to date with the remote:
+
+```bash
+git rev-parse --abbrev-ref HEAD   # must be "main"; if not, stop and ask
+git fetch origin
+git log --oneline HEAD..origin/main   # MUST be empty before proceeding
+```
+
+If `HEAD..origin/main` is non-empty, you are behind — pull before doing anything else (stash any local edits like a version bump, fast-forward, then restore):
+
+```bash
+git pull --ff-only origin main
+```
+
+Do NOT analyze changes, write notes, or build until `git log --oneline HEAD..origin/main` is empty. If a fast-forward is not possible (local commits diverge), stop and ask the user how to proceed.
+
 ### Step 1: Analyze Changes
 
-Run `git log $(git describe --tags --abbrev=0)..HEAD --oneline` to see all commits since the last release. If no tags exist, use `git log --oneline -20`.
+The current released version is in `package.json`. List commits since its tag:
+
+```bash
+git log "v$(node -p "require('./package.json').version")"..HEAD --oneline
+```
+
+(Do not use `git describe` — this repo carries hundreds of inherited upstream AltTab tags like `v6.x`/`v10.x` that don't belong to Ztabby's versioning.)
 
 Categorize changes into: new features, improvements, bug fixes.
 
@@ -34,11 +60,13 @@ Present the notes and ask the user to approve or edit. Do NOT proceed until appr
 
 ### Step 3: Bump Version
 
-Update the version string in `package.json` — the `"version": "X.Y.Z"` field.
+Update the `"version": "X.Y.Z"` field in `package.json`. That is the ONLY file to touch:
+- `Info.plist` uses `#VERSION#` placeholders that the release workflow stamps at build time. Do NOT replace them locally.
+- `docs/index.html` is updated by the workflow's `update-homepage` job after the release is published. Do NOT edit it here — editing it before the DMG exists publishes a dead download link.
 
 ### Step 4: Build & Test Locally
 
-Build the debug configuration to validate:
+Build the debug configuration to validate. If `xcode-select -p` points at CommandLineTools, prefix the command with `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`.
 
 ```bash
 xcodebuild -workspace ztabby.xcworkspace -scheme Debug -configuration Debug -derivedDataPath DerivedData build 2>&1 | grep -E "BUILD|error:" | head -10
@@ -53,21 +81,23 @@ pkill -f Ztabby; sleep 1 && open DerivedData/Build/Products/Debug/Ztabby-Debug.a
 
 Ask the user to confirm it works before proceeding.
 
-### Step 5: Commit, Tag, Push
+### Step 5: Commit and Push the Version Bump
 
 ```bash
 git add package.json
 git commit -m "Bump version to X.Y.Z"
 git tag vX.Y.Z
-git push && git push --tags
+git push
 ```
 
-### Step 6: Create GitHub Release
+Do NOT push the tag yet — the draft release with notes must exist first, so the workflow can attach the DMG to it instead of creating a notes-less release.
 
-Create a draft GitHub release with the friendly notes and installation instructions:
+### Step 6: Create Draft Release, Then Push the Tag
+
+Create the draft with the approved notes:
 
 ```bash
-gh release create vX.Y.Z --draft --title "Ztabby vX.Y.Z" --notes "$(cat <<'NOTES'
+gh release create vX.Y.Z --draft --target main --title "Ztabby vX.Y.Z" --notes "$(cat <<'NOTES'
 ## What's new in Ztabby vX.Y.Z
 
 {the approved release notes from step 2}
@@ -84,10 +114,17 @@ NOTES
 )"
 ```
 
-### Step 7: Report
+Then trigger the release build:
 
-Show a summary:
-- Version released
-- Release notes
-- Link to the GitHub Actions run (find it via `gh run list --workflow=release.yml --limit=1`)
-- Link to the draft release
+```bash
+git push --tags
+```
+
+### Step 7: Watch the Workflow and Report
+
+Find the run with `gh run list --workflow=release.yml --limit=1` and watch it with `gh run watch <run-id>` (it builds, signs, notarizes — expect ~10-15 minutes). If it fails, fetch the error with `gh run view <run-id> --log-failed` and report it.
+
+On success, verify and report:
+- `gh release view vX.Y.Z` shows the release is published (not draft) with the DMG attached
+- `git pull` shows the `update-homepage` commit, and `docs/index.html` references vX.Y.Z
+- Show the version, the release notes, the release URL, and the Actions run URL

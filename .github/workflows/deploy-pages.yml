@@ -1,5 +1,9 @@
 name: Deploy to GitHub Pages
 
+# The workflow_run trigger is required for releases: the Release workflow's
+# update-homepage job pushes with GITHUB_TOKEN, and such pushes do NOT fire
+# push-triggered workflows (GitHub's recursion guard). The deploy job is
+# gated below so failed releases don't deploy.
 on:
   push:
     branches:
@@ -10,6 +14,7 @@ on:
     workflows: ["Release"]
     types:
       - completed
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -22,6 +27,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

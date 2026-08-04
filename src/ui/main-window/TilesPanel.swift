@@ -39,7 +39,7 @@ class TilesPanel: NSPanel {
 
     func updateContents(_ preservedScrollOrigin: CGPoint?) {
         caTransaction {
-            if Preferences.windowGroupingEnabled && !Windows.groupedList.isEmpty {
+            if Windows.usesGroupedView {
                 GroupedColumnsView.updateItemsAndLayout()
                 guard App.appIsBeingUsed else { return }
                 let size = GroupedColumnsView.contentView.frame.size
