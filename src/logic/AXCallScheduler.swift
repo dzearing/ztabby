@@ -118,9 +118,15 @@ class AXCallScheduler {
         return keyStates.values.contains { $0.pid == pid && $0.phase == .retrying && $0.appIsToBlame && $0.retryCount >= 2 }
     }
 
+    /// every caller reaches this with the lock released, so taking it here is safe on the non-recursive `lock`
     private func queueForPid(_ pid: pid_t?) -> LabeledOperationQueue {
-        if let pid, unresponsivePids.contains(pid) {
-            return retryQueue
+        if let pid {
+            lock.lock()
+            let isUnresponsive = unresponsivePids.contains(pid)
+            lock.unlock()
+            if isUnresponsive {
+                return retryQueue
+            }
         }
         return fastQueue
     }
