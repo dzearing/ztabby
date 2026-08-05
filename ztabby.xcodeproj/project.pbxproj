@@ -221,6 +221,7 @@
 		BF0C8FF2A4B00D409494EA80 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = BF0C88D79FA0C773D94F351A /* InfoPlist.strings */; };
 		BF0CAAAA0000000000001001 /* SearchAcronymTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0CAAAA0000000000000001 /* SearchAcronymTests.swift */; };
 		BF0CAAAA0000000000001002 /* PreferencesMigrationsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0CAAAA0000000000000002 /* PreferencesMigrationsTests.swift */; };
+		BF0CAAAA0000000000001003 /* SystemPermissionsRestartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0CAAAA0000000000000003 /* SystemPermissionsRestartTests.swift */; };
 		D04BA004884A273D4D2D3EF1 /* HelperExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04BAD91161791D42FEC4A60 /* HelperExtensions.swift */; };
 		D04BA0182F4734A5C8BB63DC /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D04BA5461DAEE9B5350C3020 /* Localizable.strings */; };
 		D04BA03B560B681AF96E4610 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D04BA88ED495C54CFE0B7B87 /* InfoPlist.strings */; };
@@ -319,6 +320,8 @@
 		F00DCAFE0000000000001002 /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000002 /* Search.swift */; };
 		F00DCAFE0000000000001003 /* SearchTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000003 /* SearchTestable.swift */; };
 		F00DCAFE0000000000001004 /* PreferencesMigrationsTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000004 /* PreferencesMigrationsTestable.swift */; };
+		F00DCAFE0000000000001005 /* SystemPermissionsTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000005 /* SystemPermissionsTestable.swift */; };
+		F00DCAFE0000000000001105 /* SystemPermissionsTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000005 /* SystemPermissionsTestable.swift */; };
 		F00DCAFE0000000000001104 /* PreferencesMigrationsTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000004 /* PreferencesMigrationsTestable.swift */; };
 		F00DCAFE0000000000001103 /* SearchTestable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00DCAFE0000000000000003 /* SearchTestable.swift */; };
 		LNCH100000000000000001 /* Launcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = LNCH000000000000000001 /* Launcher.swift */; };
@@ -624,6 +627,7 @@
 		BF0C8FEE46E9A73F617EF679 /* gu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = gu; path = Localizable.strings; sourceTree = "<group>"; };
 		BF0CAAAA0000000000000001 /* SearchAcronymTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAcronymTests.swift; sourceTree = "<group>"; };
 		BF0CAAAA0000000000000002 /* PreferencesMigrationsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesMigrationsTests.swift; sourceTree = "<group>"; };
+		BF0CAAAA0000000000000003 /* SystemPermissionsRestartTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemPermissionsRestartTests.swift; sourceTree = "<group>"; };
 		C0712B3BEA2B3780398C0999 /* Pods_ztabby.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ztabby.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E6F409CA442F83B7BE71AD /* Pods_unit_tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_unit_tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D04BA015A45DE7AFDC9794FE /* Window.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Window.swift; sourceTree = "<group>"; };
@@ -797,6 +801,7 @@
 		F00DCAFE0000000000000002 /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		F00DCAFE0000000000000003 /* SearchTestable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTestable.swift; sourceTree = "<group>"; };
 		F00DCAFE0000000000000004 /* PreferencesMigrationsTestable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferencesMigrationsTestable.swift; sourceTree = "<group>"; };
+		F00DCAFE0000000000000005 /* SystemPermissionsTestable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemPermissionsTestable.swift; sourceTree = "<group>"; };
 		LNCH000000000000000001 /* Launcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Launcher.swift; sourceTree = "<group>"; };
 		LNCH000000000000000002 /* LauncherAppDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherAppDiscovery.swift; sourceTree = "<group>"; };
 		LNCH000000000000000003 /* LauncherAppEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LauncherAppEntry.swift; sourceTree = "<group>"; };
@@ -1213,6 +1218,7 @@
 				BF0C899905524253DC170B56 /* KeyboardEventsTests.swift */,
 				BF0CAAAA0000000000000001 /* SearchAcronymTests.swift */,
 				BF0CAAAA0000000000000002 /* PreferencesMigrationsTests.swift */,
+				BF0CAAAA0000000000000003 /* SystemPermissionsRestartTests.swift */,
 				BF0C829EAA93A4C4ADB42CF8 /* Mocks.swift */,
 				BF0C8C6810FF50908E637A48 /* ConcurrentScreenshots.swift */,
 				BF0C855CD9DBCAEFE48F9EA5 /* AXUIElementTests.swift */,
@@ -1480,6 +1486,7 @@
 				BF0C8998862E0E04D60CACBC /* MacroPreferences.swift */,
 				BF0C8F58B38F29B2662E6C2D /* PreferencesMigrations.swift */,
 				F00DCAFE0000000000000004 /* PreferencesMigrationsTestable.swift */,
+				F00DCAFE0000000000000005 /* SystemPermissionsTestable.swift */,
 				BF0C8A1E7D3F94B6E8C52A01 /* Throttler.swift */,
 				AA0C8A000000000000000001 /* AXCallScheduler.swift */,
 				AA0C8B000000000000000002 /* UsageStats.swift */,
@@ -2609,9 +2616,11 @@
 				BF0C8B787C76D9B961CC2F45 /* KeyboardEventsTests.swift in Sources */,
 				BF0CAAAA0000000000001001 /* SearchAcronymTests.swift in Sources */,
 				BF0CAAAA0000000000001002 /* PreferencesMigrationsTests.swift in Sources */,
+				BF0CAAAA0000000000001003 /* SystemPermissionsRestartTests.swift in Sources */,
 				BF0C8C5FA4B401A8C0F75B7A /* KeyboardEventsTestable.swift in Sources */,
 				F00DCAFE0000000000001103 /* SearchTestable.swift in Sources */,
 				F00DCAFE0000000000001104 /* PreferencesMigrationsTestable.swift in Sources */,
+				F00DCAFE0000000000001105 /* SystemPermissionsTestable.swift in Sources */,
 				BF0C875A28B98904F8F4A66A /* ATShortcut.swift in Sources */,
 				BF0C84E5AC1D423625ABF3E6 /* Mocks.swift in Sources */,
 				BF0C8CBED8D88DFBADE7EC03 /* ConcurrentScreenshots.swift in Sources */,
@@ -2638,6 +2647,7 @@
 				F00DCAFE0000000000001002 /* Search.swift in Sources */,
 				F00DCAFE0000000000001003 /* SearchTestable.swift in Sources */,
 				F00DCAFE0000000000001004 /* PreferencesMigrationsTestable.swift in Sources */,
+				F00DCAFE0000000000001005 /* SystemPermissionsTestable.swift in Sources */,
 				D04BAC011A71E0418154F8CD /* Preferences.swift in Sources */,
 				D04BADCDA9F9A6C3D6499877 /* SystemPermissions.swift in Sources */,
 				D04BABEECBC6D922298BC93A /* Spaces.swift in Sources */,
