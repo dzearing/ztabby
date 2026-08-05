@@ -159,6 +159,7 @@ class Preferences {
     static let gestureIndex = maxShortcutCount
 
     static func initialize() {
+        PreferencesMigrations.migrateFromOldBundleIdentifiers()
         PreferencesMigrations.removeCorruptedPreferences()
         PreferencesMigrations.migratePreferences()
         registerDefaults()

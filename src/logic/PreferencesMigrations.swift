@@ -1,4 +1,41 @@
 class PreferencesMigrations {
+    private static let oldBundleIds = ["com.lwouis.ztabby", "com.lwouis.alt-tab-macos"]
+    /// the main defaults domain, plus the suites UsageStats and LauncherFrecency keep their data in
+    private static let migratedSuiteSuffixes = ["", ".usage", ".launcher"]
+
+    /// Carries settings forward the first time the app runs under the fork's bundle id.
+    ///
+    /// Gated on the absence of `preferencesVersion` rather than on an empty defaults domain: by the time
+    /// this runs, `AppCenterCrash()` in applicationDidFinishLaunching has already written its `MSAppCenter*`
+    /// keys into the domain, so it is never empty — not even on a genuinely fresh install.
+    static func migrateFromOldBundleIdentifiers() {
+        #if DEBUG
+        // the debug build has its own bundle id; importing the release build's settings into it would let a
+        // debugging session inherit, and then write back over, real preferences
+        #else
+        guard UserDefaults.standard.persistentDomain(forName: App.bundleIdentifier)?[preferencesVersionKey] == nil else { return }
+        for oldBundleId in oldBundleIds {
+            guard let oldPrefs = UserDefaults.standard.persistentDomain(forName: oldBundleId), !oldPrefs.isEmpty else { continue }
+            Logger.info { "Migrating preferences from \(oldBundleId)" }
+            for suffix in migratedSuiteSuffixes {
+                importDomain(from: oldBundleId + suffix, into: App.bundleIdentifier + suffix)
+            }
+            return
+        }
+        #endif
+    }
+
+    /// Copies keys across without overwriting any already present, so state the new bundle id has written
+    /// earlier this launch — AppCenter's install id, Sparkle's `SU*` keys — survives the import.
+    private static func importDomain(from oldDomain: String, into newDomain: String) {
+        guard let oldPrefs = UserDefaults.standard.persistentDomain(forName: oldDomain), !oldPrefs.isEmpty else { return }
+        var merged = UserDefaults.standard.persistentDomain(forName: newDomain) ?? [:]
+        for (key, value) in oldPrefs where merged[key] == nil {
+            merged[key] = value
+        }
+        UserDefaults.standard.setPersistentDomain(merged, forName: newDomain)
+    }
+
     static func removeCorruptedPreferences() {
         // from v5.1.0+, there are crash reports of users somehow having their hold shortcuts set to ""
         ["holdShortcut", "holdShortcut2", "holdShortcut3", "holdShortcut4", "holdShortcut5"].forEach {
@@ -8,14 +45,31 @@ class PreferencesMigrations {
         }
     }
 
+    static let preferencesVersionKey = "preferencesVersion"
+    /// set once the AltTab-era chain has been considered, so it is never evaluated twice
+    private static let legacyMigrationsDoneKey = "legacyAltTabMigrationsDone"
+
     static func migratePreferences() {
-        let preferencesKey = "preferencesVersion"
-        if let versionInPlist = UserDefaults.standard.string(forKey: preferencesKey) {
-            if versionInPlist != "#VERSION#" && versionInPlist.compare(App.version, options: .numeric) != .orderedDescending {
-                updateToNewPreferences(versionInPlist)
-            }
-        }
-        UserDefaults.standard.set(App.version, forKey: preferencesKey)
+        migrateLegacyAltTabPreferencesIfNeeded()
+        UserDefaults.standard.set(App.version, forKey: preferencesVersionKey)
+    }
+
+    /// The chain below is keyed to AltTab version numbers, but this fork restarted numbering at 0.x, and
+    /// migratePreferences writes App.version back into the plist on every launch. So from the second launch
+    /// onwards the stored version was always a 0.x one, which compares below every threshold — the entire
+    /// chain re-ran each time the app started. Several of those migrations are not idempotent:
+    /// migrateShowWindowlessApps collapses 2 into 1, migratePreferencesIndexes flips titleTruncation 0<->2,
+    /// migrateCursorFollowFocus overwrites the user's dropdown choice.
+    ///
+    /// Two guards, because either alone is insufficient: only prefs an AltTab-era build actually wrote can
+    /// need these migrations, and even those need them only once.
+    private static func migrateLegacyAltTabPreferencesIfNeeded() {
+        guard !UserDefaults.standard.bool(forKey: legacyMigrationsDoneKey) else { return }
+        defer { UserDefaults.standard.set(true, forKey: legacyMigrationsDoneKey) }
+        guard let versionInPlist = UserDefaults.standard.string(forKey: preferencesVersionKey),
+              versionInPlist != "#VERSION#",
+              PreferencesMigrationsTestable.isAltTabEraVersion(versionInPlist) else { return }
+        updateToNewPreferences(versionInPlist)
     }
 
     private static func updateToNewPreferences(_ versionInPlist: String) {
@@ -53,8 +107,7 @@ class PreferencesMigrations {
     }
 
     private static func shouldRun(_ versionInPlist: String, _ versionThreshold: String) -> Bool {
-        // x.compare(y) is .orderedDescending if x > y
-        versionInPlist.compare(versionThreshold, options: .numeric) != .orderedDescending
+        PreferencesMigrationsTestable.shouldRun(versionInPlist, versionThreshold)
     }
 
     private static func migrateBlacklistToExceptions() {
