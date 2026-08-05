@@ -34,7 +34,7 @@ Alternative Styles
 
 ## FAQ
 
-Find [Frequently Asked Questions on GitHub](https://github.com/lwouis/ztabby/discussions/categories/frequently-asked-questions?discussions_q=category%3A%22Frequently+Asked+Questions%22+).
+Find [Frequently Asked Questions on GitHub](https://github.com/dzearing/ztabby/discussions/categories/frequently-asked-questions?discussions_q=category%3A%22Frequently+Asked+Questions%22+).
 
 ## Configuration
 

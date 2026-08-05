@@ -102,8 +102,8 @@ class Applications {
     }
 
     /// we may not receive a window-destroyed event in some cases:
-    /// * Sequoia bug: https://github.com/lwouis/ztabby/issues/3589
-    /// * Logic Pro bug: https://github.com/lwouis/ztabby/issues/4924
+    /// * Sequoia bug: https://github.com/lwouis/alt-tab-macos/issues/3589
+    /// * Logic Pro bug: https://github.com/lwouis/alt-tab-macos/issues/4924
     /// this acts as a garbage-collector for windows, to keep our list in-sync with the actual system
     static func removeZombieWindows() {
         // snapshot wids on main thread where Windows.list is safe to read

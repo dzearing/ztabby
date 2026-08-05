@@ -6,5 +6,5 @@ Very little information is available about private APIs. I tried to document the
 Some links:
 
 * Webkit repo: https://github.com/WebKit/webkit/blob/master/Source/WebCore/PAL/pal/spi/cg/CoreGraphicsSPI.h
-* Ztabby issue: https://github.com/lwouis/ztabby/pull/87#issuecomment-558624755
+* AltTab issue: https://github.com/lwouis/alt-tab-macos/pull/87#issuecomment-558624755
 * Github repo with retro-engineered internals: https://github.com/NUIKit/CGSInternal

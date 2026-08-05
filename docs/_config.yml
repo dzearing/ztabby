@@ -1,4 +1,4 @@
-repository: lwouis/ztabby
+repository: dzearing/ztabby
 theme: null # bug in github-pages generates a css file; we prevent it
 title: "Ztabby"
 url: "https://ztabby.app"
