@@ -6,7 +6,7 @@
 
 **Ztabby** brings the power of Windows ztabby to macOS
 
-[Official website](https://ztabby.app/)<br/><sub>15K stars</sub> | [Download](https://github.com/lwouis/ztabby/releases/download/v10.12.0/Ztabby-10.12.0.zip)<br/><sub>7.4M downloads</sub>
+[Official website](https://ztabby.app/) | [Download](https://github.com/dzearing/ztabby/releases/latest)
 -|-
 
 <div align="right">

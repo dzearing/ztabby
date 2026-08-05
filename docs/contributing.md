@@ -5,7 +5,7 @@ sitemap: true
 
 There are many ways to contribute:
 
-* [Suggest an enhancement or discuss an issue on github](https://github.com/lwouis/ztabby/issues), or use the feedback form in the app.
+* [Suggest an enhancement or discuss an issue on github](https://github.com/dzearing/ztabby/issues), or use the feedback form in the app.
 * [Localize the app in your language](https://poeditor.com/join/project/8AOEZ0eAZE)
 
 ## Technical overview
@@ -29,7 +29,7 @@ Documentation is abysmal. Very simple things are not documented at all, and good
 
 Dependencies were historically never handled by Apple. The community came up with [Cocoapods](https://cocoapods.org/) which is the de-facto dependency manager for Apple ecosystem projects these days, even though Apple is now trying to push their own.
 
-OS APIs are quite limited for the kind of low-level, system-wide app Ztabby is. This means often we just don’t have an API to do something. For instance, there is no API to ask the OS “how many Spaces does the user have?” or “Can you focus the window on Space 2?”. There are however, retro-engineered private APIs which you can call. These are not documented at all, not guaranteed to be there in future macOS releases, and prevent us from releasing Ztabby on the Mac AppStore. We have tried our best to [document the ones we are using](https://github.com/lwouis/ztabby/blob/master/src/api-wrappers/private-apis/README.md), as well as [the ones we investigated](https://github.com/lwouis/ztabby/blob/master/src/experimentations/PrivateApis.swift) in the past.
+OS APIs are quite limited for the kind of low-level, system-wide app Ztabby is. This means often we just don’t have an API to do something. For instance, there is no API to ask the OS “how many Spaces does the user have?” or “Can you focus the window on Space 2?”. There are however, retro-engineered private APIs which you can call. These are not documented at all, not guaranteed to be there in future macOS releases, and prevent us from releasing Ztabby on the Mac AppStore. We have tried our best to [document the ones we are using](https://github.com/dzearing/ztabby/blob/main/src/api-wrappers/private-apis/README.md), as well as [the ones we investigated](https://github.com/dzearing/ztabby/blob/main/src/experimentations/PrivateApis.swift) in the past.
 
 ## Project architecture
 
@@ -134,7 +134,7 @@ In an attempt to not have too many regressions, this documents will list OS inte
 * The "select next window" shortcut can be modifiers, modifiers+key, or just key; it can also contain the same modifiers as the hold "key"
 * All shortcuts, except the hold key, can be disabled by the user
 * Shortcuts can include the `escape` and `delete` key; these should not stop recording shortcuts
-* [Secure Input](https://github.com/lwouis/ztabby/issues/157#issuecomment-659170293) can prevent Ztabby from listening to the keyboard
+* [Secure Input](https://github.com/lwouis/alt-tab-macos/issues/157#issuecomment-659170293) can prevent Ztabby from listening to the keyboard
 * Some shortcuts should only work when Ztabby is open
   * These shortcuts should active whether the hold shortcut is held or not
 * Shortcuts should work with capslock active or inactive

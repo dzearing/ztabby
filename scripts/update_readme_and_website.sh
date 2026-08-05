@@ -11,7 +11,7 @@ github_api_request() {
   curl -s \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token $GITHUB_TOKEN" \
-    "https://api.github.com/repos/lwouis/ztabby$url"
+    "https://api.github.com/repos/dzearing/ztabby$url"
 }
 
 poeditor_api_request() {
@@ -49,7 +49,7 @@ poeditor_contributors() {
 generate_contributors() {
   echo "# Contributors"
   echo
-  echo "## [Developed the app](https://github.com/lwouis/ztabby/graphs/contributors)"
+  echo "## [Developed the app](https://github.com/dzearing/ztabby/graphs/contributors)"
   echo
   github_contributors
   echo
