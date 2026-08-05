@@ -11,7 +11,7 @@ cat >$certificateFile.conf <<EOL
   distinguished_name = req_name
   prompt = no
   [ req_name ]
-  CN = Local Self-Signed
+  CN = Ztabby Debug Signing
   [ extensions ]
   basicConstraints=critical,CA:false
   keyUsage=critical,digitalSignature
