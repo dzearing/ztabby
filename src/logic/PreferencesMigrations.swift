@@ -8,14 +8,31 @@ class PreferencesMigrations {
         }
     }
 
+    static let preferencesVersionKey = "preferencesVersion"
+    /// set once the AltTab-era chain has been considered, so it is never evaluated twice
+    private static let legacyMigrationsDoneKey = "legacyAltTabMigrationsDone"
+
     static func migratePreferences() {
-        let preferencesKey = "preferencesVersion"
-        if let versionInPlist = UserDefaults.standard.string(forKey: preferencesKey) {
-            if versionInPlist != "#VERSION#" && versionInPlist.compare(App.version, options: .numeric) != .orderedDescending {
-                updateToNewPreferences(versionInPlist)
-            }
-        }
-        UserDefaults.standard.set(App.version, forKey: preferencesKey)
+        migrateLegacyAltTabPreferencesIfNeeded()
+        UserDefaults.standard.set(App.version, forKey: preferencesVersionKey)
+    }
+
+    /// The chain below is keyed to AltTab version numbers, but this fork restarted numbering at 0.x, and
+    /// migratePreferences writes App.version back into the plist on every launch. So from the second launch
+    /// onwards the stored version was always a 0.x one, which compares below every threshold — the entire
+    /// chain re-ran each time the app started. Several of those migrations are not idempotent:
+    /// migrateShowWindowlessApps collapses 2 into 1, migratePreferencesIndexes flips titleTruncation 0<->2,
+    /// migrateCursorFollowFocus overwrites the user's dropdown choice.
+    ///
+    /// Two guards, because either alone is insufficient: only prefs an AltTab-era build actually wrote can
+    /// need these migrations, and even those need them only once.
+    private static func migrateLegacyAltTabPreferencesIfNeeded() {
+        guard !UserDefaults.standard.bool(forKey: legacyMigrationsDoneKey) else { return }
+        defer { UserDefaults.standard.set(true, forKey: legacyMigrationsDoneKey) }
+        guard let versionInPlist = UserDefaults.standard.string(forKey: preferencesVersionKey),
+              versionInPlist != "#VERSION#",
+              PreferencesMigrationsTestable.isAltTabEraVersion(versionInPlist) else { return }
+        updateToNewPreferences(versionInPlist)
     }
 
     private static func updateToNewPreferences(_ versionInPlist: String) {
@@ -53,8 +70,7 @@ class PreferencesMigrations {
     }
 
     private static func shouldRun(_ versionInPlist: String, _ versionThreshold: String) -> Bool {
-        // x.compare(y) is .orderedDescending if x > y
-        versionInPlist.compare(versionThreshold, options: .numeric) != .orderedDescending
+        PreferencesMigrationsTestable.shouldRun(versionInPlist, versionThreshold)
     }
 
     private static func migrateBlacklistToExceptions() {
