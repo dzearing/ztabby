@@ -53,10 +53,30 @@ class SystemPermissions {
     }
 
     private static func checkPermissionsPostStartup() {
-        if AccessibilityPermission.status == .notGranted {
-            Logger.error { "Accessibility permission revoked while Ztabby was running; restarting" }
-            DispatchQueue.main.async { App.restart() }
+        guard AccessibilityPermission.status == .notGranted else { return }
+        guard consumeRestartBudget() else {
+            // give up on restarting rather than loop: see SystemPermissionsTestable
+            Logger.error { "Accessibility permission lost, but the restart budget is spent; showing the permissions window instead" }
+            DispatchQueue.main.async { App.showPermissionsWindow() }
+            return
         }
+        Logger.error { "Accessibility permission revoked while Ztabby was running; restarting" }
+        DispatchQueue.main.async { App.restart() }
+    }
+
+    /// Restart attempts are tracked in UserDefaults because each restart is a new process; an in-memory
+    /// counter would reset every time and never trip. The sliding window refills the budget on its own,
+    /// so nothing needs to clear this once permissions are healthy again — and deliberately so: clearing
+    /// it on a successful launch would reset the count on every loop iteration and defeat the limit.
+    private static func consumeRestartBudget(now: Double = Date().timeIntervalSince1970) -> Bool {
+        let key = "permissionRestartAttempts"
+        let stored = UserDefaults.standard.array(forKey: key) as? [Double] ?? []
+        guard SystemPermissionsTestable.restartIsAllowed(attempts: stored, now: now) else {
+            UserDefaults.standard.set(SystemPermissionsTestable.recentRestarts(stored, now: now), forKey: key)
+            return false
+        }
+        UserDefaults.standard.set(SystemPermissionsTestable.recordingRestart(stored, now: now), forKey: key)
+        return true
     }
 
     static func setInfrequentTimer() {
