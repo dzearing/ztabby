@@ -122,6 +122,8 @@ class ControlsTab {
         "←": { App.cycleSelection(.left) },
         "↑": { App.cycleSelection(.up) },
         "↓": { App.cycleSelection(.down) },
+        "⇧↑": { App.cycleMachine(-1) },
+        "⇧↓": { App.cycleMachine(1) },
         "vimCycleRight": { App.cycleSelection(.right) },
         "vimCycleLeft": { App.cycleSelection(.left) },
         "vimCycleUp": { App.cycleSelection(.up) },
@@ -165,6 +167,8 @@ class ControlsTab {
         "windowOrder",
     ]
     private static let arrowKeys = ["←", "→", "↑", "↓"]
+    // shift + up/down moves between machine cards in the grouped view; they follow the arrow keys preference
+    private static let machineArrowKeys = ["⇧↑", "⇧↓"]
     private static let vimKeyActions = [
         "h": "vimCycleLeft",
         "l": "vimCycleRight",
@@ -812,7 +816,7 @@ class ControlsTab {
         if let shortcutControl = shortcutControls[controlId] {
             return shortcutControl.1
         }
-        if arrowKeys.contains(controlId) {
+        if arrowKeys.contains(controlId) || machineArrowKeys.contains(controlId) {
             return NSLocalizedString("Arrow keys", comment: "")
         }
         if vimKeyActions.values.contains(controlId) {
@@ -890,9 +894,9 @@ class ControlsTab {
 
     private static func applyArrowKeysPreference() {
         if Preferences.arrowKeysEnabled {
-            arrowKeys.forEach { addShortcut(.down, .local, Shortcut(keyEquivalent: $0)!, $0, nil) }
+            (arrowKeys + machineArrowKeys).forEach { addShortcut(.down, .local, Shortcut(keyEquivalent: $0)!, $0, nil) }
         } else {
-            arrowKeys.forEach { removeShortcutIfExists($0) }
+            (arrowKeys + machineArrowKeys).forEach { removeShortcutIfExists($0) }
         }
     }
 

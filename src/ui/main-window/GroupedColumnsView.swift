@@ -369,17 +369,35 @@ class GroupedColumnsView {
         estimateColumnWidth(cards.flatMap(\.columns))
     }
 
+    /// the current selection as indices: [machine, column, row] in machine mode, [column, row] otherwise
+    static func selectionPath() -> [Int] {
+        if Windows.groupingMode == .machine { return [selectedMachineIndex, selectedColumnIndex, selectedRowIndex] }
+        return [selectedGroupIndex, selectedWindowIndex]
+    }
+
     static func selectedWindow() -> Window? {
+        window(selectionPath())
+    }
+
+    private static func window(_ selection: [Int]) -> Window? {
         if Windows.groupingMode == .machine {
-            guard let column = selectedMachineColumn() else { return nil }
-            guard selectedRowIndex < column.windows.count else { return nil }
-            return column.windows[selectedRowIndex]
+            let cards = Windows.machineCards
+            guard selection.count == 3, selection[0] < cards.count else { return nil }
+            let columns = cards[selection[0]].columns
+            guard selection[1] < columns.count, selection[2] < columns[selection[1]].windows.count else { return nil }
+            return columns[selection[1]].windows[selection[2]]
         }
         let groups = Windows.groupedList
-        guard selectedGroupIndex < groups.count else { return nil }
-        let group = groups[selectedGroupIndex]
-        guard selectedWindowIndex < group.windows.count else { return nil }
-        return group.windows[selectedWindowIndex]
+        guard selection.count == 2, selection[0] < groups.count, selection[1] < groups[selection[0]].windows.count else { return nil }
+        return groups[selection[0]].windows[selection[1]]
+    }
+
+    private static func setSelection(_ selection: [Int]) {
+        if Windows.groupingMode == .machine {
+            (selectedMachineIndex, selectedColumnIndex, selectedRowIndex) = (selection[0], selection[1], selection[2])
+        } else {
+            (selectedGroupIndex, selectedWindowIndex) = (selection[0], selection[1])
+        }
     }
 
     private static func selectedMachineColumn() -> WindowGroup? {
@@ -426,15 +444,52 @@ class GroupedColumnsView {
         updateItemsAndLayout(animated: true)
     }
 
-    /// machine mode: move between title-group columns inside the focused card; clamps at the card's edges (never crosses cards)
+    /// the trigger key (and shift + the trigger key) walks every window in reading order: down the
+    /// focused column, then into the next column, then into the next machine card; wrapping at the ends
+    static func navigateNextWindow(_ delta: Int) {
+        let selections = flatSelections()
+        guard !selections.isEmpty else { return }
+        let current = selections.firstIndex(of: selectionPath()) ?? 0
+        applySelection(selections[(current + delta + selections.count) % selections.count])
+    }
+
+    /// every window of the grouped view, in reading order; paths match `selectionPath()`
+    private static func flatSelections() -> [[Int]] {
+        if Windows.groupingMode == .machine {
+            return Windows.machineCards.enumerated().flatMap { mi, card in
+                card.columns.enumerated().flatMap { ci, column in column.windows.indices.map { [mi, ci, $0] } }
+            }
+        }
+        return Windows.groupedList.enumerated().flatMap { gi, group in group.windows.indices.map { [gi, $0] } }
+    }
+
+    private static func applySelection(_ selection: [Int]) {
+        let changedColumn = selection.dropLast() != selectionPath().dropLast()
+        setSelection(selection)
+        updateItemsAndLayout(animated: changedColumn)
+    }
+
+    /// shift + up/down jumps to the previous/next machine card, keeping the selection at its top
+    static func navigateMachine(_ delta: Int) {
+        guard Windows.groupingMode == .machine else { return }
+        let cards = Windows.machineCards
+        let newMachine = selectedMachineIndex + delta
+        guard newMachine >= 0, newMachine < cards.count else { return }
+        selectedMachineIndex = newMachine
+        selectedColumnIndex = 0
+        selectedRowIndex = 0
+        updateItemsAndLayout(animated: true)
+    }
+
+    /// machine mode: move between title-group columns inside the focused card, wrapping around its edges
+    /// (never crosses cards; shift + up/down does that)
     private static func machineMoveColumn(_ delta: Int) {
         let cards = Windows.machineCards
         guard selectedMachineIndex < cards.count else { return }
         let columns = cards[selectedMachineIndex].columns
-        let newColumn = selectedColumnIndex + delta
-        guard newColumn >= 0, newColumn < columns.count else { return }
-        selectedColumnIndex = newColumn
-        selectedRowIndex = min(selectedRowIndex, max(0, columns[newColumn].windows.count - 1))
+        guard columns.count > 1 else { return }
+        selectedColumnIndex = (selectedColumnIndex + delta + columns.count) % columns.count
+        selectedRowIndex = min(selectedRowIndex, max(0, columns[selectedColumnIndex].windows.count - 1))
         updateItemsAndLayout()
     }
 
@@ -470,40 +525,24 @@ class GroupedColumnsView {
         selectedRowIndex = min(max(0, selectedRowIndex), max(0, count - 1))
     }
 
+    /// the panel opens on the most recently focused window other than the one the user is on, so that
+    /// tapping the trigger key toggles between the last two windows. Only windows this view shows are
+    /// candidates: the previously focused window may well be filtered out (another app, another space)
     static func resetSelection() {
-        if Windows.groupingMode == .machine { resetMachineSelection(); return }
-        let groups = Windows.groupedList
-        guard let previousWindow = Windows.list.first(where: { $0.lastFocusOrder == 1 }) else {
-            selectedGroupIndex = 0
-            selectedWindowIndex = 0
-            return
-        }
-        for (gi, group) in groups.enumerated() {
-            if let wi = group.windows.firstIndex(where: { $0.id == previousWindow.id }) {
-                selectedGroupIndex = gi
-                selectedWindowIndex = wi
-                return
-            }
-        }
-        selectedGroupIndex = 0
-        selectedWindowIndex = 0
-    }
-
-    private static func resetMachineSelection() {
         selectedMachineIndex = 0
         selectedColumnIndex = 0
         selectedRowIndex = 0
-        guard let previousWindow = Windows.list.first(where: { $0.lastFocusOrder == 1 }) else { return }
-        for (mi, card) in Windows.machineCards.enumerated() {
-            for (ci, column) in card.columns.enumerated() {
-                if let ri = column.windows.firstIndex(where: { $0.id == previousWindow.id }) {
-                    selectedMachineIndex = mi
-                    selectedColumnIndex = ci
-                    selectedRowIndex = ri
-                    return
-                }
-            }
-        }
+        selectedGroupIndex = 0
+        selectedWindowIndex = 0
+        let selections = flatSelections()
+        guard !selections.isEmpty else { return }
+        setSelection(selections.min { focusRank($0) < focusRank($1) } ?? selections[0])
+    }
+
+    /// the window the user is on ranks last: reopening the panel must not land back on it
+    private static func focusRank(_ selection: [Int]) -> Int {
+        guard let window = window(selection) else { return .max }
+        return window.lastFocusOrder == 0 ? .max - 1 : window.lastFocusOrder
     }
 }
 

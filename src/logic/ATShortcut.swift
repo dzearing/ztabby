@@ -49,14 +49,16 @@ class ATShortcut {
         }
         // other shortcuts: contains exactly or exactly + holdShortcut modifiers
         let holdModifiersCleaned = ControlsTab.shortcuts[Preferences.indexToName("holdShortcut", App.shortcutIndex)]?.shortcut.carbonModifierFlags.cleaned() ?? 0
-        // nextWindowShortcut when panel is open: also match base key without holdShortcut modifiers
+        var expectedModifiers = [shortcutModifiersCleaned, shortcutModifiersCleaned | holdModifiersCleaned]
         if App.appIsBeingUsed && id.hasPrefix("nextWindowShortcut") {
-            let baseModifiersCleaned = shortcutModifiersCleaned & ~holdModifiersCleaned
-            if modifiersCleaned == baseModifiersCleaned {
+            // nextWindowShortcut when panel is open: also match base key without holdShortcut modifiers
+            expectedModifiers.append(shortcutModifiersCleaned & ~holdModifiersCleaned)
+            // shift + the trigger key cycles backwards, so an extra shift is a modifier, not a mismatch
+            if shortcutModifiersCleaned & UInt32(shiftKey) == 0 && expectedModifiers.contains(modifiersCleaned & ~UInt32(shiftKey)) {
                 return true
             }
         }
-        return modifiersCleaned == shortcutModifiersCleaned || modifiersCleaned == (shortcutModifiersCleaned | holdModifiersCleaned)
+        return expectedModifiers.contains(modifiersCleaned)
     }
 
     func shouldTrigger() -> Bool {

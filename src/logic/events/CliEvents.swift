@@ -69,10 +69,19 @@ class CliServer {
                         isMinimized: $0.isMinimized,
                         isOnAllSpaces: $0.isOnAllSpaces,
                         position: $0.position,
-                        size: $0.size
+                        size: $0.size,
+                        machine: $0.ghosttyMachine
                     )
                 }
             )
+        }
+        if rawValue == "--ui-state" {
+            return uiState()
+        }
+        if rawValue.hasPrefix("--action=") {
+            guard App.appIsBeingUsed else { return error }
+            ControlsTab.executeAction(String(rawValue.dropFirst("--action=".count)))
+            return noOutput
         }
         if rawValue.hasPrefix("--focus="),
            let id = CGWindowID(rawValue.dropFirst("--focus=".count)), let window = (Windows.list.first { $0.cgWindowId == id }) {
@@ -90,6 +99,28 @@ class CliServer {
             return noOutput
         }
         return error
+    }
+
+    /// debug helper: dumps the switcher's grouped layout and where the selection sits inside it
+    private static func uiState() -> Codable {
+        let mode = Windows.groupingMode
+        let cards: [JsonUiCard]
+        if mode == .machine {
+            cards = Windows.machineCards.map { JsonUiCard(name: $0.name, columns: $0.columns.map(jsonColumn)) }
+        } else {
+            cards = [JsonUiCard(name: nil, columns: Windows.groupedList.map(jsonColumn))]
+        }
+        return JsonUiState(
+            isShown: App.appIsBeingUsed,
+            groupingMode: "\(mode)",
+            selectedTitle: GroupedColumnsView.selectedWindow()?.title,
+            selection: GroupedColumnsView.selectionPath(),
+            cards: cards
+        )
+    }
+
+    private static func jsonColumn(_ group: WindowGroup) -> JsonUiColumn {
+        JsonUiColumn(name: group.name, rows: group.displayLabels)
     }
 
     private struct JsonWindowList: Codable {
@@ -121,6 +152,25 @@ class CliServer {
         var isOnAllSpaces: Bool
         var position: CGPoint?
         var size: CGSize?
+        var machine: String?
+    }
+
+    private struct JsonUiState: Codable {
+        var isShown: Bool
+        var groupingMode: String
+        var selectedTitle: String?
+        var selection: [Int]
+        var cards: [JsonUiCard]
+    }
+
+    private struct JsonUiCard: Codable {
+        var name: String?
+        var columns: [JsonUiColumn]
+    }
+
+    private struct JsonUiColumn: Codable {
+        var name: String
+        var rows: [String]
     }
 }
 
@@ -128,7 +178,7 @@ class CliClient {
     static func detectCommand() -> String? {
         let args = CommandLine.arguments
         if args.count == 2 && !args[1].starts(with: "--logs=") {
-            if args[1] == "--list" || args[1] == "--detailed-list" || args[1].hasPrefix("--focus=") || args[1].hasPrefix("--focusUsingLastFocusOrder=") || args[1].hasPrefix("--show=") {
+            if args[1] == "--list" || args[1] == "--detailed-list" || args[1] == "--ui-state" || args[1].hasPrefix("--focus=") || args[1].hasPrefix("--focusUsingLastFocusOrder=") || args[1].hasPrefix("--show=") || args[1].hasPrefix("--action=") {
                 return args[1]
             }
         }

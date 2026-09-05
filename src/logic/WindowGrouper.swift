@@ -52,16 +52,17 @@ class WindowGrouper {
     }
 
     /// Groups windows into one card per machine, keyed on the Ghoztty `AXGhosttyMachine` attribute.
-    /// Non-Ghoztty windows are treated as running on the local machine ("Local"). Within each machine
-    /// card we reuse the existing title-prefix grouping, so headers are preserved per machine.
-    /// Returns nil unless the Ghoztty windows span at least two distinct machines, so this only
-    /// activates when there is genuinely more than one machine to disambiguate.
+    /// Non-Ghoztty windows are treated as running on the local machine ("Local"), as are the windows
+    /// Ghoztty reports under an alias of this Mac (localhost, 127.0.0.1, this Mac's hostname, ...).
+    /// Within each machine card we reuse the existing title-prefix grouping, so headers are preserved
+    /// per machine. Returns nil unless the Ghoztty windows span at least two distinct machines, so
+    /// this only activates when there is genuinely more than one machine to disambiguate.
     static func machineGroups(_ windows: [Window]) -> [MachineCard]? {
-        guard Set(windows.compactMap(\.ghosttyMachine)).count >= 2 else { return nil }
+        guard Set(windows.compactMap { MachineNameTestable.normalize($0.ghosttyMachine) }).count >= 2 else { return nil }
         var order = [String]()
         var byMachine = [String: [Window]]()
         for window in windows {
-            let machine = window.ghosttyMachine ?? localMachineName
+            let machine = MachineNameTestable.normalize(window.ghosttyMachine) ?? localMachineName
             if byMachine[machine] == nil { order.append(machine) }
             byMachine[machine, default: []].append(window)
         }
@@ -69,5 +70,5 @@ class WindowGrouper {
         return sorted.map { MachineCard(name: $0, columns: group(byMachine[$0]!)) }
     }
 
-    static let localMachineName = "Local"
+    static let localMachineName = MachineNameTestable.localMachineName
 }

@@ -217,6 +217,12 @@ class Window {
     }
 
     func focus() {
+        // macOS does not always deliver the AXFocusedWindowChanged notification we rely on to keep
+        // lastFocusOrder up to date (it goes missing when switching quickly between windows of the app
+        // that is already frontmost). The order would then stay stale forever, as re-focusing the window
+        // the app already considers focused emits nothing. We know the intent here, so we record it
+        // ourselves; the notification, when it does arrive, is a no-op for a window already at 0
+        _ = Windows.updateLastFocusOrder(self)
         if let ztabbyWindow = ztabbyWindow() {
             App.shared.activate(ignoringOtherApps: true)
             ztabbyWindow.makeKeyAndOrderFront(nil)

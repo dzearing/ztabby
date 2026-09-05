@@ -245,8 +245,9 @@ class App: AppCenterApplication {
             switch direction {
             case .up: GroupedColumnsView.navigateUp()
             case .down: GroupedColumnsView.navigateDown()
-            case .left, .trailing: GroupedColumnsView.navigateLeft()
-            case .right, .leading: GroupedColumnsView.navigateRight()
+            case .left: GroupedColumnsView.navigateLeft()
+            case .right: GroupedColumnsView.navigateRight()
+            case .leading, .trailing: GroupedColumnsView.navigateNextWindow(direction.step())
             }
             TilesPanel.shared.updateContents(nil)
             return
@@ -258,9 +259,19 @@ class App: AppCenterApplication {
         }
     }
 
+    /// in the grouped view a modifiers-only binding (the default is shift) is a chord modifier: shift +
+    /// the trigger key goes back, shift + up/down changes machine. So it must not move the selection on
+    /// its own; a binding with an actual key still selects the previous window
     static func previousWindowShortcutWithRepeatingKey() {
+        guard !Windows.usesGroupedView || ControlsTab.shortcuts["previousWindowShortcut"]?.shortcut.keyCode != KeyCode.none else { return }
         cycleSelection(.trailing)
         KeyRepeatTimer.startRepeatingKeyPreviousWindow()
+    }
+
+    static func cycleMachine(_ delta: Int) {
+        guard Windows.usesGroupedView else { return }
+        GroupedColumnsView.navigateMachine(delta)
+        TilesPanel.shared.updateContents(nil)
     }
 
     static func focusSelectedWindow(_ selectedWindow: Window?) {
@@ -340,7 +351,7 @@ class App: AppCenterApplication {
                 }
             }
         } else {
-            cycleSelection(.leading)
+            cycleSelection(ModifierFlags.current.contains(.shift) ? .trailing : .leading)
             KeyRepeatTimer.startRepeatingKeyNextWindow()
         }
     }
