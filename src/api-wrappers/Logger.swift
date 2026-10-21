@@ -4,6 +4,9 @@ import Foundation
 class Logger {
     private static let logger = SwiftyBeaver.self
     static let flag = "--logs="
+    static let fileFlag = "--logfile="
+    static let level = decideLevel()
+    static var isDebugEnabled: Bool { level.rawValue <= SwiftyBeaver.Level.debug.rawValue }
     static let longDateTimeFormat = "yyyy-MM-dd HH:mm:ss.SSS"
     static let shortDateTimeFormat = "HH:mm:ss.SSS"
 
@@ -12,8 +15,20 @@ class Logger {
         console.useTerminalColors = true
         configureDestination(console)
         console.format = "$C$D\(shortDateTimeFormat)$d $L$c $N.swift:$l $F $M"
-        console.minLevel = decideLevel()
+        console.minLevel = level
         logger.addDestination(console)
+        addFileDestinationIfNeeded()
+    }
+
+    /// `--logfile=<path>`: an app started by `open` is parented to launchd and its stdout goes nowhere,
+    /// so a debug session that must be driven from the real UI needs the logs in a file to be readable
+    private static func addFileDestinationIfNeeded() {
+        guard let path = (CommandLine.arguments.first { $0.starts(with: fileFlag) })?.dropFirst(fileFlag.count), !path.isEmpty else { return }
+        let file = FileDestination(logFileURL: URL(fileURLWithPath: String(path)))
+        configureDestination(file)
+        file.minLevel = level
+        file.syncAfterEachWrite = true
+        logger.addDestination(file)
     }
 
     static func configureDestination(_ dest: BaseDestination) {

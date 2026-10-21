@@ -21,6 +21,7 @@ class KeyboardEvents {
                 handleKeyboardEvent(nil, nil, nil, modifiers, false)
             }
         } else if (type == .tapDisabledByUserInput || type == .tapDisabledByTimeout) {
+            Logger.warning { "modifier event tap was disabled by macOS (\(type == .tapDisabledByTimeout ? "timeout" : "user input")); re-enabling it" }
             CGEvent.tapEnable(tap: eventTap!, enable: true)
         }
         // we always return this because we want to let these event pass through to the currently focused app
@@ -105,9 +106,13 @@ class KeyboardEvents {
             callback: cgEventFlagsChangedHandler,
             userInfo: nil)
         if let eventTap {
+            // enabled:false here means macOS is starving the tap, which it does when Input Monitoring
+            // is denied; the permissions window reports that, since nothing else surfaces it
+            Logger.info { "modifier event tap created; enabled:\(CGEvent.tapIsEnabled(tap: eventTap)) inputMonitoring:\(InputMonitoringPermission.update())" }
             let runLoopSource = CFMachPortCreateRunLoopSource(nil, eventTap, 0)
             CFRunLoopAddSource(BackgroundWork.keyboardAndMouseAndTrackpadEventsThread.runLoop, runLoopSource, .commonModes)
         } else {
+            Logger.error { "modifier event tap could not be created; hold-key releases will not be seen" }
             #if !DEBUG
             App.restart()
             #endif

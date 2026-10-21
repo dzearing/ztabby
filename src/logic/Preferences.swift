@@ -48,7 +48,6 @@ class Preferences {
             "hideStatusIcons": "false",
             "previewFocusedWindow": "false",
             "captureWindowsInBackground": "true",
-            "screenRecordingPermissionSkipped": "false",
             "trackpadHapticFeedbackEnabled": "true",
             "settingsWindowShownOnFirstLaunch": "false",
             "windowGroupingEnabled": "true",
@@ -119,7 +118,6 @@ class Preferences {
     static var exceptions: [ExceptionEntry] { CachedUserDefaults.json("exceptions", [ExceptionEntry].self) }
     static var previewSelectedWindow: Bool { CachedUserDefaults.bool("previewFocusedWindow") }
     static var captureWindowsInBackground: Bool { CachedUserDefaults.bool("captureWindowsInBackground") }
-    static var screenRecordingPermissionSkipped: Bool { CachedUserDefaults.bool("screenRecordingPermissionSkipped") }
     static var settingsWindowShownOnFirstLaunch: Bool { CachedUserDefaults.bool("settingsWindowShownOnFirstLaunch") }
     static var windowGroupingEnabled: Bool { CachedUserDefaults.bool("windowGroupingEnabled") }
     static var launcherEnabled: Bool { CachedUserDefaults.bool("launcherEnabled") }

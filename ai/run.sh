@@ -13,4 +13,5 @@ app="$repo/DerivedData/Build/Products/Debug/Ztabby-Debug.app"
 # starts a fresh one instead of just activating the old build.
 pkill -f Ztabby-Debug 2>/dev/null || true
 sleep 1
-open "$app" --args --logs=debug
+# ZTABBY_LOGFILE=/tmp/ztabby.log ai/run.sh  captures the debug logs of an `open`-launched app
+open "$app" --args --logs=debug ${ZTABBY_LOGFILE:+--logfile="$ZTABBY_LOGFILE"}

@@ -284,6 +284,7 @@
 		D04BA9D63A88AF2C20A1E656 /* SF-Pro-Text-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = D04BA60A6D08C041F5BF8CC9 /* SF-Pro-Text-Regular.otf */; };
 		D04BAA16F21AC41A23DDA63D /* ControlsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04BA1B438BF3E65044D1138 /* ControlsTab.swift */; };
 		D04BAAAF5CFA991D3B078DB8 /* KeyboardEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04BA4A621A8A15660F973C1 /* KeyboardEvents.swift */; };
+		HOLD000000000000001001 /* HoldKeyWatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = HOLD000000000000000001 /* HoldKeyWatcher.swift */; };
 		D04BAAB5C4E78AE375EA7D3C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = D04BAA56B4EEAF17F767C7FD /* Localizable.strings */; };
 		D04BAABE804F3769CE22BEB6 /* HyperlinkLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D04BA49E45BFFF3D9FC60E43 /* HyperlinkLabel.swift */; };
 		D04BAAD77232701929AC3D74 /* exceptions@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D04BAAA1835480F9B3CCF170 /* exceptions@2x.png */; };
@@ -682,6 +683,7 @@
 		D04BA49E45BFFF3D9FC60E43 /* HyperlinkLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperlinkLabel.swift; sourceTree = "<group>"; };
 		D04BA4A26987F67DD94C827F /* AboutTab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AboutTab.swift; sourceTree = "<group>"; };
 		D04BA4A621A8A15660F973C1 /* KeyboardEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardEvents.swift; sourceTree = "<group>"; };
+		HOLD000000000000000001 /* HoldKeyWatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoldKeyWatcher.swift; sourceTree = "<group>"; };
 		D04BA4A82888205AAE818E53 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = Localizable.strings; sourceTree = "<group>"; };
 		D04BA4B5292629AA6B560216 /* package_and_notarize_release.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = package_and_notarize_release.sh; sourceTree = "<group>"; };
 		D04BA4D5DF349429527824A2 /* determine_next_version.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = determine_next_version.sh; sourceTree = "<group>"; };
@@ -2112,6 +2114,7 @@
 				5F04852D2F09AC9700235D4A /* WindowCaptureEvents.swift */,
 				D04BA8FDCF137D892114F5F3 /* AccessibilityEvents.swift */,
 				D04BA4A621A8A15660F973C1 /* KeyboardEvents.swift */,
+				HOLD000000000000000001 /* HoldKeyWatcher.swift */,
 				D04BA76AEE37D6656EB80126 /* RunningApplicationsEvents.swift */,
 				D04BA5D9B4EBEB9E4333AE39 /* UserDefaultsEvents.swift */,
 				D04BB102A1B2C3D4E5F60011 /* InputSourceEvents.swift */,
@@ -2702,6 +2705,7 @@
 				D04BAE8B16A06A10E2FA94DE /* AccessibilityEvents.swift in Sources */,
 				5883F0A829A5182C0071DB65 /* TrackpadEvents.swift in Sources */,
 				D04BAAAF5CFA991D3B078DB8 /* KeyboardEvents.swift in Sources */,
+				HOLD000000000000001001 /* HoldKeyWatcher.swift in Sources */,
 				D04BA1766FBCB2E941D081A5 /* RunningApplicationsEvents.swift in Sources */,
 				5F906A342F16A18500B99924 /* Screens.swift in Sources */,
 				D04BA0AE9865276FF8EF5DEB /* UserDefaultsEvents.swift in Sources */,

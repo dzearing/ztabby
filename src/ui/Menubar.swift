@@ -42,7 +42,11 @@ class Menubar {
     }
 
     // NSMenuItem.isHidden isn't reliable with custom views. We add/remove to hide/show these items
-    static func togglePermissionCallout(_ show: Bool) {
+    static func togglePermissionCallout(_ message: String?) {
+        let show = message != nil
+        if let message, let callout = permissionCalloutMenuItems?.first?.view as? PermissionCallout {
+            callout.update(message)
+        }
         permissionCalloutMenuItems?.enumerated().forEach { offset, element in
             if show && !menu.items.contains(element) {
                 menu.insertItem(element, at: offset)
@@ -84,8 +88,10 @@ class Menubar {
 }
 
 class PermissionCallout: StackView {
+    private var label: NSTextField!
+
     convenience init() {
-        let label = NSTextField(wrappingLabelWithString: NSLocalizedString("Ztabby is running without Screen Recording permissions. Thumbnails won’t show.", comment: "Menubar callout"))
+        let label = NSTextField(wrappingLabelWithString: "")
         label.translatesAutoresizingMaskIntoConstraints = false
         label.textColor = .white
         label.preferredMaxLayoutWidth = 250
@@ -94,12 +100,15 @@ class PermissionCallout: StackView {
         let button = NSButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.attributedTitle = NSAttributedString(string: NSLocalizedString("Grant permission", comment: "Menubar callout button"), attributes: [NSAttributedString.Key.foregroundColor: NSColor.white])
-        button.onAction = { _ in
-            Preferences.remove("screenRecordingPermissionSkipped")
-            App.restart()
-        }
+        button.onAction = { _ in App.showPermissionsWindow() }
         self.init([label, button], .vertical, true, top: 8, right: 15, bottom: 10, left: 15)
+        self.label = label
         wantsLayer = true
         layer!.backgroundColor = NSColor.purple.cgColor
+    }
+
+    func update(_ message: String) {
+        guard label.stringValue != message else { return }
+        label.stringValue = message
     }
 }

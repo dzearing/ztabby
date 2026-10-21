@@ -1,4 +1,5 @@
 import Cocoa
+import IOKit.hid
 
 // macOS has some privacy restrictions. The user needs to grant certain permissions, app by app, in System Preferences > Security & Privacy
 class SystemPermissions {
@@ -16,9 +17,10 @@ class SystemPermissions {
     private static func checkPermissionsOnTimer() {
         AccessibilityPermission.update()
         let isPermissionsWindowVisible = PermissionsWindow.shared?.isVisible ?? false
-        // always safe to poll: update() only uses the silent preflight API; it never triggers a system prompt
+        // always safe to poll: update() only uses silent check APIs; they never trigger a system prompt
         ScreenRecordingPermission.update()
-        Logger.debug { "accessibility:\(AccessibilityPermission.status) screenRecording:\(ScreenRecordingPermission.status)" }
+        InputMonitoringPermission.update()
+        Logger.debug { "accessibility:\(AccessibilityPermission.status) screenRecording:\(ScreenRecordingPermission.status) inputMonitoring:\(InputMonitoringPermission.status)" }
         if !preStartupPermissionsPassed {
             checkPermissionsPreStartup()
         } else {
@@ -30,15 +32,31 @@ class SystemPermissions {
             }
         }
         DispatchQueue.main.async {
-            Menubar.togglePermissionCallout(ScreenRecordingPermission.status != .granted)
+            Menubar.togglePermissionCallout(permissionCalloutMessage())
             if PermissionsWindow.shared != nil {
                 PermissionsWindow.updatePermissionViews()
             }
         }
     }
 
+    /// only Accessibility is required: without it we cannot list or focus windows at all. Screen Recording
+    /// (thumbnails) and Input Monitoring (focus on shortcut release) each degrade one feature, so they are
+    /// opt-in and never block the app from starting
+    /// neither optional permission blocks the app, but a missing one has to be visible rather than silent:
+    /// Input Monitoring first, as without it the switcher never focuses on release. Thumbnails are only
+    /// worth mentioning to someone whose switcher draws them - the grouped view is icons and titles
+    private static func permissionCalloutMessage() -> String? {
+        if InputMonitoringPermission.status != .granted {
+            return NSLocalizedString("Ztabby is running without Input Monitoring permission. It can’t see when you release the shortcut, so the switcher stays open.", comment: "Menubar callout")
+        }
+        if ScreenRecordingPermission.status != .granted && !Appearance.hideThumbnails && !Preferences.windowGroupingEnabled {
+            return NSLocalizedString("Ztabby is running without Screen Recording permission. Thumbnails won’t show.", comment: "Menubar callout")
+        }
+        return nil
+    }
+
     private static func checkPermissionsPreStartup() {
-        if AccessibilityPermission.status != .notGranted && ScreenRecordingPermission.status != .notGranted {
+        if AccessibilityPermission.status != .notGranted {
             DispatchQueue.main.async {
                 preStartupPermissionsPassed = true
                 PermissionsWindow.shared?.close()
@@ -125,8 +143,7 @@ class ScreenRecordingPermission {
     /// no DEBUG bypass: the debug build has its own bundle id and must check its own TCC grants
     private static func detect() -> PermissionStatus {
         if #available(macOS 10.15, *) {
-            return CGPreflightScreenCaptureAccess() ? .granted :
-                (Preferences.screenRecordingPermissionSkipped ? .skipped : .notGranted)
+            return CGPreflightScreenCaptureAccess() ? .granted : .notGranted
         }
         return .granted
     }
@@ -140,6 +157,38 @@ class ScreenRecordingPermission {
             hasRequestedOnce = true
             Logger.info { "requesting Screen Recording permission (once per launch)" }
             CGRequestScreenCaptureAccess()
+        }
+    }
+}
+
+/// Keyboard event taps are how we learn that the shortcut's modifier was released. macOS starves the tap
+/// when this permission is missing - it is created, reports itself disabled, and delivers almost nothing -
+/// so the switcher opens but never focuses on release, with no error anywhere. Hence we check it and say so
+class InputMonitoringPermission {
+    static var status = PermissionStatus.notGranted
+    private static var hasRequestedOnce = false
+
+    @discardableResult
+    static func update() -> PermissionStatus {
+        status = detect()
+        return status
+    }
+
+    private static func detect() -> PermissionStatus {
+        if #available(macOS 10.15, *) {
+            return IOHIDCheckAccess(kIOHIDRequestTypeListenEvent) == kIOHIDAccessTypeGranted ? .granted : .notGranted
+        }
+        return .granted
+    }
+
+    /// the only place allowed to queue a system Input Monitoring prompt; at most once per launch, like
+    /// Screen Recording, and only while the permissions window is frontmost
+    static func requestOnce() {
+        if #available(macOS 10.15, *) {
+            guard !hasRequestedOnce, update() == .notGranted else { return }
+            hasRequestedOnce = true
+            Logger.info { "requesting Input Monitoring permission (once per launch)" }
+            _ = IOHIDRequestAccess(kIOHIDRequestTypeListenEvent)
         }
     }
 }

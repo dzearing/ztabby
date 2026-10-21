@@ -9,6 +9,9 @@ class ATShortcut {
     var triggerPhase: ShortcutTriggerPhase
     var state: ShortcutState = .up
     var index: Int?
+    /// whether the event being handled right now told us these modifiers are held. A racy live read can
+    /// disagree with it, and when it does the event is the one to believe
+    private var eventReportedModifiersHeld = false
 
     init(_ shortcut: Shortcut, _ id: String, _ scope: ShortcutScope, _ triggerPhase: ShortcutTriggerPhase, _ index: Int? = nil) {
         self.shortcut = shortcut
@@ -19,6 +22,7 @@ class ATShortcut {
     }
 
     func matches(_ id: Int?, _ shortcutState: ShortcutState?, _ keyCode: UInt32?, _ modifiers: NSEvent.ModifierFlags?) -> Bool {
+        eventReportedModifiersHeld = false
         if let id, let shortcutState, let shortcutId = KeyboardEventsTestable.globalShortcutsIds.first(where: { $0.value == id })?.key {
             if shortcutId == self.id {
                 state = shortcutState
@@ -29,15 +33,26 @@ class ATShortcut {
         }
         if let modifiers {
             let modifiersMatch_ = modifiersMatch(cocoaToCarbonFlags(modifiers))
+            eventReportedModifiersHeld = modifiersMatch_
             let newState: ShortcutState = ((shortcut.keyCode == .none || keyCode == shortcut.carbonKeyCode) && modifiersMatch_) ? .down : .up
             let flipped = state != newState
             state = newState
+            logHoldShortcutRelease(flipped)
             // state == down is unambiguous; state == up is hard to match with a particular shortcut, unless it's been flipped
             if (triggerPhase == .down && state == .down) || (triggerPhase == .up && state == .up && flipped) {
                 return true
             }
         }
         return false
+    }
+
+    /// the hold shortcut focuses the selection on the down -> up transition only, so a transition that is
+    /// seen but not acted on strands the open UI until some later key event hits `redundantSafetyMeasures`.
+    /// This records every transition and why it would (not) trigger, to tell a never-delivered modifier
+    /// event apart from one we received and discarded
+    private func logHoldShortcutRelease(_ flipped: Bool) {
+        guard Logger.isDebugEnabled, triggerPhase == .up, id.hasPrefix("holdShortcut") else { return }
+        Logger.debug { "\(self.id) state:\(self.state) flipped:\(flipped) wouldTrigger:\(self.shouldTrigger()) appIsBeingUsed:\(App.appIsBeingUsed) forceDoNothingOnRelease:\(App.forceDoNothingOnRelease) index:\(self.index.map(String.init) ?? "nil") activeIndex:\(App.shortcutIndex)" }
     }
 
     private func modifiersMatch(_ modifiers: CarbonModifierFlags) -> Bool {
@@ -93,10 +108,13 @@ class ATShortcut {
         // Knowing this, we handle these edge-cases by double checking if holdShortcut is UP, when any shortcut state is UP
         // If it is, then we trigger the holdShortcut action
         if App.appIsBeingUsed && !App.forceDoNothingOnRelease && Preferences.shortcutStyle == .focusOnRelease {
+            // but not when this very event reported the modifiers as held: that event contradicted by a racy
+            // live read used to focus mid-browse. A missing event (nothing reported) is still recoverable
             if let currentHoldShortcut = ControlsTab.shortcuts[Preferences.indexToName("holdShortcut", App.shortcutIndex)],
-               id == currentHoldShortcut.id {
+               id == currentHoldShortcut.id, !currentHoldShortcut.eventReportedModifiersHeld {
                 let currentModifiers = cocoaToCarbonFlags(ModifierFlags.current)
                 if currentModifiers != (currentModifiers | (currentHoldShortcut.shortcut.carbonModifierFlags)) {
+                    Logger.warning { "\(currentHoldShortcut.id) is no longer held but never fired on release; forcing it from \(self.id)" }
                     currentHoldShortcut.state = .up
                     ControlsTab.executeAction(currentHoldShortcut.id)
                 }

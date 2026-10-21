@@ -57,6 +57,7 @@ class App: AppCenterApplication {
         Logger.info { "appIsBeingUsed:\(appIsBeingUsed)" }
         guard appIsBeingUsed else { return } // already hidden
         appIsBeingUsed = false
+        HoldKeyWatcher.stop()
         isFirstSummon = true
         forceDoNothingOnRelease = false
         UsageStats.resetSession()
@@ -322,6 +323,7 @@ class App: AppCenterApplication {
         forceDoNothingOnRelease = forceDoNothingOnRelease_
         Logger.debug { "isFirstSummon:\(isFirstSummon) shortcutIndex:\(shortcutIndex)" }
         appIsBeingUsed = true
+        HoldKeyWatcher.start()
         UsageStats.recordTrigger(shortcutIndex)
         if isFirstSummon || shortcutIndex != App.shortcutIndex {
             NSScreen.updatePreferred()

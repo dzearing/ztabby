@@ -3,6 +3,7 @@ import Cocoa
 class PermissionsWindow: NSWindow {
     static var accessibilityView: PermissionView!
     static var screenRecordingView: PermissionView!
+    static var inputMonitoringView: PermissionView!
     static var canBecomeKey_ = true
     override var canBecomeKey: Bool { Self.canBecomeKey_ }
     static var shared: PermissionsWindow!
@@ -20,6 +21,7 @@ class PermissionsWindow: NSWindow {
         accessibilityView.updatePermissionStatus(AccessibilityPermission.status)
         if #available(macOS 10.15, *) {
             screenRecordingView.updatePermissionStatus(ScreenRecordingPermission.status)
+            inputMonitoringView.updatePermissionStatus(InputMonitoringPermission.status)
         }
     }
 
@@ -30,8 +32,9 @@ class PermissionsWindow: NSWindow {
         App.shared.activate(ignoringOtherApps: true)
         Self.shared.makeKeyAndOrderFront(nil)
         SystemPermissions.setFrequentTimer()
-        // the permission UI is frontmost: the one moment we may queue a real system prompt
+        // the permission UI is frontmost: the one moment we may queue real system prompts
         ScreenRecordingPermission.requestOnce()
+        InputMonitoringPermission.requestOnce()
     }
 
     private func setupWindow() {
@@ -55,7 +58,7 @@ class PermissionsWindow: NSWindow {
         Self.accessibilityView = PermissionView(
             "accessibility",
             NSLocalizedString("Accessibility", comment: ""),
-            NSLocalizedString("This permission is needed to focus windows after you release the shortcut", comment: ""),
+            NSLocalizedString("Required. Without it, windows can't be listed or focused", comment: ""),
             NSLocalizedString("Open Accessibility Settings…", comment: ""),
             "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility",
         )
@@ -67,12 +70,19 @@ class PermissionsWindow: NSWindow {
             Self.screenRecordingView = PermissionView(
                 "screen-recording",
                 NSLocalizedString("Screen Recording", comment: ""),
-                NSLocalizedString("This permission is needed to show thumbnails and preview of open windows", comment: ""),
+                NSLocalizedString("Optional. Grant it to show thumbnails and a preview of open windows", comment: ""),
                 NSLocalizedString("Open Screen Recording Settings…", comment: ""),
-                "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture",
-                StackView(LabelAndControl.makeLabelWithCheckbox(NSLocalizedString("Use the app without this permission. Thumbnails won’t show.", comment: ""), "screenRecordingPermissionSkipped", labelPosition: .right))
+                "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture"
+            )
+            Self.inputMonitoringView = PermissionView(
+                "accessibility",
+                NSLocalizedString("Input Monitoring", comment: ""),
+                NSLocalizedString("Optional. Without it, macOS hides modifier keys from us, so the switcher stays open instead of focusing when you release the shortcut", comment: ""),
+                NSLocalizedString("Open Input Monitoring Settings…", comment: ""),
+                "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent"
             )
             rows.append([Self.screenRecordingView])
+            rows.append([Self.inputMonitoringView])
         }
         let widestRowWidth = rows.reduce(0) { max($0, $1[0]!.fittingSize.width) }
         rows.forEach { $0[0]!.fit(widestRowWidth, $0[0]!.fittingSize.height) }
@@ -90,9 +100,9 @@ class PermissionsWindow: NSWindow {
 
 extension PermissionsWindow: NSWindowDelegate {
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        Logger.debug { "preStartupPermissionsPassed:\(SystemPermissions.preStartupPermissionsPassed), accessibility:\(AccessibilityPermission.status), screenRecording:\(ScreenRecordingPermission.status)" }
+        Logger.debug { "preStartupPermissionsPassed:\(SystemPermissions.preStartupPermissionsPassed), accessibility:\(AccessibilityPermission.status), screenRecording:\(ScreenRecordingPermission.status), inputMonitoring:\(InputMonitoringPermission.status)" }
         if !SystemPermissions.preStartupPermissionsPassed {
-            if AccessibilityPermission.status == .notGranted || ScreenRecordingPermission.status == .notGranted {
+            if AccessibilityPermission.status == .notGranted {
                 Logger.error {
                     """
                     Before using this app, you need to give permission in System Settings > Privacy & Security > Accessibility.
