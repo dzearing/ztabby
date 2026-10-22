@@ -56,7 +56,9 @@ From the categorized commits, write user-facing release notes. Rules:
   - **Fix** — What no longer happens / what works correctly now.
   ```
 
-Present the notes and ask the user to approve or edit. Do NOT proceed until approved.
+Do NOT ask the user to review or approve the notes — write them and carry on to the next step. Show them
+in your final report so they can see what shipped, and only pause for approval if the user asked for a
+review of the notes (now or earlier in the conversation).
 
 ### Step 3: Bump Version
 
